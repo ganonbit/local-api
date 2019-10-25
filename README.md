@@ -14,5 +14,5 @@
 ## API deployment to Heroku -- TBD IF FINAL HOST
 - Create NodeJS app using [Heroku CLI](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
 - Add [environment variables](https://devcenter.heroku.com/articles/config-vars) to Heroku from `api/.env` file.
-  Replace `FRONTEND_URL=http://localhost:3000` with the deployed frontend url e.g. `FRONTEND_URL=https://avonation-frontend.netlify.com` that is required because API responds only to that url.
+  Replace `FRONTEND_URL=http://localhost:3000` with the deployed frontend url e.g. `FRONTEND_URL=`https://vigorous-chandrasekhar-bbd3e9.netlify.com` that is required because API responds only to that url.
 - Finally run `npm  deploy` or `yarn deploy` to deploy the API.
