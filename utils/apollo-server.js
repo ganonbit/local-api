@@ -53,5 +53,7 @@ export const createApolloServer = (schema, resolvers, models) => {
         console.log('*** User has been disconnected from WebSocket server ***');
       },
     },
+    introspection: true,  
+    playground: true
   });
 };
