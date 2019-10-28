@@ -28,6 +28,10 @@ app.use(cors(corsOptions));
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
+app.get('/', function (req, res) {
+  res.send('/graphql')
+})
+
 
 // Create http server and add subscriptions to it
 const httpServer = createServer(app);
