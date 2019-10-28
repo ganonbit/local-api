@@ -33,6 +33,8 @@ export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
     resolvers,
+    introspection: true,  
+    playground: true,
     context: async ({ req }) => {
       let authUser;
 
@@ -53,7 +55,5 @@ export const createApolloServer = (schema, resolvers, models) => {
         console.log('*** User has been disconnected from WebSocket server ***');
       },
     },
-    introspection: true,  
-    playground: true
   });
 };
