@@ -46,7 +46,6 @@ export const createApolloServer = (schema, resolvers, models) => {
 
       return Object.assign({ authUser }, models);
     },
-    playground: false,
     introspection: true,
     subscriptions: {
       onConnect: async (connectionParams, webSocket) => {
