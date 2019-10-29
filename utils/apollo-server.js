@@ -12,7 +12,8 @@ export const pubSub = new PubSub();
  */
 const checkAuthorization = token => {
   return new Promise(async (resolve, reject) => {
-    console.log('before authUser' + token);
+    const token = req.headers['x-access-token'];
+    if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
     const authUser = await jwt.verify(token, process.env.SECRET);
 
     if (authUser) {
