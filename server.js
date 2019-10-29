@@ -36,7 +36,7 @@ const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 // Listen to HTTP and WebSocket server
-const PORT = process.env.PORT || process.env.API_PORT;
+const PORT = process.env.API_PORT;
 httpServer.listen({ port: PORT }, () => {
   console.log(`server ready at http://localhost:${PORT}${server.graphqlPath}`);
   console.log(
