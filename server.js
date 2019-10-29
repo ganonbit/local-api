@@ -21,7 +21,7 @@ const app = express();
 
 // Enable cors
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: '*',
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -29,14 +29,16 @@ app.use(cors(corsOptions));
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
-
+app.get('/', function (req, res) {
+  res.redirect('/graphql')
+})
 
 // Create http server and add subscriptions to it
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 // Listen to HTTP and WebSocket server
-const PORT = process.env.API_PORT;
+const PORT = process.env.PORT || process.env.API_PORT;
 httpServer.listen({ port: PORT }, () => {
   console.log(`server ready at http://localhost:${PORT}${server.graphqlPath}`);
   console.log(
