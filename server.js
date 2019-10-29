@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
 app.get('/', function (req, res) {
-  res.send('/graphql')
+  res.redirect('/graphql')
 })
 
 
