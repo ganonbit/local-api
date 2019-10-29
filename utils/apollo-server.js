@@ -4,7 +4,6 @@ import { PubSub } from 'apollo-server';
 
 // Export pubSub instance for publishing events
 export const pubSub = new PubSub();
-const { SECRET } = process.env;
 
 /**
  * Checks if client is authenticated by checking authorization key from req headers
@@ -13,7 +12,7 @@ const { SECRET } = process.env;
  */
 const checkAuthorization = token => {
   return new Promise(async (resolve, reject) => {
-    const authUser = await jwt.verify(token, SECRET);
+    const authUser = await jwt.verify(token, process.env.SECRET);
 
     if (authUser) {
       resolve(authUser);
@@ -46,6 +45,7 @@ export const createApolloServer = (schema, resolvers, models) => {
 
       return Object.assign({ authUser }, models);
     },
+    playground: true,
     introspection: true,
     subscriptions: {
       onConnect: async (connectionParams, webSocket) => {

@@ -6,7 +6,6 @@ import { sendEmail } from '../utils/email';
 
 const AUTH_TOKEN_EXPIRY = '1y';
 const RESET_PASSWORD_TOKEN_EXPIRY = 3600000;
-const { SECRET } = process.env;
 
 const Query = {
   /**
@@ -266,7 +265,7 @@ const Mutation = {
     }
 
     return {
-      token: generateToken(user, SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
   /**
@@ -346,7 +345,7 @@ const Mutation = {
     }).save();
 
     return {
-      token: generateToken(newUser, SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(newUser, process.env.SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
   /**
@@ -364,7 +363,7 @@ const Mutation = {
     // Set password reset token and it's expiry
     const token = generateToken(
       user,
-      SECRET,
+      process.env.SECRET,
       RESET_PASSWORD_TOKEN_EXPIRY
     );
     const tokenExpiry = Date.now() + RESET_PASSWORD_TOKEN_EXPIRY;
@@ -429,7 +428,7 @@ const Mutation = {
 
     // Return success message
     return {
-      token: generateToken(user, SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
   /**
