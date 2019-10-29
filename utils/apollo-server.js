@@ -12,14 +12,12 @@ export const pubSub = new PubSub();
  */
 const checkAuthorization = token => {
   return new Promise(async (resolve, reject) => {
-    const authUser = jwt.verify(token, process.env.SECRET);
+    const authUser = await jwt.verify(token, process.env.SECRET);
 
     if (authUser) {
       resolve(authUser);
-      console.log('if resolve authUser' + token);
     } else {
       reject("Couldn't authenticate user");
-      console.log('if fail authUser' + token);
     }
   });
 };
@@ -34,7 +32,7 @@ const checkAuthorization = token => {
 export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
-    resolvers, 
+    resolvers,
     context: async ({ req }) => {
       let authUser;
 
@@ -47,8 +45,6 @@ export const createApolloServer = (schema, resolvers, models) => {
 
       return Object.assign({ authUser }, models);
     },
-    playground: true,
-    introspection: true,
     subscriptions: {
       onConnect: async (connectionParams, webSocket) => {
         console.log('*** User has connected to WebSocket server ***');
