@@ -37,8 +37,6 @@ export const createApolloServer = (schema, resolvers, models) => {
     resolvers, 
     context: async ({ req }) => {
       let authUser;
-      const token = req.headers['x-access-token'];
-      if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
 
       if (req.headers.authorization !== 'null') {
         const user = await checkAuthorization(req.headers['authorization']);
