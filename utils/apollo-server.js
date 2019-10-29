@@ -33,9 +33,7 @@ const checkAuthorization = token => {
 export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
-    resolvers,
-    introspection: true,  
-    playground: true,
+    resolvers, 
     context: async ({ req }) => {
       let authUser;
 
@@ -48,6 +46,8 @@ export const createApolloServer = (schema, resolvers, models) => {
 
       return Object.assign({ authUser }, models);
     },
+    playground: false,
+    introspection: true,
     subscriptions: {
       onConnect: async (connectionParams, webSocket) => {
         console.log('*** User has connected to WebSocket server ***');
