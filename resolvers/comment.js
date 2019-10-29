@@ -1,17 +1,34 @@
 const Mutation = {
   /**
    * Creates a post comment
-   *
+   * @param {string} image
    * @param {string} comment
    * @param {string} author author id
    * @param {string} postId
    */
   createComment: async (
     root,
-    { input: { comment, author, postId } },
+    { input: { image, comment, author, postId } },
     { Comment, Post, User }
   ) => {
+    let imageUrl, imagePublicId;
+    if (image) {
+      const { createReadStream } = await image;
+      const stream = createReadStream();
+      const uploadImage = await uploadToCloudinary(stream, 'post');
+
+      if (!uploadImage.secure_url) {
+        throw new Error(
+          'Something went wrong while uploading image to Cloudinary'
+        );
+      }
+
+      imageUrl = uploadImage.secure_url;
+      imagePublicId = uploadImage.public_id;
+    }
     const newComment = await new Comment({
+      image: imageUrl,
+      imagePublicId,
       comment,
       author,
       post: postId,
@@ -35,7 +52,17 @@ const Mutation = {
    *
    * @param {string} id
    */
-  deleteComment: async (root, { input: { id } }, { Comment, User, Post }) => {
+  deleteComment: async (root, { input: { id, imagePublicId } }, { Comment, User, Post }) => {
+    // Remove comment image from cloudinary, if imagePublicId is present
+    if (imagePublicId) {
+      const deleteImage = await deleteFromCloudinary(imagePublicId);
+
+      if (deleteImage.result !== 'ok') {
+        throw new Error(
+          'Something went wrong while deleting image from Cloudinary'
+        );
+      }
+    }
     const comment = await Comment.findByIdAndRemove(id);
 
     // Delete comment from users collection

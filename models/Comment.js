@@ -6,7 +6,9 @@ const Schema = mongoose.Schema;
  * Comments schema that has reference to Post and user schemas
  */
 const commentSchema = Schema(
-  {
+  { 
+    image: String,
+    imagePublicId: String,
     comment: {
       type: String,
       required: true,
