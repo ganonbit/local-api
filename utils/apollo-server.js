@@ -12,8 +12,6 @@ export const pubSub = new PubSub();
  */
 const checkAuthorization = token => {
   return new Promise(async (resolve, reject) => {
-    const token = req.headers['x-access-token'];
-    if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
     const authUser = await jwt.verify(token, process.env.SECRET);
 
     if (authUser) {
@@ -39,6 +37,8 @@ export const createApolloServer = (schema, resolvers, models) => {
     resolvers, 
     context: async ({ req }) => {
       let authUser;
+      const token = req.headers['x-access-token'];
+      if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
 
       if (req.headers.authorization !== 'null') {
         const user = await checkAuthorization(req.headers['authorization']);
