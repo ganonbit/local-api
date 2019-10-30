@@ -38,7 +38,7 @@ export const createApolloServer = (schema, resolvers, models) => {
     context: async ({ req }) => {
       let authUser;
 
-      if (req.headers.authorization !== 'null' || req.headers.authorization === 'null') {
+      if (req.headers.authorization === 'null') {
         const user = await checkAuthorization(req.headers['authorization']);
         if (user) {
           authUser = user;
