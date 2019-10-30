@@ -1,5 +1,6 @@
 import {} from 'dotenv/config';
 import express from 'express';
+import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -24,14 +25,11 @@ const corsOptions = {
   origin: '*',
   credentials: true,
 };
-app.use(cors(corsOptions));
+app.use(cors(corsOptions), bodyParser.json());
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
-app.get('/', function (req, res) {
-  res.redirect('/graphql')
-})
 
 // Create http server and add subscriptions to it
 const httpServer = createServer(app);
