@@ -35,18 +35,18 @@ export const createApolloServer = (schema, resolvers, models) => {
     resolvers,
     introspection: true,  
     playground: true,
-    // context: async ({ req }) => {
-    //   let authUser;
+    context: async ({ req }) => {
+      let authUser;
 
-    //   if (req.headers.authorization === 'null') {
-    //     const user = await checkAuthorization(req.headers['authorization']);
-    //     if (user) {
-    //       authUser = user;
-    //     }
-    //   }
+      if (req.headers.authorization !== 'null' || req.headers.authorization === 'null') {
+        const user = await checkAuthorization(req.headers['authorization']);
+        if (user) {
+          authUser = user;
+        }
+      }
 
-    //   return Object.assign({ authUser }, models);
-    // },
+      return Object.assign({ authUser }, models);
+    },
     subscriptions: {
       keepAlive: 10000,
       onConnect: async (connectionParams, webSocket) => {
