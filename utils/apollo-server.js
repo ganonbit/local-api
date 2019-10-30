@@ -48,7 +48,7 @@ export const createApolloServer = (schema, resolvers, models) => {
       return Object.assign({ authUser }, models);
     },
     subscriptions: {
-      keepAlive: 10000,
+      keepAlive: 100000,
       onConnect: async (connectionParams, webSocket) => {
         console.log('*** User has connected to WebSocket server ***');
       },
