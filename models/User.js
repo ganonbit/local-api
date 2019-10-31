@@ -32,6 +32,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    birthday: {
+      type: String,
+      required: true,
+    },
     image: String,
     imagePublicId: String,
     coverImage: String,
