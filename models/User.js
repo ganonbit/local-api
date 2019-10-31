@@ -26,6 +26,25 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
     },
+    birthday: {
+      type: String,
+      required: true,
+    },
+    gender: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
+    bio: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
+    location: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     passwordResetToken: String,
     passwordResetTokenExpiry: Date,
     password: {
@@ -36,6 +55,8 @@ const userSchema = new Schema(
     imagePublicId: String,
     coverImage: String,
     coverImagePublicId: String,
+    isVerified: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
     posts: [
       {
         type: Schema.Types.ObjectId,
@@ -72,6 +93,12 @@ const userSchema = new Schema(
         ref: 'Notification',
       },
     ],
+    points: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Point',
+      },
+    ]
   },
   {
     timestamps: true,
