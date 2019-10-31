@@ -40,6 +40,11 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    location: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     passwordResetToken: String,
     passwordResetTokenExpiry: Date,
     password: {
@@ -93,8 +98,7 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Point',
       },
-      
-    ],
+    ]
   },
   {
     timestamps: true,
