@@ -76,6 +76,12 @@ const userSchema = new Schema(
         ref: 'Notification',
       },
     ],
+    points: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Point',
+      },
+    ],
   },
   {
     timestamps: true,
