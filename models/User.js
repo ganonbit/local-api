@@ -35,6 +35,11 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    bio: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     passwordResetToken: String,
     passwordResetTokenExpiry: Date,
     password: {
