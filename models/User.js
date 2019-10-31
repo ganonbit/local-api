@@ -26,13 +26,18 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
     },
-    passwordResetToken: String,
-    passwordResetTokenExpiry: Date,
-    password: {
+    birthday: {
       type: String,
       required: true,
     },
-    birthday: {
+    gender: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
+    passwordResetToken: String,
+    passwordResetTokenExpiry: Date,
+    password: {
       type: String,
       required: true,
     },
