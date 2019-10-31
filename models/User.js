@@ -45,6 +45,8 @@ const userSchema = new Schema(
     imagePublicId: String,
     coverImage: String,
     coverImagePublicId: String,
+    isVerified: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
     posts: [
       {
         type: Schema.Types.ObjectId,
@@ -86,6 +88,7 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Point',
       },
+      
     ],
   },
   {
