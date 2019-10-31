@@ -33,12 +33,10 @@ export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
     resolvers,
-    introspection: true,  
-    playground: true,
     context: async ({ req }) => {
       let authUser;
 
-      if (req.headers.authorization === 'null') {
+      if (req.headers.authorization !== 'null') {
         const user = await checkAuthorization(req.headers['authorization']);
         if (user) {
           authUser = user;
@@ -48,7 +46,6 @@ export const createApolloServer = (schema, resolvers, models) => {
       return Object.assign({ authUser }, models);
     },
     subscriptions: {
-      keepAlive: 100000,
       onConnect: async (connectionParams, webSocket) => {
         console.log('*** User has connected to WebSocket server ***');
       },
