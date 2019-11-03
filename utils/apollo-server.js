@@ -38,17 +38,11 @@ export const createApolloServer = (schema, resolvers, models) => {
     context: async ({ req }) => {
       let authUser;
 
-      if (req.headers.authorization !== 'null' && req.headers.authorization !== undefined) {
+      if (req.headers.authorization !== 'null') {
         const user = await checkAuthorization(req.headers['authorization']);
         if (user) {
           authUser = user;
         }
-      } else {
-        const unauthenticatedUser = { 
-          fullName: 'not really here',
-          email: 'notreallyhere@email.com'
-        };
-        authUser = unauthenticatedUser;
       }
 
       return Object.assign({ authUser }, models);
