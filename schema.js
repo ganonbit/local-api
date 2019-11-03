@@ -34,7 +34,7 @@ const schema = gql`
 
   type Post {
     id: ID!
-    title: String
+    content: String
     image: File
     imagePublicId: String
     author: User!
@@ -130,7 +130,7 @@ const schema = gql`
   }
 
   input CreatePostInput {
-    title: String
+    content: String
     image: Upload
     imagePublicId: String
     authorId: ID!
@@ -220,7 +220,7 @@ const schema = gql`
 
   type PostPayload {
     id: ID!
-    title: String
+    content: String
     image: String
     imagePublicId: String
     author: UserPayload!
