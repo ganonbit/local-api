@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+let genderTypes = ['Male', 'Female', 'Other'];
 
 const Schema = mongoose.Schema;
 
@@ -27,17 +28,15 @@ const userSchema = new Schema(
       unique: true,
     },
     birthday: {
-      type: String,
+      type: Date, default: Date.now,
       required: true,
     },
     gender: {
       type: String,
-      lowercase: true,
-      trim: true,
+      enum: genderTypes,
     },
     bio: {
       type: String,
-      lowercase: true,
       trim: true,
     },
     location: {

@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
  */
 const postSchema = Schema(
   {
-    title: String,
+    content: String,
     image: String,
     imagePublicId: String,
     author: {

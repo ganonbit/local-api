@@ -128,17 +128,17 @@ const Mutation = {
   /**
    * Creates a new post
    *
-   * @param {string} title
+   * @param {string} content
    * @param {string} image
    * @param {string} authorId
    */
   createPost: async (
     root,
-    { input: { title, image, authorId } },
+    { input: { content, image, authorId } },
     { Post, User }
   ) => {
-    if (!title && !image) {
-      throw new Error('Post title or image is required.');
+    if (!content && !image) {
+      throw new Error('Post content or image is required.');
     }
 
     let imageUrl, imagePublicId;
@@ -158,7 +158,7 @@ const Mutation = {
     }
 
     const newPost = await new Post({
-      title,
+      content,
       image: imageUrl,
       imagePublicId,
       author: authorId,

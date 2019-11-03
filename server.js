@@ -1,6 +1,5 @@
 import {} from 'dotenv/config';
 import express from 'express';
-import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -25,7 +24,7 @@ const corsOptions = {
   origin: '*',
   credentials: true,
 };
-app.use(cors(corsOptions), bodyParser.json());
+app.use(cors(corsOptions));
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
