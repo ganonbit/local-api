@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+let genderTypes = ['Male', 'Female', 'Other'];
+
 const Schema = mongoose.Schema;
 
 /**
@@ -27,13 +29,12 @@ const userSchema = new Schema(
       unique: true,
     },
     birthday: {
-      type: String,
+      type: Date, default: Date.now,
       required: true,
     },
     gender: {
       type: String,
-      lowercase: true,
-      trim: true,
+      enum: genderTypes,
     },
     bio: {
       type: String,
@@ -123,5 +124,21 @@ userSchema.pre('save', function(next) {
     });
   });
 });
+
+
+userSchema
+  .virtual('passwordConfirmation')
+  .set(function setPasswordConfirmation(passwordConfirmation) {
+    this._passwordConfirmation = passwordConfirmation;
+  });
+
+userSchema.pre('validate', function checkPassword(next) {
+  if (this.isModified('password') && this._passwordConfirmation !== this.password) this.invalidate('passwordConfirmation', 'does not match');
+  next();
+});
+
+userSchema.methods.validatePassword = function validatePassword(password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 export default mongoose.model('User', userSchema);
