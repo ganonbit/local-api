@@ -15,6 +15,10 @@ const notificationSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    message: {
+      type: Schema.Types.ObjectId,
+      ref: 'Message',
+    },
     post: Schema.Types.ObjectId,
     like: {
       type: Schema.Types.ObjectId,
