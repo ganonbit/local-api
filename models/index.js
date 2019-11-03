@@ -1,19 +1,19 @@
 import User from './User';
-import Message from './Message';
+// import Message from './Message';
 import Post from './Post';
 import Like from './Like';
 import Follow from './Follow';
 import Comment from './Comment';
 import Notification from './Notification';
-import Point from './Point';
+// import Point from './Point';
 
 export default {
   User,
-  Message,
+  // Message,
   Post,
   Like,
   Follow,
   Comment,
   Notification,
-  Point,
+  // Point,
 };
