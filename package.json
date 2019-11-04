@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "deploy": "git push heroku master",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/run.js"
   },
   "dependencies": {
     "@lykmapipo/mongoose-faker": "^0.10.3",
