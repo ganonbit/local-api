@@ -12,7 +12,7 @@ export const pubSub = new PubSub();
  */
 const checkAuthorization = token => {
   return new Promise(async (resolve, reject) => {
-    const authUser = jwt.verify(token, process.env.SECRET);
+    const authUser = await jwt.verify(token, process.env.SECRET);
 
     if (authUser) {
       resolve(authUser);

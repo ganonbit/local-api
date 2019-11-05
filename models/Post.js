@@ -8,8 +8,20 @@ const Schema = mongoose.Schema;
  */
 const postSchema = Schema(
   {
-    content: String,
-    image: String,
+    content: {
+      type: String,
+      fake: {
+        generator: 'lorem',
+        type: 'paragraph'
+      }
+    },
+    image: {
+      type: String,
+      fake: {
+        generator: 'image',
+        type: 'food'
+      }    
+    },
     imagePublicId: String,
     author: {
       type: Schema.Types.ObjectId,

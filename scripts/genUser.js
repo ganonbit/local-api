@@ -1,7 +1,7 @@
 import User from '../models/User';
 import mongoose from 'mongoose';
 
-mongoose.connect('mongodb+srv://270B_dev:lWAD4DWssdTbOyKW@avonation-zh1xu.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -11,14 +11,14 @@ const saveFakeUser = async () => {
   console.log("generate fake user data: \n" + userFactory)
   const userSeed =
     await new User(userFactory)
-    .save(function (err) {
+    .save(function (err, data) {
       if (err) {
         console.log('The following error ocurred:')
         console.log(err)
       }
+      console.log("create new user with fake data: \n" + data)
       mongoose.connection.close()
     });
-  console.log("create new user with fake data: \n" + userSeed)
 }
 
 saveFakeUser()
