@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
 const Schema = mongoose.Schema;
 
