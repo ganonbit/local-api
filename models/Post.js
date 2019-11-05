@@ -23,6 +23,8 @@ const postSchema = Schema(
       }    
     },
     imagePublicId: String,
+    isFeatured: { type: Boolean, default: false },
+    isPublic: { type: Boolean, default: false },
     author: {
       type: Schema.Types.ObjectId,
       ref: 'User',
