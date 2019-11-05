@@ -1,16 +1,24 @@
 import User from '../models/User';
-import { generateToken } from '../utils/generate-token';
-const AUTH_TOKEN_EXPIRY = '1y';
+import mongoose from 'mongoose';
 
-const userFactory = User.fake();
-console.log("generate fake user data: \n" + userFactory);
-
-const userSeed = new User(userFactory);
-console.log("create new user with fake data: \n" + userSeed);
-userSeed.save(function(error,data){
-    if (error) {
-        console.log(error); 
-    }
-    console.log(data + " saved to the DB"); 
-    res.json({ token: generateToken(userSeed, process.env.SECRET, AUTH_TOKEN_EXPIRY), user: data });
+mongoose.connect('mongodb+srv://270B_dev:lWAD4DWssdTbOyKW@avonation-zh1xu.mongodb.net/test?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
+
+const saveFakeUser = async () => {
+  const userFactory = User.fake();
+  console.log("generate fake user data: \n" + userFactory)
+  const userSeed =
+    await new User(userFactory)
+    .save(function (err) {
+      if (err) {
+        console.log('The following error ocurred:')
+        console.log(err)
+      }
+      mongoose.connection.close()
+    });
+  console.log("create new user with fake data: \n" + userSeed)
+}
+
+saveFakeUser()
