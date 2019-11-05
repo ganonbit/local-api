@@ -6,7 +6,6 @@ const userFactory = User.fake();
 console.log("generate fake user data: \n" + userFactory)
 
 const userSeed = new User(userFactory);
-userSeed.markModified('user');
 userSeed.save(function(error,data){
     if (error) {
         console.log(error); 
