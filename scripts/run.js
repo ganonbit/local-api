@@ -6,5 +6,5 @@
 
 require = require('esm')(module);
 
-module.exports = require('./genUser.js');
-// module.exports = require('./genPost.js');
+// module.exports = require('./genUser.js');
+module.exports = require('./genPost.js');
