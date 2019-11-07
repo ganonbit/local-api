@@ -6,4 +6,4 @@
 
 require = require('esm')(module);
 
-module.exports = require('./genUser.js');
+module.exports = require('../generators/genUser');
