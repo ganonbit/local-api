@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
 const Schema = mongoose.Schema;
 
@@ -7,8 +8,20 @@ const Schema = mongoose.Schema;
  */
 const postSchema = Schema(
   {
-    content: String,
-    image: String,
+    content: {
+      type: String,
+      fake: {
+        generator: 'lorem',
+        type: 'paragraph'
+      }
+    },
+    image: {
+      type: String,
+      fake: {
+        generator: 'image',
+        type: 'avatar'
+      }    
+    },
     imagePublicId: String,
     isFeatured: { type: Boolean, default: false },
     isPublic: { type: Boolean, default: false },

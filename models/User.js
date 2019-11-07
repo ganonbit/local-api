@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-let genderTypes = ['Male', 'Female', 'Other'];
+mongoose.plugin(require('@lykmapipo/mongoose-faker'));
+
+let genderTypes = ['Male', 'Female', 'Custom'];
 
 const Schema = mongoose.Schema;
 
@@ -12,6 +14,10 @@ const userSchema = new Schema(
     fullName: {
       type: String,
       required: true,
+      fake: {
+        generator: 'name',
+        type: 'findName'
+      }
     },
     email: {
       type: String,
@@ -19,6 +25,10 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
       unique: true,
+      fake: {
+        generator: 'internet',
+        type: 'email'
+      }
     },
     username: {
       type: String,
@@ -26,10 +36,18 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
       unique: true,
+      fake: {
+        generator: 'internet',
+        type: 'userName'
+      }
     },
     birthday: {
       type: Date, default: Date.now,
       required: true,
+      fake: {
+        generator: 'date',
+        type: 'past'
+      }
     },
     gender: {
       type: String,
@@ -38,6 +56,10 @@ const userSchema = new Schema(
     bio: {
       type: String,
       trim: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence'
+      }
     },
     location: {
       type: String,
@@ -49,6 +71,10 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
+      fake: {
+        generator: 'internet',
+        type: 'password'
+      }
     },
     image: String,
     imagePublicId: String,
@@ -56,6 +82,7 @@ const userSchema = new Schema(
     coverImagePublicId: String,
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
+    isExpert: { type: Boolean, default: false },
     posts: [
       {
         type: Schema.Types.ObjectId,

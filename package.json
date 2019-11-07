@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "deploy": "git push heroku master"
+    "deploy": "git push heroku master",
+    "seedUsers": "node scripts/seedUsers.js",
+    "seedPosts": "node scripts/seedPosts.js"
   },
   "dependencies": {
+    "@lykmapipo/mongoose-faker": "^0.10.3",
     "apollo-server": "^2.9.6",
     "apollo-server-express": "^2.4.8",
     "bcryptjs": "^2.4.3",
@@ -21,7 +24,6 @@
     "graphql": "^14.2.0",
     "graphql-tools": "^4.0.4",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.11",
     "mention-hashtag": "^1.1.1",
     "mongoose": "^5.7.0",
     "nodemailer": "^6.2.1",
