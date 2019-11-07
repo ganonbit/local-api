@@ -19,7 +19,7 @@ const postSchema = Schema(
       type: String,
       fake: {
         generator: 'image',
-        type: 'food'
+        type: 'avatar'
       }    
     },
     imagePublicId: String,

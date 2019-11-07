@@ -6,31 +6,21 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true
 });
 
+require('events').EventEmitter.defaultMaxListeners = 50
+export let numberOfUsers = 50;
+
 const saveFakeUser = async () => {
-  const userFactory = User.fake();
-  // console.log("generate fake user data: \n" + userFactory)
-  const userSeed =
-    await new User(userFactory)
-    .save(function (err, data) {
-      if (err) {
-        console.log('The following error ocurred:')
-        console.log(err)
-      }
-      console.log("create new user with fake data: \n" + data)
-      // mongoose.connection.close()
-    });
-}
-
-// saveFakeUser()
-
-saveFakeUser();
-let callCount = 1;
-const repeater = setInterval(function () {
-  if (callCount < 100) {
-    saveFakeUser();
-    callCount += 1;
-  } else {
-    clearInterval(repeater);
-    mongoose.connection.close()
+  const userFactory = User.fake(numberOfUsers);
+  for (let [key, value] of Object.entries(userFactory)) {
+    const userSeed =
+      await new User(value)
+      .save(function (err, data) {
+        if (err) {
+          console.log('The following error ocurred:')
+          console.log(err)
+        }
+        mongoose.connection.close();
+      })
   }
-}, 2000);
+}
+saveFakeUser();
