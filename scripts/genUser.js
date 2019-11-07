@@ -26,7 +26,7 @@ const saveFakeUser = async () => {
 saveFakeUser();
 let callCount = 1;
 const repeater = setInterval(function () {
-  if (callCount < 1000) {
+  if (callCount < 100) {
     saveFakeUser();
     callCount += 1;
   } else {
