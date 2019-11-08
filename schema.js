@@ -247,6 +247,7 @@ const schema = gql`
     following: [Follow]
     notifications: [NotificationPayload]
     newNotifications: [NotificationPayload]
+    newConversations: [ConversationsPayload]
     unseenMessage: Boolean
     createdAt: String
     updatedAt: String
