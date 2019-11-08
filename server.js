@@ -11,7 +11,7 @@ import { createApolloServer } from './utils/apollo-server';
 
 // Connect to database
 mongoose
-  .connect(process.env.MONGO_URL, { useUnifiedTopology: true, useNewUrlParser: true })
+  .connect(process.env.MONGO_URL, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true})
   .then(() => console.log('DB connected'))
   .catch(err => console.error('DB Connection error: ' + err));
 mongoose.set('useCreateIndex', true);

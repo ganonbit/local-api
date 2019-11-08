@@ -17,10 +17,10 @@ const postSchema = Schema(
     },
     image: {
       type: String,
-      fake: {
-        generator: 'image',
-        type: 'avatar'
-      }    
+      // fake: {
+      //   generator: 'image',
+      //   type: 'avatar'
+      // }    
     },
     imagePublicId: String,
     isFeatured: { type: Boolean, default: false },

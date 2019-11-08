@@ -206,14 +206,14 @@ const Mutation = {
     await Like.find({ post: post.id }).deleteMany();
     // Delete post likes from users collection
     post.likes.map(async likeId => {
-      await User.where({ likes: likeId }).update({ $pull: { likes: likeId } });
+      await User.where({ likes: likeId }).updateOne({ $pull: { likes: likeId } });
     });
 
     // Delete post comments from comments collection
     await Comment.find({ post: post.id }).deleteMany();
     // Delete comments from users collection
     post.comments.map(async commentId => {
-      await User.where({ comments: commentId }).update({
+      await User.where({ comments: commentId }).updateOne({
         $pull: { comments: commentId },
       });
     });
@@ -222,7 +222,7 @@ const Mutation = {
     const userNotifications = await Notification.find({ post: post.id });
 
     userNotifications.map(async notification => {
-      await User.where({ notifications: notification.id }).update({
+      await User.where({ notifications: notification.id }).updateOne({
         $pull: { notifications: notification.id },
       });
     });

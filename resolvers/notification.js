@@ -90,10 +90,9 @@ const Mutation = {
     { Notification }
   ) => {
     try {
-      await Notification.update(
+      await Notification.updateMany(
         { user: userId, seen: false },
-        { seen: true },
-        { multi: true }
+        { seen: true }
       );
 
       return true;
