@@ -84,6 +84,7 @@ const userSchema = new Schema(
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     isExpert: { type: Boolean, default: false },
+    isSelma: { type: Boolean, default: false },
     posts: [
       {
         type: Schema.Types.ObjectId,
