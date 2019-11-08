@@ -3,21 +3,25 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 /**
- * Message schema that has references to User, Like and Comment schemas
+ * Message schema that has reference to user schema
  */
 const messageSchema = Schema(
   {
-    content: String,
-    image: String,
-    imagePublicId: String,
-    author: {
+    sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    receiver: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    message: String,
+    seen: {
+      type: Boolean,
+      default: false,
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 export default mongoose.model('Message', messageSchema);

@@ -80,6 +80,7 @@ const userSchema = new Schema(
     imagePublicId: String,
     coverImage: String,
     coverImagePublicId: String,
+    isOnline: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     isExpert: { type: Boolean, default: false },
@@ -123,6 +124,12 @@ const userSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: 'Point',
+      },
+    ],
+    messages: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
       },
     ]
   },

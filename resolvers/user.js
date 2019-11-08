@@ -1,8 +1,12 @@
 import bcrypt from 'bcryptjs';
+import { withFilter } from 'apollo-server';
 
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { generateToken } from '../utils/generate-token';
 import { sendEmail } from '../utils/email';
+import { pubSub } from '../utils/apollo-server';
+
+import { IS_USER_ONLINE } from '../constants/Subscriptions';
 
 const AUTH_TOKEN_EXPIRY = '1y';
 const RESET_PASSWORD_TOKEN_EXPIRY = 3600000;
@@ -14,7 +18,11 @@ const Query = {
   getAuthUser: async (root, args, { authUser, User }) => {
     if (!authUser) return null;
 
-    const user = await User.findOne({ email: authUser.email })
+    // If user is authenticated, update it's isOnline field to true
+    const user = await User.findOneAndUpdate(
+      { email: authUser.email },
+      { isOnline: true }
+    )
       .populate({ path: 'posts', options: { sort: { createdAt: 'desc' } } })
       .populate('likes')
       .populate('followers')
@@ -39,8 +47,17 @@ const Query = {
    *
    * @param {string} username
    */
-  getUser: async (root, { username }, { User }) => {
-    const user = await User.findOne({ username })
+  getUser: async (root, { username, id }, { User }) => {
+    if (!username && !id) {
+      throw new Error('username or id is required params.');
+    }
+
+    if (username && id) {
+      throw new Error('please pass only username or only id as a param');
+    }
+
+    const query = username ? { username: username } : { _id: id };
+    const user = await User.findOne(query)
       .populate({
         path: 'posts',
         populate: [
@@ -79,7 +96,7 @@ const Query = {
       });
 
     if (!user) {
-      throw new Error("User with given username doesn't exists.");
+      throw new Error("User with given params doesn't exists.");
     }
 
     return user;
@@ -475,4 +492,16 @@ const Mutation = {
   },
 };
 
-export default { Query, Mutation };
+const Subscription = {
+  /**
+   * Subscribes to user's isOnline change event
+   */
+  isUserOnline: {
+    subscribe: withFilter(
+      () => pubSub.asyncIterator(IS_USER_ONLINE),
+      (payload, variables, { authUser }) => variables.authUserId === authUser.id
+    ),
+  },
+};
+
+export default { Query, Mutation, Subscription };
