@@ -22,6 +22,10 @@ const schema = gql`
     imagePublicId: String
     coverImage: File
     coverImagePublicId: String
+    isOnline: Boolean
+    isVerified: Boolean
+    isBlocked: Boolean
+    isExpert: Boolean
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
@@ -42,6 +46,18 @@ const schema = gql`
     comments: [Comment]
     createdAt: String
     updatedAt: String
+  }
+
+  type Message {
+    id: ID!
+    sender: User!
+    receiver: User!
+    message: String!
+    image: File
+    imagePublicId: String
+    seen: Boolean
+    createdAt: String
+    updateAt: String
   }
 
   type File {
@@ -65,6 +81,8 @@ const schema = gql`
   type Comment {
     id: ID!
     comment: String!
+    image: File
+    imagePublicId: String
     author: ID
     post: ID
     createdAt: String
@@ -141,6 +159,19 @@ const schema = gql`
     imagePublicId: String
   }
 
+  input CreateMessageInput {
+    sender: ID!
+    receiver: ID!
+    message: String!
+    image: Upload
+    imagePublicId: String
+  }
+
+  input DeleteMessageInput {
+    id: ID!
+    imagePublicId: String
+  }
+
   input CreateLikeInput {
     userId: ID!
     postId: ID!
@@ -161,12 +192,15 @@ const schema = gql`
 
   input CreateCommentInput {
     comment: String!
+    image: Upload
+    imagePublicId: String
     author: ID!
     postId: ID!
   }
 
   input DeleteCommentInput {
     id: ID!
+    imagePublicId: String
   }
 
   input CreateNotificationInput {
@@ -185,6 +219,11 @@ const schema = gql`
     userId: ID!
   }
 
+  input UpdateMessageSeenInput {
+    sender: ID
+    receiver: ID!
+  }
+
   # ---------------------------------------------------------
   # Return Payloads
   # ---------------------------------------------------------
@@ -198,12 +237,18 @@ const schema = gql`
     imagePublicId: String
     coverImage: String
     coverImagePublicId: String
+    isOnline: Boolean
+    isVerified: Boolean
+    isBlocked: Boolean
+    isExpert: Boolean
     posts: [PostPayload]
     likes: [Like]
     followers: [Follow]
     following: [Follow]
     notifications: [NotificationPayload]
     newNotifications: [NotificationPayload]
+    newConversations: [ConversationsPayload]
+    unseenMessage: Boolean
     createdAt: String
     updatedAt: String
   }
@@ -235,6 +280,34 @@ const schema = gql`
     count: String!
   }
 
+  type MessagePayload {
+    id: ID!
+    receiver: UserPayload
+    sender: UserPayload
+    message: String
+    image: String
+    imagePublicId: String
+    seen: Boolean
+    createdAt: String
+    isFirstMessage: Boolean
+  }
+
+  type IsUserOnlinePayload {
+    userId: ID!
+    isOnline: Boolean
+  }
+  type ConversationsPayload {
+    id: ID!
+    username: String
+    fullName: String
+    image: String
+    isOnline: Boolean
+    seen: Boolean
+    lastMessage: String
+    lastMessageSender: Boolean
+    lastMessageCreatedAt: String
+  }
+  
   type LikePayload {
     id: ID!
     post: PostPayload
@@ -259,6 +332,8 @@ const schema = gql`
   type CommentPayload {
     id: ID
     comment: String
+    image: String
+    imagePublicId: String
     author: UserPayload
     post: PostPayload
     createdAt: String
@@ -274,8 +349,8 @@ const schema = gql`
     # Gets the currently logged in user
     getAuthUser: UserPayload
 
-    # Gets user by username
-    getUser(username: String!): UserPayload
+    # Gets user by username or by id
+    getUser(username: String, id: ID): UserPayload
 
     # Gets user posts by username
     getUserPosts(username: String!, skip: Int, limit: Int): UserPostsPayload
@@ -304,8 +379,13 @@ const schema = gql`
       skip: Int
       limit: Int
     ): NotificationsPayload
-  }
 
+    # Gets user's messages
+    getMessages(authUserId: ID!, userId: ID!): [MessagePayload]
+
+    # Gets user's conversations
+    getConversations(authUserId: ID!): [ConversationsPayload]
+  }
   # ---------------------------------------------------------
   # Mutation Root
   # ---------------------------------------------------------
@@ -346,6 +426,9 @@ const schema = gql`
     # Creates a post comment
     createComment(input: CreateCommentInput!): Comment
 
+    # Uploads user comment photo
+
+
     # Deletes a post comment
     deleteComment(input: DeleteCommentInput!): Comment
 
@@ -357,6 +440,24 @@ const schema = gql`
 
     # Updates notification seen values for user
     updateNotificationSeen(input: UpdateNotificationSeenInput!): Boolean
+
+    # Creates a message
+    createMessage(input: CreateMessageInput!): MessagePayload
+
+    # Deletes a message
+    deleteMessage(input: DeleteMessageInput!): MessagePayload
+
+    # Updates message seen values for user
+    updateMessageSeen(input: UpdateMessageSeenInput!): Boolean
+  }
+
+  # ---------------------------------------------------------
+  # Mutation Root
+  # ---------------------------------------------------------
+  type Subscription {
+    messageCreated(authUserId: ID!, userId: ID!): MessagePayload
+    isUserOnline(authUserId: ID!, userId: ID!): IsUserOnlinePayload
+    newConversation: ConversationsPayload
   }
 `;
 
