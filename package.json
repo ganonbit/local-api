@@ -7,7 +7,8 @@
     "start": "nodemon index.js",
     "deploy": "git push heroku master",
     "seedUsers": "node scripts/seedUsers.js",
-    "seedPosts": "node scripts/seedPosts.js"
+    "seedPosts": "node scripts/seedPosts.js",
+    "syncAlgoliaUsers": "node scripts/syncAllAlgoliaUsers.js"
   },
   "dependencies": {
     "@lykmapipo/mongoose-faker": "^0.10.3",
@@ -25,6 +26,7 @@
     "graphql-tools": "^4.0.4",
     "jsonwebtoken": "^8.5.1",
     "mention-hashtag": "^1.1.1",
+    "mongoolia": "^1.0.3",
     "mongoose": "^5.7.0",
     "nodemailer": "^6.2.1",
     "subscriptions-transport-ws": "^0.9.16",
