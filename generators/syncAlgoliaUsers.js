@@ -12,6 +12,7 @@ mongoose.connect(process.env.MONGO_URL, {
 const syncUsersInAlgolia = async () => {
   try {
     await User.syncWithAlgolia();
+    console.log('finished successfully!')
   } catch (error) {
     console.log('The following Error ocurred:')
     console.error(error);
