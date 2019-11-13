@@ -1,4 +1,6 @@
+import {} from 'dotenv/config';
 import mongoose from 'mongoose';
+import mongoAlgolia from '../utils/mongo-algolia'
 import bcrypt from 'bcryptjs';
 mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
@@ -17,7 +19,8 @@ const userSchema = new Schema(
       fake: {
         generator: 'name',
         type: 'findName'
-      }
+      },
+      algoliaIndex: true
     },
     email: {
       type: String,
@@ -28,7 +31,8 @@ const userSchema = new Schema(
       fake: {
         generator: 'internet',
         type: 'email'
-      }
+      },
+      algoliaIndex: true
     },
     username: {
       type: String,
@@ -39,7 +43,8 @@ const userSchema = new Schema(
       fake: {
         generator: 'internet',
         type: 'userName'
-      }
+      },
+      algoliaIndex: true
     },
     birthday: {
       type: Date, default: Date.now,
@@ -47,11 +52,13 @@ const userSchema = new Schema(
       fake: {
         generator: 'date',
         type: 'past'
-      }
+      },
+      algoliaIndex: true
     },
     gender: {
       type: String,
       enum: genderTypes,
+      algoliaIndex: true
     },
     bio: {
       type: String,
@@ -158,5 +165,11 @@ userSchema.pre('save', function(next) {
     });
   });
 });
+
+userSchema.plugin(mongoAlgolia, {
+  appId: process.env.ALGOLIA_APP_ID,
+  apiKey: process.env.ALGOLIA_API_KEY,
+  indexName: process.env.ALGOLIA_USERS_INDEX
+})
 
 export default mongoose.model('User', userSchema);

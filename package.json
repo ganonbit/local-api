@@ -7,10 +7,12 @@
     "start": "nodemon index.js",
     "deploy": "git push heroku master",
     "seedUsers": "node scripts/seedUsers.js",
-    "seedPosts": "node scripts/seedPosts.js"
+    "seedPosts": "node scripts/seedPosts.js",
+    "syncAlgoliaUsers": "node scripts/syncAllAlgoliaUsers.js"
   },
   "dependencies": {
     "@lykmapipo/mongoose-faker": "^0.10.3",
+    "algoliasearch": "^3.35.1",
     "apollo-server": "^2.9.6",
     "apollo-server-express": "^2.4.8",
     "bcryptjs": "^2.4.3",
@@ -21,6 +23,7 @@
     "esm": "^3.2.25",
     "express": "^4.16.4",
     "faker": "^4.1.0",
+    "git": "^0.1.5",
     "graphql": "^14.2.0",
     "graphql-tools": "^4.0.4",
     "jsonwebtoken": "^8.5.1",
