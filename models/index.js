@@ -5,7 +5,7 @@ import Like from './Like';
 import Follow from './Follow';
 import Comment from './Comment';
 import Notification from './Notification';
-import Point from './Point';
+import Gamification from './Gamification';
 
 export default {
   User,
@@ -15,5 +15,5 @@ export default {
   Follow,
   Comment,
   Notification,
-  Point,
+  Gamification,
 };

@@ -128,10 +128,10 @@ const userSchema = new Schema(
         ref: 'Notification',
       },
     ],
-    points: [
+    gamification: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Point',
+        ref: 'Gamification',
       },
     ],
     messages: [
