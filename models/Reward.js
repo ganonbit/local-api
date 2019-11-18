@@ -3,30 +3,34 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 /**
- * Gamification schema that has references to User, Like and Comment schemas
+ * Reward schema that has references to User, Like and Comment schemas
  */
-const gamificationSchema = Schema(
+const rewardSchema = Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    XPs: {
+    points: [ 
+      {
       type: Schema.Types.ObjectId,
-      ref: 'XP',
-    },
+      ref: 'Point',
+      }
+    ],
     events: {
       type: Schema.Types.ObjectId,
       ref: 'Event',
     },
-    achievements: {
+    achievements: [
+      {
       type: Schema.Types.ObjectId,
       ref: 'Achievement',
-    },
+      }
+    ],
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model('Gamification', gamificationSchema);
+export default mongoose.model('Reward', rewardSchema);

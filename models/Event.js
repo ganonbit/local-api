@@ -12,7 +12,13 @@ const eventSchema = Schema(
       ref: 'User',
     },
     name: {type: String, required: true},
-    payload: {type: Map, required: false, default: {}}
+    action: {type: String, required: true},
+    awardedAmount: {type: Number, required: true, default: 0},
+    points: 
+      {
+      type: Schema.Types.ObjectId,
+      ref: 'Point',
+      }
   },
   {
     timestamps: true,
