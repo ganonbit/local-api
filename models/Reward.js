@@ -14,7 +14,7 @@ const rewardSchema = Schema(
     points: [ 
       {
       type: Schema.Types.ObjectId,
-      ref: 'Point',
+      ref: 'User',
       }
     ],
     events: {

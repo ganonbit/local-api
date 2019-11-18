@@ -92,6 +92,10 @@ const userSchema = new Schema(
     isBlocked: { type: Boolean, default: false },
     isExpert: { type: Boolean, default: false },
     isSelma: { type: Boolean, default: false },
+    level: { type: Number, default: 1 },
+    currentPoints: {type: Number, required: true, default: 0},
+    usedPoints: {type: Number, required: true, default: 0},
+    totalPoints: {type: Number, required: true, default: 0},
     posts: [
       {
         type: Schema.Types.ObjectId,

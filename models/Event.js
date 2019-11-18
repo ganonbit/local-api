@@ -14,11 +14,14 @@ const eventSchema = Schema(
     name: {type: String, required: true},
     action: {type: String, required: true},
     awardedAmount: {type: Number, required: true, default: 0},
-    points: 
-      {
+    points: {
       type: Schema.Types.ObjectId,
-      ref: 'Point',
-      }
+      ref: 'User',
+    },
+    achievements: {
+      type: Schema.Types.ObjectId,
+      ref: 'Achievement',
+    },      
   },
   {
     timestamps: true,

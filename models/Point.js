@@ -11,7 +11,6 @@ const pointSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    name: {type: String, required: true},
     currentAmount: {type: Number, required: true, default: 0},
     usedAmount: {type: Number, required: true, default: 0},
     totalAmount: {type: Number, required: true, default: 0},

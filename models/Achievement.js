@@ -13,7 +13,7 @@ const achievementSchema = Schema(
     },
     name: {type: String, required: true},
     currentAmount: {type: Number, required: true, default: 0},
-    totalAmount: {type: Number, required: true, default: 0},
+    neededAmount: {type: Number, required: true, default: 0},
   },
   {
     timestamps: true,
