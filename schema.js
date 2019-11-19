@@ -26,12 +26,19 @@ const schema = gql`
     isVerified: Boolean
     isBlocked: Boolean
     isExpert: Boolean
+    isSelma: Boolean
+    level: Number
+    currentPoints: Number
+    usedPoints: Number
+    totalPoints: Number
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
     followers: [Follow]
     following: [Follow]
     notifications: [NotificationPayload]
+    events: [Event]
+    badges: [Achievement]
     createdAt: String
     updatedAt: String
   }
@@ -105,6 +112,28 @@ const schema = gql`
     type: NotificationType
     seen: Boolean
     createdAt: String
+  }
+
+  type Event {
+    id: ID!
+    user: User
+    name: String
+    action: String
+    awardedAmount: Number
+    points: User
+    achievements: Achievement
+    createdAt: String
+    updatedAt: String
+  }
+
+  type Achievement {
+    id: ID!
+    user: User
+    name: String
+    currentAmount: Number
+    neededAmount: Number
+    createdAt: String
+    updatedAt: String
   }
 
   type Token {
