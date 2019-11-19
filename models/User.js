@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
 let genderTypes = ['Male', 'Female', 'Custom'];
+let roleTypes = ['selma', 'expert', 'user'];
 
 const Schema = mongoose.Schema;
 
@@ -48,7 +49,7 @@ const userSchema = new Schema(
     },
     birthday: {
       type: Date, default: Date.now,
-      required: true,
+      required: false,
       fake: {
         generator: 'date',
         type: 'past'
@@ -57,6 +58,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
+      required: true,
       enum: genderTypes,
       algoliaIndex: true
     },
@@ -90,8 +92,12 @@ const userSchema = new Schema(
     isOnline: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
-    isExpert: { type: Boolean, default: false },
-    isSelma: { type: Boolean, default: false },
+    role: {
+      type: String,
+      enum: roleTypes,
+      default: 'user',
+      algoliaIndex: true
+    },
     level: { type: Number, default: 1 },
     currentPoints: {type: Number, required: true, default: 0},
     usedPoints: {type: Number, required: true, default: 0},

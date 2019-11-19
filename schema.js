@@ -10,11 +10,16 @@ const schema = gql`
   # ---------------------------------------------------------
   # Model and Root Query Objects
   # ---------------------------------------------------------
+    
   type User {
     id: ID!
     fullName: String!
     email: String!
     username: String!
+    birthday: Date
+    gender: String
+    bio: String
+    location: String
     password: String!
     resetToken: String
     resetTokenExpiry: String
@@ -25,8 +30,7 @@ const schema = gql`
     isOnline: Boolean
     isVerified: Boolean
     isBlocked: Boolean
-    isExpert: Boolean
-    isSelma: Boolean
+    role: String
     level: Number
     currentPoints: Number
     usedPoints: Number
@@ -261,6 +265,10 @@ const schema = gql`
     fullName: String
     email: String
     username: String
+    birthday: Date
+    gender: String
+    bio: String
+    location: String
     password: String
     image: String
     imagePublicId: String
@@ -269,9 +277,7 @@ const schema = gql`
     isOnline: Boolean
     isVerified: Boolean
     isBlocked: Boolean
-    isExpert: Boolean
-    isSelma: Boolean
-    posts: [PostPayload]
+    role: String
     level: Number
     currentPoints: Number
     usedPoints: Number
@@ -422,6 +428,21 @@ const schema = gql`
 
     # Gets user's conversations
     getConversations(authUserId: ID!): [ConversationsPayload]
+
+    # Gets events by name
+    getEvents(name: String!, skip: Int, limit: Int): [EventsPayload]
+
+    # Gets users achievements
+    getAchievements(username: String, id: ID, skip: Int, limit: Int): [AchievementsPayload]
+
+    # Searches users by username or fullName
+    searchUsers(searchQuery: String!): [UserPayload]
+  
+    # Searches users by username or fullName
+    searchEvents(searchQuery: String!): [EventsPayload]
+
+    # Searches users by username or fullName
+    searchAchievements(searchQuery: String!): [AchievementsPayload]
   }
   # ---------------------------------------------------------
   # Mutation Root
