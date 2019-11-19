@@ -132,18 +132,22 @@ const userSchema = new Schema(
         ref: 'Notification',
       },
     ],
-    rewards: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Reward',
-      },
-    ],
     messages: [
       {
         type: Schema.Types.ObjectId,
         ref: 'User',
       },
-    ]
+    ],
+    events: {
+      type: Schema.Types.ObjectId,
+      ref: 'Event',
+    },
+    badges: [
+      {
+      type: Schema.Types.ObjectId,
+      ref: 'Achievement',
+      }
+    ],
   },
   {
     timestamps: true,
