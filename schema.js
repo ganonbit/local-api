@@ -270,10 +270,18 @@ const schema = gql`
     isVerified: Boolean
     isBlocked: Boolean
     isExpert: Boolean
+    isSelma: Boolean
+    posts: [PostPayload]
+    level: Number
+    currentPoints: Number
+    usedPoints: Number
+    totalPoints: Number
     posts: [PostPayload]
     likes: [Like]
     followers: [Follow]
     following: [Follow]
+    events: [Event]
+    badges: [Achievement]
     notifications: [NotificationPayload]
     newNotifications: [NotificationPayload]
     newConversations: [ConversationsPayload]

@@ -142,12 +142,10 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Event',
     },
-    badges: [
-      {
+    badges: {
       type: Schema.Types.ObjectId,
       ref: 'Achievement',
-      }
-    ],
+    }
   },
   {
     timestamps: true,
