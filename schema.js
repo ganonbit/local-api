@@ -31,10 +31,10 @@ const schema = gql`
     isVerified: Boolean
     isBlocked: Boolean
     role: String
-    level: Number
-    currentPoints: Number
-    usedPoints: Number
-    totalPoints: Number
+    level: Int
+    currentPoints: Int
+    usedPoints: Int
+    totalPoints: Int
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
@@ -123,7 +123,7 @@ const schema = gql`
     user: User
     name: String
     action: String
-    awardedAmount: Number
+    awardedAmount: Int
     points: User
     achievements: Achievement
     createdAt: String
@@ -134,8 +134,8 @@ const schema = gql`
     id: ID!
     user: User
     name: String
-    currentAmount: Number
-    neededAmount: Number
+    currentAmount: Int
+    neededAmount: Int
     createdAt: String
     updatedAt: String
   }
@@ -278,10 +278,10 @@ const schema = gql`
     isVerified: Boolean
     isBlocked: Boolean
     role: String
-    level: Number
-    currentPoints: Number
-    usedPoints: Number
-    totalPoints: Number
+    level: Int
+    currentPoints: Int
+    usedPoints: Int
+    totalPoints: Int
     posts: [PostPayload]
     likes: [Like]
     followers: [Follow]
