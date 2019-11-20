@@ -26,9 +26,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// app.get('/', function(req, res) {
-//   res.redirect('/graphql');
-// });
+app.get('/', function(req, res) {
+  res.redirect('/graphql');
+});
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path: '/graphql' });
