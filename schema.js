@@ -16,7 +16,7 @@ const schema = gql`
     fullName: String!
     email: String!
     username: String!
-    birthday: Date
+    birthday: String
     gender: String
     bio: String
     location: String
@@ -257,6 +257,30 @@ const schema = gql`
     receiver: ID!
   }
 
+  input CreateEventInput {
+    id: ID!
+    user: ID!
+    name: String
+    action: String
+    awardedAmount: Int
+  }
+
+  input DeleteEventInput {
+    id: ID!
+  }
+
+  input CreateAchievementInput {
+    id: ID!
+    user: ID!
+    name: String
+    currentAmount: Int
+    neededAmount: Int
+  }
+
+  input DeleteAchievementInput {
+    id: ID!
+  }
+
   # ---------------------------------------------------------
   # Return Payloads
   # ---------------------------------------------------------
@@ -265,7 +289,7 @@ const schema = gql`
     fullName: String
     email: String
     username: String
-    birthday: Date
+    birthday: String
     gender: String
     bio: String
     location: String
@@ -382,6 +406,28 @@ const schema = gql`
     createdAt: String
   }
 
+  type EventPayload {
+    id: ID
+    user: UserPayload
+    name: String
+    action: String
+    awardedAmount: Int
+    points: UserPayload
+    achievements: AchievementPayload
+    createdAt: String
+    updatedAt: String
+  }
+
+  type AchievementPayload {
+    id: ID
+    user: UserPayload
+    name: String
+    currentAmount: Int
+    neededAmount: Int
+    createdAt: String
+    updatedAt: String
+  }
+
   # ---------------------------------------------------------
   # Query Root
   # ---------------------------------------------------------
@@ -430,19 +476,19 @@ const schema = gql`
     getConversations(authUserId: ID!): [ConversationsPayload]
 
     # Gets events by name
-    getEvents(name: String!, skip: Int, limit: Int): [EventsPayload]
+    getEvents(name: String!, skip: Int, limit: Int): [EventPayload]
 
-    # Gets users achievements
-    getAchievements(username: String, id: ID, skip: Int, limit: Int): [AchievementsPayload]
+    # Gets user's events by userid
+    getUserEvents(userId: ID!, skip: Int, limit: Int): [EventPayload]
 
-    # Searches users by username or fullName
-    searchUsers(searchQuery: String!): [UserPayload]
-  
-    # Searches users by username or fullName
-    searchEvents(searchQuery: String!): [EventsPayload]
+    # Gets user's achievements
+    getUserAchievements(username: String, id: ID, skip: Int, limit: Int): [AchievementPayload]
 
-    # Searches users by username or fullName
-    searchAchievements(searchQuery: String!): [AchievementsPayload]
+    # Searches events
+    searchEvents(searchQuery: String!): [EventPayload]
+
+    # Searches achievements
+    searchAchievements(searchQuery: String!): [AchievementPayload]
   }
   # ---------------------------------------------------------
   # Mutation Root
@@ -507,6 +553,18 @@ const schema = gql`
 
     # Updates message seen values for user
     updateMessageSeen(input: UpdateMessageSeenInput!): Boolean
+
+    # Creates a event
+    createEvent(input: CreateEventInput!): EventPayload
+
+    # Deletes a event
+    deleteEvent(input: DeleteEventInput!): EventPayload
+
+    # Creates a achievement
+    createAchievement(input: CreateAchievementInput!): AchievementPayload
+
+    # Deletes a achievement
+    deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
   }
 
   # ---------------------------------------------------------

@@ -27,7 +27,7 @@ const Query = {
   };
   
   const Mutation = {
-    createAchievements: async (
+    createAchievement: async (
       root,
       {
         input: { userId, achievementName, currentAmount, neededAmount },

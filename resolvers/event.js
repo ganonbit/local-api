@@ -31,7 +31,7 @@ const Query = {
   };
   
   const Mutation = {
-    createEvents: async (
+    createEvent: async (
       root,
       {
         input: { userId, eventName, eventAction, awardedPoints, currentPoints, usedPoints, totalPoints, userAchievements },
