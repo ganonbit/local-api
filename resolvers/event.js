@@ -28,6 +28,25 @@ const Query = {
   
       return { events, count };
     },
+
+    searchEvents: async (root, { searchQuery }, { Event, authUser }) => {
+      // Return an empty array if searchQuery isn't presented
+      if (!searchQuery) {
+        return [];
+      }
+
+      const events = Event.find({
+        $or: [
+          { name: new RegExp(searchQuery, 'i') },
+          { action: new RegExp(searchQuery, 'i') },
+        ],
+        _id: {
+          $ne: authUser.id,
+        },
+      }).limit(50);
+
+      return events;
+    },
   };
   
   const Mutation = {
