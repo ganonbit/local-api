@@ -259,9 +259,9 @@ const schema = gql`
 
   input CreateEventInput {
     userId: ID
-    eventName: String
-    eventAction: String
-    awardedPoints: Int
+    eventName: String!
+    eventAction: String!
+    awardedPoints: Int!
   }
 
   input DeleteEventInput {
@@ -269,11 +269,10 @@ const schema = gql`
   }
 
   input CreateAchievementInput {
-    id: ID!
-    user: ID!
-    name: String
-    currentAmount: Int
-    neededAmount: Int
+    userId: ID!
+    achievementName: String!
+    currentPoints: Int
+    neededPoints: Int!
   }
 
   input DeleteAchievementInput {
@@ -474,19 +473,16 @@ const schema = gql`
     # Gets user's conversations
     getConversations(authUserId: ID!): [ConversationsPayload]
 
-    # Gets events by name or id
-    getEvents(name: String, id: ID, skip: Int, limit: Int): [EventPayload]
-
-    # Gets user's events by userid
+    # Gets user's events by user id
     getUserEvents(userId: ID!, skip: Int, limit: Int): [EventPayload]
 
     # Gets user's achievements
     getUserAchievements(username: String, userId: ID, skip: Int, limit: Int): [AchievementPayload]
 
-    # Searches events
+    # Searches events by name or action
     searchEvents(searchQuery: String!): [EventPayload]
 
-    # Searches achievements
+    # Searches achievements by user or name
     searchAchievements(searchQuery: String!): [AchievementPayload]
   }
   # ---------------------------------------------------------

@@ -1,11 +1,5 @@
 const Query = {
-    /**
-     * Gets achievements for specific user
-     *
-     * @param {string} userId
-     * @param {int} skip how many achievements to skip
-     * @param {int} limit how many achievements to limit
-     */
+
     getUserAchievements: async (
       root,
       { userId, skip, limit },
@@ -24,27 +18,46 @@ const Query = {
   
       return { achievements, count };
     },
+
+    searchAchievements: async (root, { searchQuery }, { Achievement, authUser }) => {
+      // Return an empty array if searchQuery isn't presented
+      if (!searchQuery) {
+        return [];
+      }
+
+      const achievements = Achievement.find({
+        $or: [
+          { user: new RegExp(searchQuery, 'i') },
+          { name: new RegExp(searchQuery, 'i') },
+        ],
+        _id: {
+          $ne: authUser.id,
+        },
+      }).limit(50);
+
+      return achievements;
+    },
   };
   
   const Mutation = {
     createAchievement: async (
       root,
       {
-        input: { userId, achievementName, currentAmount, neededAmount },
+        input: { userId, achievementName, currentPoints, neededPoints },
       },
       { Achievement, User }
     ) => {
       const newAchievement = await new Achievement({
         user: userId,
         name: achievementName,
-        currentAmount: currentAmount,
-        neededAmount: neededAmount,
+        currentAmount: currentPoints,
+        neededAmount: neededPoints,
       }).save();
   
       // Push achievement to user collection
       await User.findOneAndUpdate(
         { _id: userId },
-        { $push: { achievements: newAchievement.id } }
+        { $push: { badges: newAchievement.id } }
       );
   
       return newAchievement;
@@ -64,7 +77,7 @@ const Query = {
       // Delete achievement from users collection
       await User.findOneAndUpdate(
         { _id: achievement.user },
-        { $pull: { achievements: achievement.id } }
+        { $pull: { badges: achievement.id } }
       );
   
       return achievement;

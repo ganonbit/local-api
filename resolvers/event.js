@@ -1,11 +1,5 @@
 const Query = {
-    /**
-     * Gets events for specific user
-     *
-     * @param {string} userId
-     * @param {int} skip how many events to skip
-     * @param {int} limit how many events to limit
-     */
+
     getUserEvents: async (
       root,
       { userId, skip, limit },

@@ -11,7 +11,7 @@ const eventSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    name: {type: String, required: true},
+    name: {type: String, required: true, unique: true},
     action: {type: String, required: true},
     awardedAmount: {type: Number, required: true, default: 0},
     points: {
