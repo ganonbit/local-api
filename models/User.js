@@ -99,9 +99,6 @@ const userSchema = new Schema(
       algoliaIndex: true
     },
     level: { type: Number, default: 1 },
-    currentPoints: {type: Number, required: true, default: 0},
-    usedPoints: {type: Number, required: true, default: 0},
-    totalPoints: {type: Number, required: true, default: 0},
     posts: [
       {
         type: Schema.Types.ObjectId,
@@ -143,6 +140,12 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'User',
       },
+    ],
+    points: [
+      {
+      type: Schema.Types.ObjectId,
+      ref: 'Points',
+      }
     ],
     events: {
       type: Schema.Types.ObjectId,

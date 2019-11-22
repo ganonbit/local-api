@@ -7,6 +7,7 @@ import Comment from './Comment';
 import Notification from './Notification';
 import Event from './Event';
 import Achievement from './Achievement';
+import Point from './Point';
 
 export default {
   User,
@@ -18,4 +19,5 @@ export default {
   Notification,
   Event,
   Achievement,
+  Point,
 };

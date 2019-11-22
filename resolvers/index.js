@@ -7,6 +7,7 @@ import notificationResolver from './notification';
 import message from './message';
 import eventResolver from './event';
 import achievementResolver from './achievement';
+import pointResolver from './point';
 
 export default [
   userResolver,
@@ -18,4 +19,5 @@ export default [
   message,
   eventResolver,
   achievementResolver,
+  pointResolver,
 ];

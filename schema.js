@@ -32,9 +32,6 @@ const schema = gql`
     isBlocked: Boolean
     role: String
     level: Int
-    currentPoints: Int
-    usedPoints: Int
-    totalPoints: Int
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
@@ -43,6 +40,7 @@ const schema = gql`
     notifications: [NotificationPayload]
     events: [Event]
     badges: [Achievement]
+    points: [Point]
     createdAt: String
     updatedAt: String
   }
@@ -124,7 +122,7 @@ const schema = gql`
     name: String
     action: String
     awardedAmount: Int
-    points: User
+    points: Point
     achievements: Achievement
     createdAt: String
     updatedAt: String
@@ -134,8 +132,15 @@ const schema = gql`
     id: ID!
     user: User
     name: String
-    currentAmount: Int
-    neededAmount: Int
+    points: Point
+    createdAt: String
+    updatedAt: String
+  }
+
+  type Point {
+    id: ID!
+    name: String
+    currentPoints: Int
     createdAt: String
     updatedAt: String
   }
@@ -269,13 +274,22 @@ const schema = gql`
   }
 
   input CreateAchievementInput {
-    userId: ID!
+    userId: ID
     achievementName: String!
-    currentPoints: Int
-    neededPoints: Int!
+    pointsId: ID!
   }
 
   input DeleteAchievementInput {
+    id: ID!
+  }
+
+  input CreatePointInput {
+    allUsers: ID
+    pointName: String!
+    currentPoints: Int
+  }
+
+  input DeletePointInput {
     id: ID!
   }
 
@@ -301,15 +315,13 @@ const schema = gql`
     isBlocked: Boolean
     role: String
     level: Int
-    currentPoints: Int
-    usedPoints: Int
-    totalPoints: Int
     posts: [PostPayload]
     likes: [Like]
     followers: [Follow]
     following: [Follow]
     events: [Event]
     badges: [Achievement]
+    points: [Point]
     notifications: [NotificationPayload]
     newNotifications: [NotificationPayload]
     newConversations: [ConversationsPayload]
@@ -410,7 +422,7 @@ const schema = gql`
     name: String
     action: String
     awardedAmount: Int
-    points: UserPayload
+    points: PointPayload
     achievements: AchievementPayload
     createdAt: String
     updatedAt: String
@@ -420,8 +432,16 @@ const schema = gql`
     id: ID
     user: UserPayload
     name: String
-    currentAmount: Int
-    neededAmount: Int
+    points: PointPayload
+    createdAt: String
+    updatedAt: String
+  }
+
+  type PointPayload {
+    id: ID
+    users: UserPayload
+    name: String
+    currentPoints: Int
     createdAt: String
     updatedAt: String
   }
@@ -479,11 +499,18 @@ const schema = gql`
     # Gets user's achievements
     getUserAchievements(username: String, userId: ID, skip: Int, limit: Int): [AchievementPayload]
 
+    # Gets user's points
+    getUserPoints(username: String, userId: ID, skip: Int, limit: Int): [PointPayload]
+
     # Searches events by name or action
     searchEvents(searchQuery: String!): [EventPayload]
 
     # Searches achievements by user or name
     searchAchievements(searchQuery: String!): [AchievementPayload]
+
+    # Searches points by user or name
+    searchPoints(searchQuery: String!): [PointPayload]
+
   }
   # ---------------------------------------------------------
   # Mutation Root
@@ -560,6 +587,12 @@ const schema = gql`
 
     # Deletes a achievement
     deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
+
+    # Creates a point
+    createPoint(input: CreatePointInput!): PointPayload
+
+    # Deletes a point
+    deletePoint(input: DeletePointInput!): PointPayload
   }
 
   # ---------------------------------------------------------

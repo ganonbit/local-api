@@ -16,7 +16,7 @@ const eventSchema = Schema(
     awardedAmount: {type: Number, required: true, default: 0},
     points: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Point',
     },
     achievements: {
       type: Schema.Types.ObjectId,
