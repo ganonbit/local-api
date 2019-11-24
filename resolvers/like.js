@@ -17,6 +17,8 @@ const Mutation = {
     // Push like to user collection
     await User.findOneAndUpdate({ _id: userId }, { $push: { likes: like.id } });
 
+    // await if haveBadge skip else addLikeBadge()
+    
     return like;
   },
   /**

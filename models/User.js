@@ -92,6 +92,8 @@ const userSchema = new Schema(
     isOnline: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
+    isGuru: { type: Boolean, default: false },
+    isPick: { type: Boolean, default: false },
     role: {
       type: String,
       enum: roleTypes,
@@ -99,6 +101,16 @@ const userSchema = new Schema(
       algoliaIndex: true
     },
     level: { type: Number, default: 1 },
+    accountPoints: {type: Number, default: 0},
+    likePoints: {type: Number, default: 0},
+    commentPoints: {type: Number, default: 0},
+    sharePoints: {type: Number, default: 0},
+    referralPoints: {type: Number, default: 0},
+    gamePoints: {type: Number, default: 0},
+    currentPoints: {type: Number, default: 0},
+    usedPoints: {type: Number, default: 0},
+    totalPoints: {type: Number, default: 0},
+    pagesViewed: {type: Number, default: 0},
     posts: [
       {
         type: Schema.Types.ObjectId,
@@ -141,20 +153,12 @@ const userSchema = new Schema(
         ref: 'User',
       },
     ],
-    points: [
+    badges: [
       {
-      type: Schema.Types.ObjectId,
-      ref: 'Points',
+        type: Schema.Types.ObjectId,
+        ref: 'Achievement',
       }
-    ],
-    events: {
-      type: Schema.Types.ObjectId,
-      ref: 'Event',
-    },
-    badges: {
-      type: Schema.Types.ObjectId,
-      ref: 'Achievement',
-    }
+    ]
   },
   {
     timestamps: true,

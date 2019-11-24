@@ -7,21 +7,9 @@ const Schema = mongoose.Schema;
  */
 const eventSchema = Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
     name: {type: String, required: true, unique: true},
     action: {type: String, required: true},
-    awardedAmount: {type: Number, required: true, default: 0},
-    points: {
-      type: Schema.Types.ObjectId,
-      ref: 'Point',
-    },
-    achievements: {
-      type: Schema.Types.ObjectId,
-      ref: 'Achievement',
-    },      
+    awardedPoints: {type: Number, required: true, default: 0}
   },
   {
     timestamps: true,

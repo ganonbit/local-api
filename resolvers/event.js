@@ -1,6 +1,6 @@
 const Query = {
 
-    getUserEvents: async (
+    getEvents: async (
       root,
       { userId, skip, limit },
       { Event }
@@ -8,14 +8,9 @@ const Query = {
       const query = { user: userId };
       const count = await Event.where(query).countDocuments();
       const events = await Event.where(query)
-        .populate('user')
         .populate('name')
         .populate('action')
-        .populate('awardedAmount')
-        .populate({ path: 'points', populate: { path: 'currentPoints' } })
-        .populate({ path: 'points', populate: { path: 'usedPoints' } })
-        .populate({ path: 'points', populate: { path: 'totalPoints' } })
-        .populate('achievements')
+        .populate('awardedPoints')
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: 'desc' });
@@ -23,7 +18,7 @@ const Query = {
       return { events, count };
     },
 
-    searchEvents: async (root, { searchQuery }, { Event, authUser }) => {
+    searchEvents: async (root, { searchQuery }, { Event }) => {
       // Return an empty array if searchQuery isn't presented
       if (!searchQuery) {
         return [];
@@ -33,10 +28,7 @@ const Query = {
         $or: [
           { name: new RegExp(searchQuery, 'i') },
           { action: new RegExp(searchQuery, 'i') },
-        ],
-        _id: {
-          $ne: authUser.id,
-        },
+        ]
       }).limit(50);
 
       return events;
@@ -47,26 +39,21 @@ const Query = {
     createEvent: async (
       root,
       {
-        input: { userId, eventName, eventAction, awardedPoints, currentPoints, usedPoints, totalPoints, userAchievements },
+        input: { eventName, eventAction, awardedPoints },
       },
-      { Event, User }
+      { Event }
     ) => {
       const newEvent = await new Event({
-        user: userId,
         name: eventName,
         action: eventAction,
-        awardedAmount: awardedPoints,
-        currentPoints: currentPoints,
-        usedPoints: usedPoints,
-        totalPoints: totalPoints,
-        achievements: userAchievements
+        awardedPoints: awardedPoints
       }).save();
   
       // Push event to user collection
-      await User.findOneAndUpdate(
-        { _id: userId },
-        { $push: { events: newEvent.id } }
-      );
+      // await User.findOneAndUpdate(
+      //   { _id: userId },
+      //   { $push: { events: newEvent.id } }
+      // );
   
       return newEvent;
     },
@@ -78,15 +65,9 @@ const Query = {
     deleteEvent: async (
       root,
       { input: { id } },
-      { Event, User }
+      { Event }
     ) => {
       const event = await Event.findByIdAndRemove(id);
-  
-      // Delete event from users collection
-      await User.findOneAndUpdate(
-        { _id: event.user },
-        { $pull: { events: event.id } }
-      );
   
       return event;
     }

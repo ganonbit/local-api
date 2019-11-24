@@ -7,16 +7,8 @@ const Schema = mongoose.Schema;
  */
 const achievementSchema = Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
     name: {type: String, required: true, unique: true},
-    action: {type: String},
-    points: {
-      type: Schema.Types.ObjectId,
-      ref: 'Points',
-    },
+    action: {type: String, required: true}
   },
   {
     timestamps: true,

@@ -30,17 +30,25 @@ const schema = gql`
     isOnline: Boolean
     isVerified: Boolean
     isBlocked: Boolean
+    isGuru: Boolean
+    isPick: Boolean
     role: String
     level: Int
+    accountPoints: Int
+    likePoints: Int
+    commentPoints: Int
+    sharePoints: Int
+    referralPoints: Int
+    gamePoints: Int
+    totalPoints: Int
+    pagesViewed: Int
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
     followers: [Follow]
     following: [Follow]
     notifications: [NotificationPayload]
-    events: [Event]
     badges: [Achievement]
-    points: [Point]
     createdAt: String
     updatedAt: String
   }
@@ -118,29 +126,17 @@ const schema = gql`
 
   type Event {
     id: ID!
-    user: User
     name: String
     action: String
-    awardedAmount: Int
-    points: Point
-    achievements: Achievement
+    awardedPoints: Int
     createdAt: String
     updatedAt: String
   }
 
   type Achievement {
     id: ID!
-    user: User
     name: String
-    points: Point
-    createdAt: String
-    updatedAt: String
-  }
-
-  type Point {
-    id: ID!
-    name: String
-    currentPoints: Int
+    action: String
     createdAt: String
     updatedAt: String
   }
@@ -263,7 +259,6 @@ const schema = gql`
   }
 
   input CreateEventInput {
-    userId: ID
     eventName: String!
     eventAction: String!
     awardedPoints: Int!
@@ -274,22 +269,11 @@ const schema = gql`
   }
 
   input CreateAchievementInput {
-    userId: ID
     achievementName: String!
-    pointsId: ID!
+    achievementAction: String!
   }
 
   input DeleteAchievementInput {
-    id: ID!
-  }
-
-  input CreatePointInput {
-    allUsers: ID
-    pointName: String!
-    currentPoints: Int
-  }
-
-  input DeletePointInput {
     id: ID!
   }
 
@@ -313,15 +297,23 @@ const schema = gql`
     isOnline: Boolean
     isVerified: Boolean
     isBlocked: Boolean
+    isGuru: Boolean
+    isPick: Boolean
     role: String
     level: Int
+    accountPoints: Int
+    likePoints: Int
+    commentPoints: Int
+    sharePoints: Int
+    referralPoints: Int
+    gamePoints: Int
+    totalPoints: Int
+    pagesViewed: Int
     posts: [PostPayload]
     likes: [Like]
     followers: [Follow]
     following: [Follow]
-    events: [Event]
     badges: [Achievement]
-    points: [Point]
     notifications: [NotificationPayload]
     newNotifications: [NotificationPayload]
     newConversations: [ConversationsPayload]
@@ -418,12 +410,9 @@ const schema = gql`
 
   type EventPayload {
     id: ID
-    user: UserPayload
     name: String
     action: String
-    awardedAmount: Int
-    points: PointPayload
-    achievements: AchievementPayload
+    awardedPoints: Int
     createdAt: String
     updatedAt: String
   }
@@ -432,16 +421,7 @@ const schema = gql`
     id: ID
     user: UserPayload
     name: String
-    points: PointPayload
-    createdAt: String
-    updatedAt: String
-  }
-
-  type PointPayload {
-    id: ID
-    users: UserPayload
-    name: String
-    currentPoints: Int
+    action: String
     createdAt: String
     updatedAt: String
   }
@@ -493,23 +473,20 @@ const schema = gql`
     # Gets user's conversations
     getConversations(authUserId: ID!): [ConversationsPayload]
 
-    # Gets user's events by user id
-    getUserEvents(userId: ID!, skip: Int, limit: Int): [EventPayload]
+    # Gets events by name
+    getEvents(name: String!, skip: Int, limit: Int): [EventPayload]
+
+    # Gets achievements
+    getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]
 
     # Gets user's achievements
     getUserAchievements(username: String, userId: ID, skip: Int, limit: Int): [AchievementPayload]
-
-    # Gets user's points
-    getUserPoints(username: String, userId: ID, skip: Int, limit: Int): [PointPayload]
 
     # Searches events by name or action
     searchEvents(searchQuery: String!): [EventPayload]
 
     # Searches achievements by user or name
     searchAchievements(searchQuery: String!): [AchievementPayload]
-
-    # Searches points by user or name
-    searchPoints(searchQuery: String!): [PointPayload]
 
   }
   # ---------------------------------------------------------
@@ -588,11 +565,9 @@ const schema = gql`
     # Deletes a achievement
     deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
 
-    # Creates a point
-    createPoint(input: CreatePointInput!): PointPayload
+    # Deletes a achievement
+    deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
 
-    # Deletes a point
-    deletePoint(input: DeletePointInput!): PointPayload
   }
 
   # ---------------------------------------------------------
