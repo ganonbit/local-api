@@ -29,7 +29,7 @@ const schema = gql`
     coverImagePublicId: String
     isOnline: Boolean
     isVerified: Boolean
-    isBlocked: Boolean
+    isBanned: Boolean
     isGuru: Boolean
     isPick: Boolean
     role: String
@@ -296,7 +296,7 @@ const schema = gql`
     coverImagePublicId: String
     isOnline: Boolean
     isVerified: Boolean
-    isBlocked: Boolean
+    isBanned: Boolean
     isGuru: Boolean
     isPick: Boolean
     role: String

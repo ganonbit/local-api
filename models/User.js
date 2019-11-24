@@ -91,7 +91,7 @@ const userSchema = new Schema(
     coverImagePublicId: String,
     isOnline: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
-    isBlocked: { type: Boolean, default: false },
+    isBanned: { type: Boolean, default: false },
     isGuru: { type: Boolean, default: false },
     isPick: { type: Boolean, default: false },
     role: {
