@@ -409,7 +409,7 @@ const schema = gql`
   }
 
   type EventPayload {
-    id: ID
+    id: ID!
     name: String
     action: String
     awardedPoints: Int
@@ -474,7 +474,7 @@ const schema = gql`
     getConversations(authUserId: ID!): [ConversationsPayload]
 
     # Gets events by name
-    getEvents(name: String!, skip: Int, limit: Int): [EventPayload]
+    getEvent(id: ID!): EventPayload
 
     # Gets achievements
     getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]

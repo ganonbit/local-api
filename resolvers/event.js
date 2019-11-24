@@ -1,21 +1,11 @@
 const Query = {
 
-    getEvents: async (
-      root,
-      { userId, skip, limit },
-      { Event }
-    ) => {
-      const query = { user: userId };
-      const count = await Event.where(query).countDocuments();
-      const events = await Event.where(query)
+    getEvent: async (root, { id }, { Event }) => {
+      const event = await Event.findById(id)
         .populate('name')
         .populate('action')
-        .populate('awardedPoints')
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: 'desc' });
-  
-      return { events, count };
+        .populate('awardedPoints');
+      return event;
     },
 
     searchEvents: async (root, { searchQuery }, { Event }) => {
@@ -48,12 +38,6 @@ const Query = {
         action: eventAction,
         awardedPoints: awardedPoints
       }).save();
-  
-      // Push event to user collection
-      // await User.findOneAndUpdate(
-      //   { _id: userId },
-      //   { $push: { events: newEvent.id } }
-      // );
   
       return newEvent;
     },
