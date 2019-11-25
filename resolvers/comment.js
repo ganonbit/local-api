@@ -9,7 +9,7 @@ const Mutation = {
   createComment: async (
     root,
     { input: { image, comment, author, postId } },
-    { Comment, Post, User }
+    { Comment, Post, User, Event }
   ) => {
     let imageUrl, imagePublicId;
     if (image) {
@@ -26,6 +26,8 @@ const Mutation = {
       imageUrl = uploadImage.secure_url;
       imagePublicId = uploadImage.public_id;
     }
+
+
     const newComment = await new Comment({
       image: imageUrl,
       imagePublicId,
@@ -33,6 +35,11 @@ const Mutation = {
       author,
       post: postId,
     }).save();
+
+    let eventID = "5ddc0cdfdce3c14fcbc210bb";
+    const event = await Event.findById(eventID);
+    const user = await User.findById(newComment.author);
+    const newPoints = user.commentPoints + event.awardedPoints;
 
     // Push comment to post collection
     await Post.findOneAndUpdate(
@@ -42,7 +49,7 @@ const Mutation = {
     // Push comment to user collection
     await User.findOneAndUpdate(
       { _id: author },
-      { $push: { comments: newComment.id } }
+      { $push: { comments: newComment.id }, $set: { commentPoints: newPoints } }
     );
 
     return newComment;
@@ -52,7 +59,7 @@ const Mutation = {
    *
    * @param {string} id
    */
-  deleteComment: async (root, { input: { id, imagePublicId } }, { Comment, User, Post }) => {
+  deleteComment: async (root, { input: { id, imagePublicId } }, { Comment, User, Post, Event }) => {
     // Remove comment image from cloudinary, if imagePublicId is present
     if (imagePublicId) {
       const deleteImage = await deleteFromCloudinary(imagePublicId);
@@ -65,10 +72,15 @@ const Mutation = {
     }
     const comment = await Comment.findByIdAndRemove(id);
 
+    const user = await User.findById(comment.author);
+    let eventID = "5ddc0cdfdce3c14fcbc210bb";
+    const event = await Event.findById(eventID);
+    const newPoints = user.commentPoints - event.awardedPoints;
+
     // Delete comment from users collection
     await User.findOneAndUpdate(
       { _id: comment.author },
-      { $pull: { comments: comment.id } }
+      { $pull: { comments: comment.id }, $set: { commentPoints: newPoints } }
     );
     // Delete comment from posts collection
     await Post.findOneAndUpdate(

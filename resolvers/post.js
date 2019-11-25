@@ -135,7 +135,7 @@ const Mutation = {
   createPost: async (
     root,
     { input: { content, image, authorId } },
-    { Post, User }
+    { Post, User, Event }
   ) => {
     if (!content && !image) {
       throw new Error('Post content or image is required.');
@@ -157,6 +157,7 @@ const Mutation = {
       imagePublicId = uploadImage.public_id;
     }
 
+
     const newPost = await new Post({
       content,
       image: imageUrl,
@@ -164,9 +165,14 @@ const Mutation = {
       author: authorId,
     }).save();
 
+    let eventID = "5ddc0cf9dce3c14fcbc210bc";
+    const event = await Event.findById(eventID);
+    const user = await User.findById(newPost.author);
+    const newPoints = user.accountPoints + event.awardedPoints;
+
     await User.findOneAndUpdate(
       { _id: authorId },
-      { $push: { posts: newPost.id } }
+      { $push: { posts: newPost.id }, $set: { accountPoints: newPoints } }
     );
 
     return newPost;
@@ -180,7 +186,7 @@ const Mutation = {
   deletePost: async (
     root,
     { input: { id, imagePublicId } },
-    { Post, Like, User, Comment, Notification }
+    { Post, Like, User, Event, Comment, Notification }
   ) => {
     // Remove post image from cloudinary, if imagePublicId is present
     if (imagePublicId) {
@@ -196,10 +202,14 @@ const Mutation = {
     // Find post and remove it
     const post = await Post.findByIdAndRemove(id);
 
-    // Delete post from authors (users) posts collection
+    const user = await User.findById(post.author);
+    let eventID = "5ddc0cf9dce3c14fcbc210bc";
+    const event = await Event.findById(eventID);
+    const newPoints = user.accountPoints - event.awardedPoints;
+
     await User.findOneAndUpdate(
       { _id: post.author },
-      { $pull: { posts: post.id } }
+      { $pull: { posts: post.id }, $set: { accountPoints: newPoints } }
     );
 
     // Delete post likes from likes collection
