@@ -353,10 +353,12 @@ const Mutation = {
   signup: async (
     root,
     { input: { fullName, email, username, password } },
-    { User }
+    { User, Event }
   ) => {
     // Check if user with given email or username already exists
     const user = await User.findOne().or([{ email }, { username }]);
+
+
     if (user) {
       const field = user.email === email ? 'email' : 'username';
       throw new Error(`User with given ${field} already exists.`);
@@ -417,6 +419,16 @@ const Mutation = {
       username,
       password,
     }).save();
+
+    let eventID = "5ddc12e18cdfc651b260921e";
+    const event = await Event.findById(eventID);
+    const newPoints = event.awardedPoints;
+
+    // need to add if logic for if they have referral points from incoming url. 
+    await User.findOneAndUpdate(
+      { _id: newUser },
+      { $set: { accountPoints: newPoints } }
+    );
 
     return {
       token: generateToken(newUser, process.env.SECRET, AUTH_TOKEN_EXPIRY),
