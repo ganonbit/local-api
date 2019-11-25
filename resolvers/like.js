@@ -1,4 +1,4 @@
-import { earnBadge } from '../utils/badges';
+// import { earnBadge } from '../utils/badges';
 
 const Mutation = {
   /**
@@ -15,13 +15,14 @@ const Mutation = {
     const like = await new Like({ user: userId, post: postId }).save();
     let eventID = "5dda290bcd879c3e998e2a48";
     const event = await Event.findById(eventID);
+    const user = await User.findById(like.user);
+    const newPoints = user.likePoints - event.awardedPoints;
 
     // Push like to post collection
     await Post.findOneAndUpdate({ _id: postId }, { $push: { likes: like.id } });
-    // Push like to user collection
-    await User.findOneAndUpdate({ _id: userId }, { $push: { likes: like.id } });
-    // Push event to user collection
-    await User.findOneAndUpdate({ _id: userId }, { $push: { likePoints: event.awardedPoints } });
+    // Push like and add points to user collection
+    await User.findOneAndUpdate({ _id: userId }, { $push: { likes: like.id }, $set: { likePoints: newPoints } });
+
 
     // await earnBadge();
     
@@ -32,13 +33,17 @@ const Mutation = {
    *
    * @param {string} id
    */
-  deleteLike: async (root, { input: { id } }, { Like, User, Post }) => {
+  deleteLike: async (root, { input: { userId, id } }, { Like, User, Post, Event }) => {
     const like = await Like.findByIdAndRemove(id);
+    const user = await User.findById(like.user);
+    let eventID = "5dda290bcd879c3e998e2a48";
+    const event = await Event.findById(eventID);
+    const newPoints = user.likePoints - event.awardedPoints;
 
     // Delete like from users collection
     await User.findOneAndUpdate(
       { _id: like.user },
-      { $pull: { likes: like.id } }
+      { $pull: { likes: like.id }, $set: { likePoints: newPoints }}
     );
     // Delete like from posts collection
     await Post.findOneAndUpdate(

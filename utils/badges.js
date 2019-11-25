@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 
-export const earnBadge = async ({ user, post }) => {
+// export const earnBadge = async ({ user, post }) => {
 
 
-};
+// };
 
 // export const deleteFromCloudinary = async publicId => {
 //   return new Promise((resolve, reject) => {
