@@ -75,8 +75,8 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    passwordResetToken: String,
-    passwordResetTokenExpiry: Date,
+    emailToken: String,
+    emailTokenExpiry: Date,
     password: {
       type: String,
       required: true,

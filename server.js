@@ -17,6 +17,7 @@ mongoose
 
 // Initializes application
 const app = express();
+const path = '/graphql';
 
 // Enable cors
 const corsOptions = {
@@ -28,10 +29,10 @@ app.use(cors(corsOptions));
 app.get('/', function(req, res) {
   res.redirect('/graphql');
 });
+
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
-server.applyMiddleware({ app, path: '/graphql' });
-
+server.applyMiddleware({ app, path });
 
 // Create http server and add subscriptions to it
 const httpServer = createServer(app);

@@ -174,6 +174,12 @@ const schema = gql`
     password: String!
   }
 
+  input VerifyAccountInput {
+    email: String!
+    token: String!
+    isVerified: Boolean!
+  }
+
   input UploadUserPhotoInput {
     id: ID!
     image: Upload!
@@ -431,7 +437,7 @@ const schema = gql`
   # ---------------------------------------------------------
   type Query {
     # Verifies reset password token
-    verifyResetPasswordToken(email: String, token: String!): SuccessMessage
+    verifyToken(email: String, token: String!): SuccessMessage
 
     # Gets the currently logged in user
     getAuthUser: UserPayload
@@ -504,6 +510,9 @@ const schema = gql`
 
     # Resets user password
     resetPassword(input: ResetPasswordInput!): Token
+
+    # Verifies user
+    verifyAccount(input: VerifyAccountInput!): Token
 
     # Uploads user Profile or Cover photo
     uploadUserPhoto(input: UploadUserPhotoInput!): UserPayload

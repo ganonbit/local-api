@@ -13,9 +13,9 @@ const Mutation = {
     { Like, Post, User, Event }
   ) => {
     const like = await new Like({ user: userId, post: postId }).save();
+    const user = await User.findById(like.user);
     let eventID = "5dda290bcd879c3e998e2a48";
     const event = await Event.findById(eventID);
-    const user = await User.findById(like.user);
     const newPoints = user.likePoints + event.awardedPoints;
 
     // Push like to post collection
