@@ -21,8 +21,8 @@ const schema = gql`
     bio: String
     location: String
     password: String!
-    resetToken: String
-    resetTokenExpiry: String
+    emailToken: String
+    emailTokenExpiry: String
     image: File
     imagePublicId: String
     coverImage: File

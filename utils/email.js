@@ -34,19 +34,3 @@ export const sendEmail = ({ to, subject, html }) => {
       });
   });
 };
-
-export const verifyEmail = ({ to, subject, html }) => {
-  return new Promise((resolve, reject) => {
-    const options = { from: MAIL_USER, to, subject, html };
-
-    return transporter
-      .sendMail(options)
-      .then(response => {
-        resolve(response.data);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-};
-

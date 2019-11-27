@@ -4,7 +4,7 @@ import { withFilter } from 'apollo-server';
 
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { generateToken } from '../utils/generate-token';
-import { sendEmail, verifyEmail } from '../utils/email';
+import { sendEmail } from '../utils/email';
 import { pubSub } from '../utils/apollo-server';
 
 import { IS_USER_ONLINE } from '../constants/Subscriptions';
@@ -443,15 +443,11 @@ const Mutation = {
       html: verifyLink,
     };
 
-    await verifyEmail(mailOptions)
-
-    if (newUser.isVerified === false) {
-      document.write('Thank you! Please check email to verify your account!');
-    }
-
+    await sendEmail(mailOptions)
 
     return {
       token: token,
+      message: `A link to verify your account has been sent to ${email}`,
     };
   },
   /**
@@ -545,21 +541,18 @@ const Mutation = {
   ) => {
 
     // Check if user exists and token is valid
-    const user = await User.findOne({
+    const user = await User.findOneAndUpdate({
       email,
       emailToken: token,
       emailTokenExpiry: {
         $gte: Date.now() - EMAIL_TOKEN_EXPIRY,
       },
-    });
+    }, { isVerified: true });
+
     if (!user) {
       throw new Error('This token is either invalid or expired!.');
     }
 
-    // Update password, reset token and it's expiry
-    user.emailToken = '';
-    user.emailTokenExpiry = '';
-    user.isVerified = true;
     await user.save();
 
     // Return success message
