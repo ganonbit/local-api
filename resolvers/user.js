@@ -77,7 +77,8 @@ const Query = {
       const user = {
         id: u.sender[0]._id,
         username: u.sender[0].username,
-        fullName: u.sender[0].fullName,
+        firstName: u.sender[0].firstName,
+        lastName: u.sender[0].lastName,
         image: u.sender[0].image,
         lastMessage: u.message,
         lastMessageCreatedAt: u.createdAt,
@@ -235,7 +236,7 @@ const Query = {
     return { users, count };
   },
   /**
-   * Searches users by username or fullName
+   * Searches users by username or name
    *
    * @param {string} searchQuery
    */
@@ -248,7 +249,8 @@ const Query = {
     const users = User.find({
       $or: [
         { username: new RegExp(searchQuery, 'i') },
-        { fullName: new RegExp(searchQuery, 'i') },
+        { firstName: new RegExp(searchQuery, 'i') },
+        { lastName: new RegExp(searchQuery, 'i') },
       ],
       _id: {
         $ne: authUser.id,
@@ -346,17 +348,10 @@ const Mutation = {
       token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
-  /**
-   * Signs up user
-   *
-   * @param {string} fullName
-   * @param {string} email
-   * @param {string} username
-   * @param {string} password
-   */
+
   signup: async (
     root,
-    { input: { fullName, email, username, password } },
+    { input: { firstName, lastName, email, username, password } },
     { User, Event }
   ) => {
     // Check if user with given email or username already exists
@@ -369,16 +364,16 @@ const Mutation = {
     }
 
     // Empty field validation
-    if (!fullName || !email || !username || !password) {
+    if (!firstName || !lastName || !email || !username || !password) {
       throw new Error('All fields are required.');
     }
 
-    // FullName validation
-    if (fullName.length > 40) {
-      throw new Error('Full name no more than 40 characters.');
+    // name validation
+    if (firstName.length > 20 && firstName.length < 2 ) {
+      throw new Error('First name should be between 2-20 characters.');
     }
-    if (fullName.length < 4) {
-      throw new Error('Full name min 4 characters.');
+    if (lastName.length > 20 && lastName.length < 2 ) {
+      throw new Error('Last name should be between 2-20 characters.');
     }
 
     // Email validation
@@ -413,7 +408,8 @@ const Mutation = {
     }
 
     const newUser = await new User({
-      fullName,
+      firstName,
+      lastName,
       email,
       username,
       password,
