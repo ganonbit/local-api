@@ -32,7 +32,7 @@ const Query = {
     // Get users with whom authUser had a chat
     const users = await User.findById(authUserId).populate(
       'messages',
-      'id username fullName image isOnline'
+      'id username firstName lastName image isOnline'
     );
 
     // Get last messages with wom authUser had a chat
@@ -69,7 +69,8 @@ const Query = {
       const user = {
         id: u.id,
         username: u.username,
-        fullName: u.fullName,
+        firstName: u.firstName,
+        lastName: u.lastName,
         image: u.image,
         isOnline: u.isOnline,
       };
@@ -152,7 +153,8 @@ const Mutation = {
         receiverId: receiver,
         id: senderUser.id,
         username: senderUser.username,
-        fullName: senderUser.fullName,
+        firstName: senderUser.firstName,
+        lastName: senderUser.lastName,
         image: senderUser.image,
         isOnline: senderUser.isOnline,
         seen: false,

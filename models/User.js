@@ -14,12 +14,21 @@ const Schema = mongoose.Schema;
  */
 const userSchema = new Schema(
   {
-    fullName: {
+    firstName: {
       type: String,
       required: true,
       fake: {
         generator: 'name',
-        type: 'findName'
+        type: 'firstName'
+      },
+      algoliaIndex: true
+    },
+    lastName: {
+      type: String,
+      required: true,
+      fake: {
+        generator: 'name',
+        type: 'lastName'
       },
       algoliaIndex: true
     },

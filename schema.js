@@ -13,7 +13,8 @@ const schema = gql`
     
   type User {
     id: ID!
-    fullName: String!
+    firstName: String!
+    lastName: String!
     email: String!
     username: String!
     birthday: String
@@ -160,7 +161,8 @@ const schema = gql`
   input SignUpInput {
     email: String!
     username: String!
-    fullName: String!
+    firstName: String!
+    lastName: String!
     password: String!
   }
 
@@ -287,7 +289,8 @@ const schema = gql`
   # ---------------------------------------------------------
   type UserPayload {
     id: ID!
-    fullName: String
+    firstName: String
+    lastName: String
     email: String
     username: String
     birthday: String
@@ -373,7 +376,8 @@ const schema = gql`
   type ConversationsPayload {
     id: ID!
     username: String
-    fullName: String
+    firstName: String
+    lastName: String
     image: String
     isOnline: Boolean
     seen: Boolean
@@ -450,7 +454,7 @@ const schema = gql`
     # Gets all users
     getUsers(userId: String!, skip: Int, limit: Int): UsersPayload
 
-    # Searches users by username or fullName
+    # Searches users by username or name
     searchUsers(searchQuery: String!): [UserPayload]
 
     # Gets Suggested people for user
