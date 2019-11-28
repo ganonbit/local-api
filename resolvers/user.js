@@ -333,8 +333,8 @@ const Mutation = {
       throw new Error('User not found.');
     }
 
-    if (user.isVerified === false) {
-      throw new Error('Account not verified. Please check email to verify your account!');
+    if (!user.isVerified) {
+      throw new Error('Please confirm your email to login');
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -423,20 +423,21 @@ const Mutation = {
     const event = await Event.findById(eventID);
     const newPoints = event.awardedPoints;
 
-    // need to add if logic for if they have referral points from incoming url. 
+    // Set password reset token and it's expiry
+    const token = generateToken(
+    newUser,
+    process.env.SECRET,
+    EMAIL_TOKEN_EXPIRY
+    );
+    
+    const tokenExpiry = Date.now() + EMAIL_TOKEN_EXPIRY;
     await User.findOneAndUpdate(
       { _id: newUser },
-      { $set: { accountPoints: newPoints } }
+      { emailToken: token, emailTokenExpiry: tokenExpiry, accountPoints: newPoints },
+      { new: true }
     );
 
-     // Set password reset token and it's expiry
-     const token = generateToken(
-      newUser,
-      process.env.SECRET,
-      EMAIL_TOKEN_EXPIRY
-    );
-
-    const verifyLink = `${process.env.FRONTEND_URL}/verify?token=${token}`;
+    const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;
     const mailOptions = {
       to: newUser.email,
       subject: 'Verify Your Email',
@@ -518,6 +519,7 @@ const Mutation = {
         $gte: Date.now() - EMAIL_TOKEN_EXPIRY,
       },
     });
+    
     if (!user) {
       throw new Error('This token is either invalid or expired!.');
     }
@@ -540,19 +542,21 @@ const Mutation = {
     { User }
   ) => {
 
-    // Check if user exists and token is valid
-    const user = await User.findOneAndUpdate({
+    const user = await User.findOne({
       email,
       emailToken: token,
       emailTokenExpiry: {
         $gte: Date.now() - EMAIL_TOKEN_EXPIRY,
       },
-    }, { isVerified: true });
+    });
 
     if (!user) {
       throw new Error('This token is either invalid or expired!.');
     }
 
+    user.emailToken = '';
+    user.emailTokenExpiry = '';
+    user.isVerified = true;
     await user.save();
 
     // Return success message

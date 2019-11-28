@@ -177,7 +177,6 @@ const schema = gql`
   input VerifyAccountInput {
     email: String!
     token: String!
-    isVerified: Boolean!
   }
 
   input UploadUserPhotoInput {
