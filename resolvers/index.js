@@ -5,6 +5,8 @@ import followResolver from './follow';
 import commentResolver from './comment';
 import notificationResolver from './notification';
 import message from './message';
+import eventResolver from './event';
+import achievementResolver from './achievement';
 
 export default [
   userResolver,
@@ -14,4 +16,6 @@ export default [
   commentResolver,
   notificationResolver,
   message,
+  eventResolver,
+  achievementResolver,
 ];

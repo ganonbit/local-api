@@ -14,10 +14,10 @@ mongoose
   .connect(process.env.MONGO_URL, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true})
   .then(() => console.log('DB connected'))
   .catch(err => console.error('DB Connection error: ' + err));
-mongoose.set('useCreateIndex', true);
 
 // Initializes application
 const app = express();
+const path = '/graphql';
 
 // Enable cors
 const corsOptions = {
@@ -29,10 +29,11 @@ app.use(cors(corsOptions));
 app.get('/', function(req, res) {
   res.redirect('/graphql');
 });
+
+
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
-server.applyMiddleware({ app, path: '/graphql' });
-
+server.applyMiddleware({ app, path });
 
 // Create http server and add subscriptions to it
 const httpServer = createServer(app);

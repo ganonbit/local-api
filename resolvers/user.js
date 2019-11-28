@@ -10,7 +10,7 @@ import { pubSub } from '../utils/apollo-server';
 import { IS_USER_ONLINE } from '../constants/Subscriptions';
 
 const AUTH_TOKEN_EXPIRY = '1y';
-const RESET_PASSWORD_TOKEN_EXPIRY = 3600000;
+const EMAIL_TOKEN_EXPIRY = 43200;
 
 const Query = {
   /**
@@ -239,7 +239,7 @@ const Query = {
    *
    * @param {string} searchQuery
    */
-  searchUsers: async (root, { searchQuery }, { User }) => {
+  searchUsers: async (root, { searchQuery }, { User, authUser }) => {
     // Return an empty array if searchQuery isn't presented
     if (!searchQuery) {
       return [];
@@ -250,6 +250,9 @@ const Query = {
         { username: new RegExp(searchQuery, 'i') },
         { fullName: new RegExp(searchQuery, 'i') },
       ],
+      _id: {
+        $ne: authUser.id,
+      },
     }).limit(50);
 
     return users;
@@ -296,13 +299,13 @@ const Query = {
    * @param {string} email
    * @param {string} token
    */
-  verifyResetPasswordToken: async (root, { email, token }, { User }) => {
+  verifyToken: async (root, { email, token }, { User }) => {
     // Check if user exists and token is valid
     const user = await User.findOne({
       email,
-      passwordResetToken: token,
-      passwordResetTokenExpiry: {
-        $gte: Date.now() - RESET_PASSWORD_TOKEN_EXPIRY,
+      emailToken: token,
+      emailTokenExpiry: {
+        $gte: Date.now() - EMAIL_TOKEN_EXPIRY,
       },
     });
     if (!user) {
@@ -330,6 +333,10 @@ const Mutation = {
       throw new Error('User not found.');
     }
 
+    if (!user.isVerified) {
+      throw new Error('Please confirm your email to login');
+    }
+
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       throw new Error('Invalid password.');
@@ -350,10 +357,12 @@ const Mutation = {
   signup: async (
     root,
     { input: { fullName, email, username, password } },
-    { User }
+    { User, Event }
   ) => {
     // Check if user with given email or username already exists
     const user = await User.findOne().or([{ email }, { username }]);
+
+
     if (user) {
       const field = user.email === email ? 'email' : 'username';
       throw new Error(`User with given ${field} already exists.`);
@@ -391,15 +400,10 @@ const Mutation = {
     if (username.length < 3) {
       throw new Error('Username min 3 characters.');
     }
-    const frontEndPages = [
-      'forgot-password',
-      'reset-password',
-      'explore',
-      'people',
-      'notifications',
-      'post',
+    const usernameBlacklist = [
+      'selmaa','selmaavocados','selma-avocados','sselma','discover','people','inspiration','recipes','graphql','points','rewards','contests','contest','content','reward','point','send','sender','sent','edit-profile','share','verified','verification','.htaccess', '.htpasswd', '.well-known', '400', '401', '403', '404', '405', '406', '407', '408', '409', '410', '411', '412', '413', '414', '415', '416', '417', '421', '422', '423', '424', '426', '428', '429', '431', '500', '501', '502', '503', '504', '505', '506', '507', '508', '509', '510', '511', 'about', 'about-us', 'abuse', 'access', 'account', 'accounts', 'ad', 'add', 'admin', 'administration', 'administrator', 'ads', 'advertise', 'advertising', 'aes128-ctr', 'aes128-gcm', 'aes192-ctr', 'aes256-ctr', 'aes256-gcm', 'affiliate', 'affiliates', 'ajax', 'alert', 'alerts', 'alpha', 'amp', 'analytics', 'api', 'app', 'apps', 'asc', 'assets', 'atom', 'auth', 'authentication', 'authorize', 'autoconfig', 'autodiscover', 'avatar', 'backup', 'banner', 'banners', 'beta', 'billing', 'billings', 'blog', 'blogs', 'board', 'bookmark', 'bookmarks', 'broadcasthost', 'business', 'buy', 'cache', 'calendar', 'campaign', 'captcha', 'careers', 'cart', 'cas', 'categories', 'category', 'cdn', 'cgi', 'cgi-bin', 'chacha20-poly1305', 'change', 'channel', 'channels', 'chart', 'chat', 'checkout', 'clear', 'client', 'close', 'cms', 'com', 'comment', 'comments', 'community', 'compare', 'compose', 'config', 'connect', 'contact', 'contest', 'cookies', 'copy', 'copyright', 'count', 'create', 'crossdomain.xml', 'css', 'curve25519-sha256', 'customer', 'customers', 'customize', 'dashboard', 'db', 'deals', 'debug', 'delete', 'desc', 'destroy', 'dev', 'developer', 'developers', 'diffie-hellman-group-exchange-sha256', 'diffie-hellman-group14-sha1', 'disconnect', 'discuss', 'dns', 'dns0', 'dns1', 'dns2', 'dns3', 'dns4', 'docs', 'documentation', 'domain', 'download', 'downloads', 'downvote', 'draft', 'drop', 'ecdh-sha2-nistp256', 'ecdh-sha2-nistp384', 'ecdh-sha2-nistp521', 'edit', 'editor', 'email', 'enterprise', 'error', 'errors', 'event', 'events', 'example', 'exception', 'exit', 'explore', 'export', 'extensions', 'false', 'family', 'faq', 'faqs', 'favicon.ico', 'features', 'feed', 'feedback', 'feeds', 'file', 'files', 'filter', 'follow', 'follower', 'followers', 'following', 'fonts', 'forgot', 'forgot-password', 'forgotpassword', 'form', 'forms', 'forum', 'forums', 'friend', 'friends', 'ftp', 'get', 'git', 'go', 'group', 'groups', 'guest', 'guidelines', 'guides', 'head', 'header', 'help', 'hide', 'hmac-sha', 'hmac-sha1', 'hmac-sha1-etm', 'hmac-sha2-256', 'hmac-sha2-256-etm', 'hmac-sha2-512', 'hmac-sha2-512-etm', 'home', 'host', 'hosting', 'hostmaster', 'htpasswd', 'http', 'httpd', 'https', 'humans.txt', 'icons', 'images', 'imap', 'img', 'import', 'index', 'info', 'insert', 'investors', 'invitations', 'invite', 'invites', 'invoice', 'is', 'isatap', 'issues', 'it', 'jobs', 'join', 'js', 'json', 'keybase.txt', 'learn', 'legal', 'license', 'licensing', 'like', 'limit', 'live', 'load', 'local', 'localdomain', 'localhost', 'lock', 'login', 'logout', 'lost-password', 'mail', 'mail0', 'mail1', 'mail2', 'mail3', 'mail4', 'mail5', 'mail6', 'mail7', 'mail8', 'mail9', 'mailer-daemon', 'mailerdaemon', 'map', 'marketing', 'marketplace', 'master', 'me', 'media', 'member', 'members', 'message', 'messages', 'metrics', 'mis', 'mobile', 'moderator', 'modify', 'more', 'mx', 'my', 'net', 'network', 'new', 'news', 'newsletter', 'newsletters', 'next', 'nil', 'no-reply', 'nobody', 'noc', 'none', 'noreply', 'notification', 'notifications', 'ns', 'ns0', 'ns1', 'ns2', 'ns3', 'ns4', 'ns5', 'ns6', 'ns7', 'ns8', 'ns9', 'null', 'oauth', 'oauth2', 'offer', 'offers', 'online', 'openid', 'order', 'orders', 'overview', 'owner', 'page', 'pages', 'partners', 'passwd', 'password', 'pay', 'payment', 'payments', 'photo', 'photos', 'pixel', 'plans', 'plugins', 'policies', 'policy', 'pop', 'pop3', 'popular', 'portfolio', 'post', 'postfix', 'postmaster', 'poweruser', 'preferences', 'premium', 'press', 'previous', 'pricing', 'print', 'privacy', 'privacy-policy', 'private', 'prod', 'product', 'production', 'profile', 'profiles', 'project', 'projects', 'public', 'purchase', 'put', 'quota', 'redirect', 'reduce', 'refund', 'refunds', 'register', 'registration', 'remove', 'replies', 'reply', 'report', 'request', 'request-password', 'reset', 'reset-password', 'response', 'return', 'returns', 'review', 'reviews', 'robots.txt', 'root', 'rootuser', 'rsa-sha2-2', 'rsa-sha2-512', 'rss', 'rules', 'sales', 'save', 'script', 'sdk', 'search', 'secure', 'security', 'select', 'services', 'session', 'sessions', 'settings', 'setup', 'share', 'shift', 'shop', 'signin', 'signup', 'site', 'sitemap', 'sites', 'smtp', 'sort', 'source', 'sql', 'ssh', 'ssh-rsa', 'ssl', 'ssladmin', 'ssladministrator', 'sslwebmaster', 'stage', 'staging', 'stat', 'static', 'statistics', 'stats', 'status', 'store', 'style', 'styles', 'stylesheet', 'stylesheets', 'subdomain', 'subscribe', 'sudo', 'super', 'superuser', 'support', 'survey', 'sync', 'sysadmin', 'system', 'tablet', 'tag', 'tags', 'team', 'telnet', 'terms', 'terms-of-use', 'test', 'testimonials', 'theme', 'themes', 'today', 'tools', 'topic', 'topics', 'tour', 'training', 'translate', 'translations', 'trending', 'trial', 'true', 'umac-128', 'umac-128-etm', 'umac-64', 'umac-64-etm', 'undefined', 'unfollow', 'unlike', 'unsubscribe', 'update', 'upgrade', 'usenet', 'user', 'username', 'users', 'uucp', 'var', 'verify', 'video', 'view', 'void', 'vote', 'webmail', 'webmaster', 'website', 'widget', 'widgets', 'wiki', 'wpad', 'write', 'www', 'www-data', 'www1', 'www2', 'www3', 'www4', 'you', 'yourname', 'yourusername', 'zlib',
     ];
-    if (frontEndPages.includes(username)) {
+    if (usernameBlacklist.includes(username)) {
       throw new Error("This username isn't available. Please try another.");
     }
 
@@ -415,8 +419,36 @@ const Mutation = {
       password,
     }).save();
 
+    let eventID = "5ddc12e18cdfc651b260921e";
+    const event = await Event.findById(eventID);
+    const newPoints = event.awardedPoints;
+
+    // Set password reset token and it's expiry
+    const token = generateToken(
+    newUser,
+    process.env.SECRET,
+    EMAIL_TOKEN_EXPIRY
+    );
+    
+    const tokenExpiry = Date.now() + EMAIL_TOKEN_EXPIRY;
+    await User.findOneAndUpdate(
+      { _id: newUser },
+      { emailToken: token, emailTokenExpiry: tokenExpiry, accountPoints: newPoints },
+      { new: true }
+    );
+
+    const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;
+    const mailOptions = {
+      to: newUser.email,
+      subject: 'Verify Your Email',
+      html: verifyLink,
+    };
+
+    await sendEmail(mailOptions)
+
     return {
-      token: generateToken(newUser, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+      token: token,
+      message: `A link to verify your account has been sent to ${email}`,
     };
   },
   /**
@@ -435,12 +467,12 @@ const Mutation = {
     const token = generateToken(
       user,
       process.env.SECRET,
-      RESET_PASSWORD_TOKEN_EXPIRY
+      EMAIL_TOKEN_EXPIRY
     );
-    const tokenExpiry = Date.now() + RESET_PASSWORD_TOKEN_EXPIRY;
+    const tokenExpiry = Date.now() + EMAIL_TOKEN_EXPIRY;
     await User.findOneAndUpdate(
       { _id: user.id },
-      { passwordResetToken: token, passwordResetTokenExpiry: tokenExpiry },
+      { emailToken: token, emailTokenExpiry: tokenExpiry },
       { new: true }
     );
 
@@ -482,19 +514,49 @@ const Mutation = {
     // Check if user exists and token is valid
     const user = await User.findOne({
       email,
-      passwordResetToken: token,
-      passwordResetTokenExpiry: {
-        $gte: Date.now() - RESET_PASSWORD_TOKEN_EXPIRY,
+      emailToken: token,
+      emailTokenExpiry: {
+        $gte: Date.now() - EMAIL_TOKEN_EXPIRY,
       },
     });
+    
     if (!user) {
       throw new Error('This token is either invalid or expired!.');
     }
 
     // Update password, reset token and it's expiry
-    user.passwordResetToken = '';
-    user.passwordResetTokenExpiry = '';
+    user.emailToken = '';
+    user.emailTokenExpiry = '';
     user.password = password;
+    await user.save();
+
+    // Return success message
+    return {
+      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+    };
+  },
+
+  verifyAccount: async (
+    root,
+    { input: { email, token } },
+    { User }
+  ) => {
+
+    const user = await User.findOne({
+      email,
+      emailToken: token,
+      emailTokenExpiry: {
+        $gte: Date.now() - EMAIL_TOKEN_EXPIRY,
+      },
+    });
+
+    if (!user) {
+      throw new Error('This token is either invalid or expired!.');
+    }
+
+    user.emailToken = '';
+    user.emailTokenExpiry = '';
+    user.isVerified = true;
     await user.save();
 
     // Return success message

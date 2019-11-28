@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
 let genderTypes = ['Male', 'Female', 'Custom'];
+let roleTypes = ['selma', 'expert', 'user'];
 
 const Schema = mongoose.Schema;
 
@@ -48,7 +49,7 @@ const userSchema = new Schema(
     },
     birthday: {
       type: Date, default: Date.now,
-      required: true,
+      required: false,
       fake: {
         generator: 'date',
         type: 'past'
@@ -57,6 +58,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
+      // required: true,
       enum: genderTypes,
       algoliaIndex: true
     },
@@ -73,8 +75,8 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    passwordResetToken: String,
-    passwordResetTokenExpiry: Date,
+    emailToken: String,
+    emailTokenExpiry: Date,
     password: {
       type: String,
       required: true,
@@ -89,9 +91,26 @@ const userSchema = new Schema(
     coverImagePublicId: String,
     isOnline: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
-    isBlocked: { type: Boolean, default: false },
-    isExpert: { type: Boolean, default: false },
-    isSelma: { type: Boolean, default: false },
+    isBanned: { type: Boolean, default: false },
+    isGuru: { type: Boolean, default: false },
+    isPick: { type: Boolean, default: false },
+    role: {
+      type: String,
+      enum: roleTypes,
+      default: 'user',
+      algoliaIndex: true
+    },
+    level: { type: Number, default: 1 },
+    accountPoints: {type: Number, default: 0},
+    likePoints: {type: Number, default: 0},
+    commentPoints: {type: Number, default: 0},
+    sharePoints: {type: Number, default: 0},
+    referralPoints: {type: Number, default: 0},
+    gamePoints: {type: Number, default: 0},
+    currentPoints: {type: Number, default: 0},
+    usedPoints: {type: Number, default: 0},
+    totalPoints: {type: Number, default: 0},
+    pagesViewed: {type: Number, default: 0},
     posts: [
       {
         type: Schema.Types.ObjectId,
@@ -128,17 +147,17 @@ const userSchema = new Schema(
         ref: 'Notification',
       },
     ],
-    points: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Point',
-      },
-    ],
     messages: [
       {
         type: Schema.Types.ObjectId,
         ref: 'User',
       },
+    ],
+    badges: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Achievement',
+      }
     ]
   },
   {

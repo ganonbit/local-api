@@ -10,28 +10,45 @@ const schema = gql`
   # ---------------------------------------------------------
   # Model and Root Query Objects
   # ---------------------------------------------------------
+    
   type User {
     id: ID!
     fullName: String!
     email: String!
     username: String!
+    birthday: String
+    gender: String
+    bio: String
+    location: String
     password: String!
-    resetToken: String
-    resetTokenExpiry: String
+    emailToken: String
+    emailTokenExpiry: String
     image: File
     imagePublicId: String
     coverImage: File
     coverImagePublicId: String
     isOnline: Boolean
     isVerified: Boolean
-    isBlocked: Boolean
-    isExpert: Boolean
+    isBanned: Boolean
+    isGuru: Boolean
+    isPick: Boolean
+    role: String
+    level: Int
+    accountPoints: Int
+    likePoints: Int
+    commentPoints: Int
+    sharePoints: Int
+    referralPoints: Int
+    gamePoints: Int
+    totalPoints: Int
+    pagesViewed: Int
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
     followers: [Follow]
     following: [Follow]
     notifications: [NotificationPayload]
+    badges: [Achievement]
     createdAt: String
     updatedAt: String
   }
@@ -107,6 +124,23 @@ const schema = gql`
     createdAt: String
   }
 
+  type Event {
+    id: ID!
+    name: String
+    action: String
+    awardedPoints: Int
+    createdAt: String
+    updatedAt: String
+  }
+
+  type Achievement {
+    id: ID!
+    name: String
+    action: String
+    createdAt: String
+    updatedAt: String
+  }
+
   type Token {
     token: String!
   }
@@ -138,6 +172,11 @@ const schema = gql`
     email: String!
     token: String!
     password: String!
+  }
+
+  input VerifyAccountInput {
+    email: String!
+    token: String!
   }
 
   input UploadUserPhotoInput {
@@ -224,6 +263,25 @@ const schema = gql`
     receiver: ID!
   }
 
+  input CreateEventInput {
+    eventName: String!
+    eventAction: String!
+    awardedPoints: Int!
+  }
+
+  input DeleteEventInput {
+    id: ID!
+  }
+
+  input CreateAchievementInput {
+    achievementName: String!
+    achievementAction: String!
+  }
+
+  input DeleteAchievementInput {
+    id: ID!
+  }
+
   # ---------------------------------------------------------
   # Return Payloads
   # ---------------------------------------------------------
@@ -232,6 +290,10 @@ const schema = gql`
     fullName: String
     email: String
     username: String
+    birthday: String
+    gender: String
+    bio: String
+    location: String
     password: String
     image: String
     imagePublicId: String
@@ -239,12 +301,24 @@ const schema = gql`
     coverImagePublicId: String
     isOnline: Boolean
     isVerified: Boolean
-    isBlocked: Boolean
-    isExpert: Boolean
+    isBanned: Boolean
+    isGuru: Boolean
+    isPick: Boolean
+    role: String
+    level: Int
+    accountPoints: Int
+    likePoints: Int
+    commentPoints: Int
+    sharePoints: Int
+    referralPoints: Int
+    gamePoints: Int
+    totalPoints: Int
+    pagesViewed: Int
     posts: [PostPayload]
     likes: [Like]
     followers: [Follow]
     following: [Follow]
+    badges: [Achievement]
     notifications: [NotificationPayload]
     newNotifications: [NotificationPayload]
     newConversations: [ConversationsPayload]
@@ -339,12 +413,30 @@ const schema = gql`
     createdAt: String
   }
 
+  type EventPayload {
+    id: ID!
+    name: String
+    action: String
+    awardedPoints: Int
+    createdAt: String
+    updatedAt: String
+  }
+
+  type AchievementPayload {
+    id: ID
+    user: UserPayload
+    name: String
+    action: String
+    createdAt: String
+    updatedAt: String
+  }
+
   # ---------------------------------------------------------
   # Query Root
   # ---------------------------------------------------------
   type Query {
     # Verifies reset password token
-    verifyResetPasswordToken(email: String, token: String!): SuccessMessage
+    verifyToken(email: String, token: String!): SuccessMessage
 
     # Gets the currently logged in user
     getAuthUser: UserPayload
@@ -385,6 +477,22 @@ const schema = gql`
 
     # Gets user's conversations
     getConversations(authUserId: ID!): [ConversationsPayload]
+
+    # Gets events by name
+    getEvent(id: ID!): EventPayload
+
+    # Gets achievements
+    getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]
+
+    # Gets user's achievements
+    getUserAchievements(username: String, userId: ID, skip: Int, limit: Int): [AchievementPayload]
+
+    # Searches events by name or action
+    searchEvents(searchQuery: String!): [EventPayload]
+
+    # Searches achievements by user or name
+    searchAchievements(searchQuery: String!): [AchievementPayload]
+
   }
   # ---------------------------------------------------------
   # Mutation Root
@@ -401,6 +509,9 @@ const schema = gql`
 
     # Resets user password
     resetPassword(input: ResetPasswordInput!): Token
+
+    # Verifies user
+    verifyAccount(input: VerifyAccountInput!): Token
 
     # Uploads user Profile or Cover photo
     uploadUserPhoto(input: UploadUserPhotoInput!): UserPayload
@@ -449,6 +560,22 @@ const schema = gql`
 
     # Updates message seen values for user
     updateMessageSeen(input: UpdateMessageSeenInput!): Boolean
+
+    # Creates a event
+    createEvent(input: CreateEventInput!): EventPayload
+
+    # Deletes a event
+    deleteEvent(input: DeleteEventInput!): EventPayload
+
+    # Creates a achievement
+    createAchievement(input: CreateAchievementInput!): AchievementPayload
+
+    # Deletes a achievement
+    deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
+
+    # Deletes a achievement
+    deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
+
   }
 
   # ---------------------------------------------------------
