@@ -14,17 +14,17 @@ const Query = {
     const query = { user: userId };
     const count = await Notification.where(query).countDocuments();
     const notifications = await Notification.where(query)
-      .populate('author')
-      .populate('user')
-      .populate('follow')
-      .populate({ path: 'comment', populate: { path: 'post' } })
-      .populate({ path: 'like', populate: { path: 'post' } })
+      .populate("author")
+      .populate("user")
+      .populate("follow")
+      .populate({ path: "comment", populate: { path: "post" } })
+      .populate({ path: "like", populate: { path: "post" } })
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: 'desc' });
+      .sort({ createdAt: "desc" });
 
     return { notifications, count };
-  },
+  }
 };
 
 const Mutation = {
@@ -40,7 +40,7 @@ const Mutation = {
   createNotification: async (
     root,
     {
-      input: { userId, authorId, postId, notificationType, notificationTypeId },
+      input: { userId, authorId, postId, notificationType, notificationTypeId }
     },
     { Notification, User }
   ) => {
@@ -48,7 +48,7 @@ const Mutation = {
       author: authorId,
       user: userId,
       post: postId,
-      [notificationType.toLowerCase()]: notificationTypeId,
+      [notificationType.toLowerCase()]: notificationTypeId
     }).save();
 
     // Push notification to user collection
@@ -99,7 +99,7 @@ const Mutation = {
     } catch (e) {
       return false;
     }
-  },
+  }
 };
 
 export default { Query, Mutation };

@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import { gql } from "apollo-server-express";
 
 /**
  * GraphQL Schema that describes the main functionality of the API
@@ -10,7 +10,7 @@ const schema = gql`
   # ---------------------------------------------------------
   # Model and Root Query Objects
   # ---------------------------------------------------------
-    
+
   type User {
     id: ID!
     firstName: String!
@@ -385,7 +385,7 @@ const schema = gql`
     lastMessageSender: Boolean
     lastMessageCreatedAt: String
   }
-  
+
   type LikePayload {
     id: ID!
     post: PostPayload
@@ -489,14 +489,18 @@ const schema = gql`
     getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]
 
     # Gets user's achievements
-    getUserAchievements(username: String, userId: ID, skip: Int, limit: Int): [AchievementPayload]
+    getUserAchievements(
+      username: String
+      userId: ID
+      skip: Int
+      limit: Int
+    ): [AchievementPayload]
 
     # Searches events by name or action
     searchEvents(searchQuery: String!): [EventPayload]
 
     # Searches achievements by user or name
     searchAchievements(searchQuery: String!): [AchievementPayload]
-
   }
   # ---------------------------------------------------------
   # Mutation Root
@@ -543,7 +547,6 @@ const schema = gql`
 
     # Uploads user comment photo
 
-
     # Deletes a post comment
     deleteComment(input: DeleteCommentInput!): Comment
 
@@ -579,7 +582,6 @@ const schema = gql`
 
     # Deletes a achievement
     deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
-
   }
 
   # ---------------------------------------------------------

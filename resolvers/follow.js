@@ -12,7 +12,7 @@ const Mutation = {
   ) => {
     const follow = await new Follow({
       user: userId,
-      follower: followerId,
+      follower: followerId
     }).save();
 
     // Push follower/following to user collection
@@ -46,7 +46,7 @@ const Mutation = {
     );
 
     return follow;
-  },
+  }
 };
 
 export default { Mutation };

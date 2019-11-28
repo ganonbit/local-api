@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
-import { withFilter } from 'apollo-server';
+import mongoose from "mongoose";
+import { withFilter } from "apollo-server";
 
-import { pubSub } from '../utils/apollo-server';
-import { MESSAGE_CREATED, NEW_CONVERSATION } from '../constants/Subscriptions';
+import { pubSub } from "../utils/apollo-server";
+import { MESSAGE_CREATED, NEW_CONVERSATION } from "../constants/Subscriptions";
 
 const Query = {
   /**
@@ -15,11 +15,11 @@ const Query = {
     const specificMessage = await Message.find()
       .and([
         { $or: [{ sender: authUserId }, { receiver: authUserId }] },
-        { $or: [{ sender: userId }, { receiver: userId }] },
+        { $or: [{ sender: userId }, { receiver: userId }] }
       ])
-      .populate('sender')
-      .populate('receiver')
-      .sort({ updatedAt: 'asc' });
+      .populate("sender")
+      .populate("receiver")
+      .sort({ updatedAt: "asc" });
 
     return specificMessage;
   },
@@ -31,8 +31,8 @@ const Query = {
   getConversations: async (root, { authUserId }, { User, Message }) => {
     // Get users with whom authUser had a chat
     const users = await User.findById(authUserId).populate(
-      'messages',
-      'id username firstName lastName image isOnline'
+      "messages",
+      "id username firstName lastName image isOnline"
     );
 
     // Get last messages with wom authUser had a chat
@@ -41,26 +41,26 @@ const Query = {
         $match: {
           $or: [
             {
-              receiver: mongoose.Types.ObjectId(authUserId),
+              receiver: mongoose.Types.ObjectId(authUserId)
             },
             {
-              sender: mongoose.Types.ObjectId(authUserId),
-            },
-          ],
-        },
+              sender: mongoose.Types.ObjectId(authUserId)
+            }
+          ]
+        }
       },
       {
-        $sort: { createdAt: -1 },
+        $sort: { createdAt: -1 }
       },
       {
         $group: {
-          _id: '$sender',
+          _id: "$sender",
           doc: {
-            $first: '$$ROOT',
-          },
-        },
+            $first: "$$ROOT"
+          }
+        }
       },
-      { $replaceRoot: { newRoot: '$doc' } },
+      { $replaceRoot: { newRoot: "$doc" } }
     ]);
 
     // Attach message properties to users
@@ -72,7 +72,7 @@ const Query = {
         firstName: u.firstName,
         lastName: u.lastName,
         image: u.image,
-        isOnline: u.isOnline,
+        isOnline: u.isOnline
       };
 
       const sender = lastMessages.find(m => u.id === m.sender.toString());
@@ -101,7 +101,7 @@ const Query = {
     );
 
     return sortedConversations;
-  },
+  }
 };
 
 const Mutation = {
@@ -120,12 +120,12 @@ const Mutation = {
     let newMessage = await new Message({
       message,
       sender,
-      receiver,
+      receiver
     }).save();
 
     newMessage = await newMessage
-      .populate('sender')
-      .populate('receiver')
+      .populate("sender")
+      .populate("receiver")
       .execPopulate();
 
     // Publish message created event
@@ -160,8 +160,8 @@ const Mutation = {
         seen: false,
         lastMessage: newMessage.message,
         lastMessageSender: false,
-        lastMessageCreatedAt: newMessage.createdAt,
-      },
+        lastMessageCreatedAt: newMessage.createdAt
+      }
     });
 
     return newMessage;
@@ -187,7 +187,7 @@ const Mutation = {
     } catch (e) {
       return false;
     }
-  },
+  }
 };
 
 const Subscription = {
@@ -208,7 +208,7 @@ const Subscription = {
 
         return isAuthUserSenderOrReceiver && isUserSenderOrReceiver;
       }
-    ),
+    )
   },
 
   /**
@@ -219,8 +219,8 @@ const Subscription = {
       () => pubSub.asyncIterator(NEW_CONVERSATION),
       (payload, variables, { authUser }) =>
         authUser && authUser.id === payload.newConversation.receiverId
-    ),
-  },
+    )
+  }
 };
 
 export default { Mutation, Query, Subscription };

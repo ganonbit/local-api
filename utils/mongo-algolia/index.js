@@ -1,24 +1,24 @@
 /* @flow */
 /* eslint no-console: 0 */
 
-import { reduce } from 'lodash';
-import algoliasearch from 'algoliasearch';
+import { reduce } from "lodash";
+import algoliasearch from "algoliasearch";
 
-import createAlgoliaMongooseModel from './algolia-mongoose-model';
+import createAlgoliaMongooseModel from "./algolia-mongoose-model";
 
 const validateOpts = options => {
-  const requiredKeys = ['appId', 'apiKey', 'indexName'];
+  const requiredKeys = ["appId", "apiKey", "indexName"];
   requiredKeys.forEach(key => {
     if (!options[key]) throw new Error(`Missing option key: ${key}`);
   });
 };
 
-const mongoAlgolia = function(schema,options) {
+const mongoAlgolia = function(schema, options) {
   validateOpts(options);
 
   // add new Algolia objectID field
   schema.add({
-    _algoliaObjectID: { type: String, required: false, select: false },
+    _algoliaObjectID: { type: String, required: false, select: false }
   });
 
   // initialize Algolia client
@@ -35,9 +35,9 @@ const mongoAlgolia = function(schema,options) {
   schema.loadClass(createAlgoliaMongooseModel({ index, attributesToIndex }));
 
   // register hooks
-  schema.post('save', doc => doc.postSaveHook());
-  schema.post('update', doc => doc.postUpdateHook());
-  schema.post('remove', doc => doc.postRemoveHook());
+  schema.post("save", doc => doc.postSaveHook());
+  schema.post("update", doc => doc.postUpdateHook());
+  schema.post("remove", doc => doc.postRemoveHook());
 };
 
 export default mongoAlgolia;

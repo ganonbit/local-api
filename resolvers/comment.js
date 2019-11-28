@@ -15,11 +15,11 @@ const Mutation = {
     if (image) {
       const { createReadStream } = await image;
       const stream = createReadStream();
-      const uploadImage = await uploadToCloudinary(stream, 'post');
+      const uploadImage = await uploadToCloudinary(stream, "post");
 
       if (!uploadImage.secure_url) {
         throw new Error(
-          'Something went wrong while uploading image to Cloudinary'
+          "Something went wrong while uploading image to Cloudinary"
         );
       }
 
@@ -27,13 +27,12 @@ const Mutation = {
       imagePublicId = uploadImage.public_id;
     }
 
-
     const newComment = await new Comment({
       image: imageUrl,
       imagePublicId,
       comment,
       author,
-      post: postId,
+      post: postId
     }).save();
 
     let eventID = "5ddc0cdfdce3c14fcbc210bb";
@@ -59,14 +58,18 @@ const Mutation = {
    *
    * @param {string} id
    */
-  deleteComment: async (root, { input: { id, imagePublicId } }, { Comment, User, Post, Event }) => {
+  deleteComment: async (
+    root,
+    { input: { id, imagePublicId } },
+    { Comment, User, Post, Event }
+  ) => {
     // Remove comment image from cloudinary, if imagePublicId is present
     if (imagePublicId) {
       const deleteImage = await deleteFromCloudinary(imagePublicId);
 
-      if (deleteImage.result !== 'ok') {
+      if (deleteImage.result !== "ok") {
         throw new Error(
-          'Something went wrong while deleting image from Cloudinary'
+          "Something went wrong while deleting image from Cloudinary"
         );
       }
     }
@@ -89,7 +92,7 @@ const Mutation = {
     );
 
     return comment;
-  },
+  }
 };
 
 export default { Mutation };

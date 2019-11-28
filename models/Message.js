@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -9,19 +9,19 @@ const messageSchema = Schema(
   {
     sender: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User"
     },
     receiver: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User"
     },
     message: String,
     seen: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Message', messageSchema);
+export default mongoose.model("Message", messageSchema);

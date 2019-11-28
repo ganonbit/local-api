@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -7,13 +7,13 @@ const Schema = mongoose.Schema;
  */
 const eventSchema = Schema(
   {
-    name: {type: String, required: true, unique: true},
-    action: {type: String, required: true},
-    awardedPoints: {type: Number, required: true, default: 0}
+    name: { type: String, required: true, unique: true },
+    action: { type: String, required: true },
+    awardedPoints: { type: Number, required: true, default: 0 }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-export default mongoose.model('Event', eventSchema);
+export default mongoose.model("Event", eventSchema);

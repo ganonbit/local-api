@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-mongoose.plugin(require('@lykmapipo/mongoose-faker'));
+import mongoose from "mongoose";
+mongoose.plugin(require("@lykmapipo/mongoose-faker"));
 
 const Schema = mongoose.Schema;
 
@@ -11,40 +11,40 @@ const postSchema = Schema(
     content: {
       type: String,
       fake: {
-        generator: 'lorem',
-        type: 'paragraph'
+        generator: "lorem",
+        type: "paragraph"
       }
     },
     image: {
-      type: String,
+      type: String
       // fake: {
       //   generator: 'image',
       //   type: 'avatar'
-      // }    
+      // }
     },
     imagePublicId: String,
     isFeatured: { type: Boolean, default: false },
     isPublic: { type: Boolean, default: false },
     author: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User"
     },
     likes: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Like',
-      },
+        ref: "Like"
+      }
     ],
     comments: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
+        ref: "Comment"
+      }
+    ]
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-export default mongoose.model('Post', postSchema);
+export default mongoose.model("Post", postSchema);

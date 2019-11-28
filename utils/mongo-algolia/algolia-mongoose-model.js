@@ -1,9 +1,11 @@
 /* @flow */
-import { reduce, omit, find, map, pick } from 'lodash';
+import { reduce, omit, find, map, pick } from "lodash";
 
-export default function createAlgoliaMongooseModel({index, attributesToIndex}) {
+export default function createAlgoliaMongooseModel({
+  index,
+  attributesToIndex
+}) {
   class AlgoliaMongooseModel {
-
     // * clears algolia index
     // * removes `_algoliaObjectID` from documents
     static async clearAlgoliaIndex() {
@@ -20,16 +22,18 @@ export default function createAlgoliaMongooseModel({index, attributesToIndex}) {
       await this.clearAlgoliaIndex();
       const docs = await this.find({ _algoliaObjectID: { $eq: null } });
 
-      await Promise.all(docs.map(async (doc) => {
-        const object = pick(doc.toJSON(), attributesToIndex);
-        const { objectID } = await index.addObject(object);
-  
-        await this.updateOne(
-          { _id: doc._id },
-          { $set: { _algoliaObjectID: objectID } },
-          { upsert: true }
-        );
-      }));
+      await Promise.all(
+        docs.map(async doc => {
+          const object = pick(doc.toJSON(), attributesToIndex);
+          const { objectID } = await index.addObject(object);
+
+          await this.updateOne(
+            { _id: doc._id },
+            { $set: { _algoliaObjectID: objectID } },
+            { upsert: true }
+          );
+        })
+      );
     }
 
     // * set one or more settings of the algolia index
@@ -38,7 +42,7 @@ export default function createAlgoliaMongooseModel({index, attributesToIndex}) {
     }
 
     // * search the index
-    static async algoliaSearch({query, params, populate}) {
+    static async algoliaSearch({ query, params, populate }) {
       const searchParams = { ...params, query };
       const data = await index.search(searchParams);
 
@@ -47,7 +51,7 @@ export default function createAlgoliaMongooseModel({index, attributesToIndex}) {
         // find objects into mongodb matching `objectID` from Algolia search
         const hitsFromMongoose = await this.find(
           {
-            _algoliaObjectID: { $in: map(data.hits, 'objectID') },
+            _algoliaObjectID: { $in: map(data.hits, "objectID") }
           },
           reduce(
             this.schema.obj,
@@ -59,15 +63,15 @@ export default function createAlgoliaMongooseModel({index, attributesToIndex}) {
         // add additional data from mongodb into Algolia hits
         const populatedHits = data.hits.map(hit => {
           const ogHit = find(hitsFromMongoose, {
-            _algoliaObjectID: hit.objectID,
+            _algoliaObjectID: hit.objectID
           });
 
           return omit(
             {
               ...(ogHit ? ogHit.toJSON() : {}),
-              ...hit,
+              ...hit
             },
-            ['_algoliaObjectID']
+            ["_algoliaObjectID"]
           );
         });
 

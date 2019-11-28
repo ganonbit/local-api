@@ -21,11 +21,13 @@ const Mutation = {
     // Push like to post collection
     await Post.findOneAndUpdate({ _id: postId }, { $push: { likes: like.id } });
     // Push like and add points to user collection
-    await User.findOneAndUpdate({ _id: userId }, { $push: { likes: like.id }, $set: { likePoints: newPoints } });
-
+    await User.findOneAndUpdate(
+      { _id: userId },
+      { $push: { likes: like.id }, $set: { likePoints: newPoints } }
+    );
 
     // await earnBadge();
-    
+
     return like;
   },
   /**
@@ -33,7 +35,11 @@ const Mutation = {
    *
    * @param {string} id
    */
-  deleteLike: async (root, { input: { userId, id } }, { Like, User, Post, Event }) => {
+  deleteLike: async (
+    root,
+    { input: { userId, id } },
+    { Like, User, Post, Event }
+  ) => {
     const like = await Like.findByIdAndRemove(id);
     const user = await User.findById(like.user);
     let eventID = "5dda290bcd879c3e998e2a48";
@@ -52,7 +58,7 @@ const Mutation = {
     );
 
     return like;
-  },
+  }
 };
 
 export default { Mutation };

@@ -1,11 +1,11 @@
-import {} from 'dotenv/config';
-import mongoose from 'mongoose';
-import mongoAlgolia from '../utils/mongo-algolia'
-import bcrypt from 'bcryptjs';
-mongoose.plugin(require('@lykmapipo/mongoose-faker'));
+import {} from "dotenv/config";
+import mongoose from "mongoose";
+import mongoAlgolia from "../utils/mongo-algolia";
+import bcrypt from "bcryptjs";
+mongoose.plugin(require("@lykmapipo/mongoose-faker"));
 
-let genderTypes = ['Male', 'Female', 'Custom'];
-let roleTypes = ['selma', 'expert', 'user'];
+let genderTypes = ["Male", "Female", "Custom"];
+let roleTypes = ["selma", "expert", "user"];
 
 const Schema = mongoose.Schema;
 
@@ -18,8 +18,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
       fake: {
-        generator: 'name',
-        type: 'firstName'
+        generator: "name",
+        type: "firstName"
       },
       algoliaIndex: true
     },
@@ -27,8 +27,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
       fake: {
-        generator: 'name',
-        type: 'lastName'
+        generator: "name",
+        type: "lastName"
       },
       algoliaIndex: true
     },
@@ -39,8 +39,8 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
       fake: {
-        generator: 'internet',
-        type: 'email'
+        generator: "internet",
+        type: "email"
       },
       algoliaIndex: true
     },
@@ -51,17 +51,18 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
       fake: {
-        generator: 'internet',
-        type: 'userName'
+        generator: "internet",
+        type: "userName"
       },
       algoliaIndex: true
     },
     birthday: {
-      type: Date, default: Date.now,
+      type: Date,
+      default: Date.now,
       required: false,
       fake: {
-        generator: 'date',
-        type: 'past'
+        generator: "date",
+        type: "past"
       },
       algoliaIndex: true
     },
@@ -75,14 +76,14 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       fake: {
-        generator: 'lorem',
-        type: 'sentence'
+        generator: "lorem",
+        type: "sentence"
       }
     },
     location: {
       type: String,
       lowercase: true,
-      trim: true,
+      trim: true
     },
     emailToken: String,
     emailTokenExpiry: Date,
@@ -90,8 +91,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
       fake: {
-        generator: 'internet',
-        type: 'password'
+        generator: "internet",
+        type: "password"
       }
     },
     image: String,
@@ -106,79 +107,79 @@ const userSchema = new Schema(
     role: {
       type: String,
       enum: roleTypes,
-      default: 'user',
+      default: "user",
       algoliaIndex: true
     },
     level: { type: Number, default: 1 },
-    accountPoints: {type: Number, default: 0},
-    likePoints: {type: Number, default: 0},
-    commentPoints: {type: Number, default: 0},
-    sharePoints: {type: Number, default: 0},
-    referralPoints: {type: Number, default: 0},
-    gamePoints: {type: Number, default: 0},
-    currentPoints: {type: Number, default: 0},
-    usedPoints: {type: Number, default: 0},
-    totalPoints: {type: Number, default: 0},
-    pagesViewed: {type: Number, default: 0},
+    accountPoints: { type: Number, default: 0 },
+    likePoints: { type: Number, default: 0 },
+    commentPoints: { type: Number, default: 0 },
+    sharePoints: { type: Number, default: 0 },
+    referralPoints: { type: Number, default: 0 },
+    gamePoints: { type: Number, default: 0 },
+    currentPoints: { type: Number, default: 0 },
+    usedPoints: { type: Number, default: 0 },
+    totalPoints: { type: Number, default: 0 },
+    pagesViewed: { type: Number, default: 0 },
     posts: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Post',
-      },
+        ref: "Post"
+      }
     ],
     likes: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Like',
-      },
+        ref: "Like"
+      }
     ],
     comments: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
+        ref: "Comment"
+      }
     ],
     followers: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Follow',
-      },
+        ref: "Follow"
+      }
     ],
     following: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Follow',
-      },
+        ref: "Follow"
+      }
     ],
     notifications: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Notification',
-      },
+        ref: "Notification"
+      }
     ],
     messages: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
+        ref: "User"
+      }
     ],
     badges: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Achievement',
+        ref: "Achievement"
       }
     ]
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
 /**
  * Hashes the users password when saving it to DB
  */
-userSchema.pre('save', function(next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", function(next) {
+  if (!this.isModified("password")) {
     return next();
   }
 
@@ -198,6 +199,6 @@ userSchema.plugin(mongoAlgolia, {
   appId: process.env.ALGOLIA_APP_ID,
   apiKey: process.env.ALGOLIA_API_KEY,
   indexName: process.env.ALGOLIA_USERS_INDEX
-})
+});
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);

@@ -2,7 +2,6 @@
 
 // export const earnBadge = async ({ user, post }) => {
 
-
 // };
 
 // export const deleteFromCloudinary = async publicId => {
