@@ -82,9 +82,7 @@ const Query = {
 				user.lastMessage = sender.message;
 				user.lastMessageSender = false;
 			} else {
-				const receiver = lastMessages.find(
-					m => u.id === m.receiver.toString()
-				);
+				const receiver = lastMessages.find(m => u.id === m.receiver.toString());
 
 				if (receiver) {
 					user.seen = receiver.seen;
@@ -99,9 +97,7 @@ const Query = {
 
 		// Sort users by last created messages date
 		const sortedConversations = conversations.sort((a, b) =>
-			b.lastMessageCreatedAt
-				.toString()
-				.localeCompare(a.lastMessageCreatedAt)
+			b.lastMessageCreatedAt.toString().localeCompare(a.lastMessageCreatedAt)
 		);
 
 		return sortedConversations;

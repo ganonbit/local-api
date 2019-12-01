@@ -49,17 +49,12 @@ const Query = {
 	 * @param {int} skip how many posts to skip
 	 * @param {int} limit how many posts to limit
 	 */
-	getFollowedPosts: async (
-		root,
-		{ userId, skip, limit },
-		{ Post, Follow }
-	) => {
+	getFollowedPosts: async (root, { userId, skip, limit }, { Post, Follow }) => {
 		// Find user ids, that current user follows
 		const userFollowing = [];
-		const follow = await Follow.find(
-			{ follower: userId },
-			{ _id: 0 }
-		).select('user');
+		const follow = await Follow.find({ follower: userId }, { _id: 0 }).select(
+			'user'
+		);
 		follow.map(f => userFollowing.push(f.user));
 
 		// Find user posts and followed posts by using userFollowing ids array

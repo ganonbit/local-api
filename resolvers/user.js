@@ -92,9 +92,7 @@ const Query = {
 
 		// Sort users by last created messages date
 		const sortedConversations = newConversations.sort((a, b) =>
-			b.lastMessageCreatedAt
-				.toString()
-				.localeCompare(a.lastMessageCreatedAt)
+			b.lastMessageCreatedAt.toString().localeCompare(a.lastMessageCreatedAt)
 		);
 
 		// Attach new conversations to auth User
@@ -212,10 +210,9 @@ const Query = {
 	getUsers: async (root, { userId, skip, limit }, { User, Follow }) => {
 		// Find user ids, that current user follows
 		const userFollowing = [];
-		const follow = await Follow.find(
-			{ follower: userId },
-			{ _id: 0 }
-		).select('user');
+		const follow = await Follow.find({ follower: userId }, { _id: 0 }).select(
+			'user'
+		);
 		follow.map(f => userFollowing.push(f.user));
 
 		// Find users that user is not following
@@ -331,11 +328,7 @@ const Mutation = {
 	 * @param {string} emailOrUsername
 	 * @param {string} password
 	 */
-	signin: async (
-		root,
-		{ input: { emailOrUsername, password } },
-		{ User }
-	) => {
+	signin: async (root, { input: { emailOrUsername, password } }, { User }) => {
 		const user = await User.findOne().or([
 			{ email: emailOrUsername },
 			{ username: emailOrUsername },
@@ -955,9 +948,7 @@ const Mutation = {
 			'zlib',
 		];
 		if (usernameBlacklist.includes(username)) {
-			throw new Error(
-				"This username isn't available. Please try another."
-			);
+			throw new Error("This username isn't available. Please try another.");
 		}
 
 		// Password validation
@@ -1022,11 +1013,7 @@ const Mutation = {
 		}
 
 		// Set password reset token and it's expiry
-		const token = generateToken(
-			user,
-			process.env.SECRET,
-			EMAIL_TOKEN_EXPIRY
-		);
+		const token = generateToken(user, process.env.SECRET, EMAIL_TOKEN_EXPIRY);
 		const tokenExpiry = Date.now() + EMAIL_TOKEN_EXPIRY;
 		await User.findOneAndUpdate(
 			{ _id: user.id },
@@ -1132,11 +1119,7 @@ const Mutation = {
 	) => {
 		const { createReadStream } = await image;
 		const stream = createReadStream();
-		const uploadImage = await uploadToCloudinary(
-			stream,
-			'user',
-			imagePublicId
-		);
+		const uploadImage = await uploadToCloudinary(stream, 'user', imagePublicId);
 
 		if (uploadImage.secure_url) {
 			const fieldsToUpdate = {};
@@ -1172,8 +1155,7 @@ const Subscription = {
 	isUserOnline: {
 		subscribe: withFilter(
 			() => pubSub.asyncIterator(IS_USER_ONLINE),
-			(payload, variables, { authUser }) =>
-				variables.authUserId === authUser.id
+			(payload, variables, { authUser }) => variables.authUserId === authUser.id
 		),
 	},
 };

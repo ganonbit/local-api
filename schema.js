@@ -486,11 +486,7 @@ const schema = gql`
 		getEvent(id: ID!): EventPayload
 
 		# Gets achievements
-		getAchievements(
-			name: String
-			skip: Int
-			limit: Int
-		): [AchievementPayload]
+		getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]
 
 		# Gets user's achievements
 		getUserAchievements(
@@ -585,9 +581,7 @@ const schema = gql`
 		deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
 
 		# Deletes a achievement
-		deleteUserAchievement(
-			input: DeleteAchievementInput!
-		): AchievementPayload
+		deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
 	}
 
 	# ---------------------------------------------------------

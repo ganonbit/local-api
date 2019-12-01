@@ -19,10 +19,7 @@ const Mutation = {
 		const newPoints = user.likePoints + event.awardedPoints;
 
 		// Push like to post collection
-		await Post.findOneAndUpdate(
-			{ _id: postId },
-			{ $push: { likes: like.id } }
-		);
+		await Post.findOneAndUpdate({ _id: postId }, { $push: { likes: like.id } });
 		// Push like and add points to user collection
 		await User.findOneAndUpdate(
 			{ _id: userId },

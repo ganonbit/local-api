@@ -18,8 +18,7 @@ const saveFakePosts = async mapUsers => {
 	const postFactories = Post.fake(numberOfPosts);
 
 	postFactories.map(async postFactory => {
-		postFactory.author =
-			mapUsers[Math.floor(Math.random() * mapUsers.length)];
+		postFactory.author = mapUsers[Math.floor(Math.random() * mapUsers.length)];
 		await new Post(postFactory).save(function(err) {
 			if (err) {
 				console.log(`The following error ocurred:\n${err}`);

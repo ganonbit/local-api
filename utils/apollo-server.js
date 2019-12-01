@@ -44,9 +44,7 @@ export const createApolloServer = (schema, resolvers, models) => {
 
 			let authUser;
 			if (req.headers.authorization !== 'null') {
-				const user = await checkAuthorization(
-					req.headers['authorization']
-				);
+				const user = await checkAuthorization(req.headers['authorization']);
 				if (user) {
 					authUser = user;
 				}
@@ -60,9 +58,7 @@ export const createApolloServer = (schema, resolvers, models) => {
 
 				// Check if user is authenticated
 				if (connectionParams.authorization) {
-					const user = await checkAuthorization(
-						connectionParams.authorization
-					);
+					const user = await checkAuthorization(connectionParams.authorization);
 
 					// Publish user isOnline true
 					pubSub.publish(IS_USER_ONLINE, {
@@ -79,9 +75,7 @@ export const createApolloServer = (schema, resolvers, models) => {
 				}
 			},
 			onDisconnect: async (webSocket, context) => {
-				console.log(
-					'*** User has been disconnected from WebSocket server ***'
-				);
+				console.log('*** User has been disconnected from WebSocket server ***');
 
 				// Get socket's context
 				const c = await context.initPromise;

@@ -40,13 +40,7 @@ const Mutation = {
 	createNotification: async (
 		root,
 		{
-			input: {
-				userId,
-				authorId,
-				postId,
-				notificationType,
-				notificationTypeId,
-			},
+			input: { userId, authorId, postId, notificationType, notificationTypeId },
 		},
 		{ Notification, User }
 	) => {
