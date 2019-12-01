@@ -35,5 +35,13 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "es5",
+    "useTabs": true,
+    "jsxBracketSameLine": true
   }
 }
