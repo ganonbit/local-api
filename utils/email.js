@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
 const { MAIL_SERVICE, MAIL_USER, MAIL_PASS } = process.env;
 
@@ -6,11 +6,11 @@ const { MAIL_SERVICE, MAIL_USER, MAIL_PASS } = process.env;
  * Creates transporter object that will help us to send emails
  */
 const transporter = nodemailer.createTransport({
-  service: MAIL_SERVICE,
-  auth: {
-    user: MAIL_USER,
-    pass: MAIL_PASS
-  }
+	service: MAIL_SERVICE,
+	auth: {
+		user: MAIL_USER,
+		pass: MAIL_PASS,
+	},
 });
 
 /**
@@ -21,16 +21,16 @@ const transporter = nodemailer.createTransport({
  * @param {string} html content of the email
  */
 export const sendEmail = ({ to, subject, html }) => {
-  return new Promise((resolve, reject) => {
-    const options = { from: MAIL_USER, to, subject, html };
+	return new Promise((resolve, reject) => {
+		const options = { from: MAIL_USER, to, subject, html };
 
-    return transporter
-      .sendMail(options)
-      .then(response => {
-        resolve(response.data);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
+		return transporter
+			.sendMail(options)
+			.then(response => {
+				resolve(response.data);
+			})
+			.catch(error => {
+				reject(error);
+			});
+	});
 };

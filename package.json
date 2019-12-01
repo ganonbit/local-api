@@ -8,7 +8,8 @@
     "deploy": "git push heroku master",
     "seedUsers": "node scripts/seedUsers.js",
     "seedPosts": "node scripts/seedPosts.js",
-    "syncAlgoliaUsers": "node scripts/syncAllAlgoliaUsers.js"
+    "syncAlgoliaUsers": "node scripts/syncAllAlgoliaUsers.js",
+    "format": "prettier --write \"./**/*.{js,json,md,}\""
   },
   "dependencies": {
     "@lykmapipo/mongoose-faker": "^0.10.3",
@@ -35,5 +36,13 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": true,
+    "jsxBracketSameLine": true
   }
 }
