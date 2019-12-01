@@ -1,9 +1,9 @@
-import {} from 'dotenv/config';
-import express from 'express';
-import { createServer } from 'http';
-import mongoose from 'mongoose';
-import cors from 'cors';
-
+import {} from "dotenv/config";
+import express from "express";
+const bodyParser = require('body-parser');
+import { createServer } from "http";
+import mongoose from "mongoose";
+import cors from "cors";
 import models from './models';
 import schema from './schema';
 import resolvers from './resolvers';
@@ -30,6 +30,8 @@ const corsOptions = {
 	credentials: true,
 };
 app.use(cors(corsOptions));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
 	res.redirect('/graphql');

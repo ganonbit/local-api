@@ -13,312 +13,349 @@ const AUTH_TOKEN_EXPIRY = '1y';
 const EMAIL_TOKEN_EXPIRY = 43200;
 
 const Query = {
-	/**
-	 * Gets the currently logged in user
-	 */
-	getAuthUser: async (root, args, { authUser, Message, User }) => {
-		if (!authUser) return null;
+  /**
+   * Gets the currently logged in user
+   */
+  getAuthUser: async (root, args, { authUser, Message, User }) => {
+    if (!authUser) return null;
 
-		// If user is authenticated, update it's isOnline field to true
-		const user = await User.findOneAndUpdate(
-			{ email: authUser.email },
-			{ isOnline: true }
-		)
-			.populate({
-				path: 'posts',
-				options: { sort: { createdAt: 'desc' } },
-			})
-			.populate('likes')
-			.populate('followers')
-			.populate('following')
-			.populate({
-				path: 'notifications',
-				populate: [
-					{ path: 'author' },
-					{ path: 'follow' },
-					{ path: 'like', populate: { path: 'post' } },
-					{ path: 'comment', populate: { path: 'post' } },
-				],
-				match: { seen: false },
-			});
+    // If user is authenticated, update it's isOnline field to true
+    const user = await User.findOneAndUpdate(
+      { email: authUser.email },
+      { isOnline: true }
+    )
+      .populate({ path: "posts", options: { sort: { createdAt: "desc" } } })
+      .populate("likes")
+      .populate("followers")
+      .populate("following")
+      .populate({
+        path: "notifications",
+        populate: [
+          { path: "author" },
+          { path: "follow" },
+          { path: "like", populate: { path: "post" } },
+          { path: "comment", populate: { path: "post" } }
+        ],
+        match: { seen: false }
+      });
 
-		user.newNotifications = user.notifications;
+    if (user && user.notifications) {
+      user.newNotifications = user.notifications;
+    }
 
-		// Find unseen messages
-		const lastUnseenMessages = await Message.aggregate([
-			{
-				$match: {
-					receiver: mongoose.Types.ObjectId(authUser.id),
-					seen: false,
-				},
-			},
-			{
-				$sort: { createdAt: -1 },
-			},
-			{
-				$group: {
-					_id: '$sender',
-					doc: {
-						$first: '$$ROOT',
-					},
-				},
-			},
-			{ $replaceRoot: { newRoot: '$doc' } },
-			{
-				$lookup: {
-					from: 'users',
-					localField: 'sender',
-					foreignField: '_id',
-					as: 'sender',
-				},
-			},
-		]);
+    // Find unseen messages
+    const lastUnseenMessages = await Message.aggregate([
+      {
+        $match: {
+          receiver: mongoose.Types.ObjectId(authUser.id),
+          seen: false
+        }
+      },
+      {
+        $sort: { createdAt: -1 }
+      },
+      {
+        $group: {
+          _id: "$sender",
+          doc: {
+            $first: "$$ROOT"
+          }
+        }
+      },
+      { $replaceRoot: { newRoot: "$doc" } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "sender",
+          foreignField: "_id",
+          as: "sender"
+        }
+      }
+    ]);
 
-		// Transform data
-		const newConversations = [];
-		lastUnseenMessages.map(u => {
-			const user = {
-				id: u.sender[0]._id,
-				username: u.sender[0].username,
-				firstName: u.sender[0].firstName,
-				lastName: u.sender[0].lastName,
-				image: u.sender[0].image,
-				lastMessage: u.message,
-				lastMessageCreatedAt: u.createdAt,
-			};
+    // Transform data
+    const newConversations = [];
+    lastUnseenMessages.map(u => {
+      const user = {
+        id: u.sender[0]._id,
+        username: u.sender[0].username,
+        firstName: u.sender[0].firstName,
+        lastName: u.sender[0].lastName,
+        image: u.sender[0].image,
+        lastMessage: u.message,
+        lastMessageCreatedAt: u.createdAt
+      };
 
-			newConversations.push(user);
-		});
+      newConversations.push(user);
+    });
 
-		// Sort users by last created messages date
-		const sortedConversations = newConversations.sort((a, b) =>
-			b.lastMessageCreatedAt.toString().localeCompare(a.lastMessageCreatedAt)
-		);
+    // Sort users by last created messages date
+    const sortedConversations = newConversations.sort((a, b) =>
+      b.lastMessageCreatedAt.toString().localeCompare(a.lastMessageCreatedAt)
+    );
 
-		// Attach new conversations to auth User
-		user.newConversations = sortedConversations;
+    // Attach new conversations to auth User
+    if (user) {
+      user.newConversations = sortedConversations;
+    }
 
-		return user;
-	},
-	/**
-	 * Gets user by username
-	 *
-	 * @param {string} username
-	 */
-	getUser: async (root, { username, id }, { User }) => {
-		if (!username && !id) {
-			throw new Error('username or id is required params.');
-		}
+    return user;
+  },
+  /**
+   * Gets user by username
+   *
+   * @param {string} username
+   */
+  getUser: async (root, { username, id }, { User }) => {
+    if (!username && !id) {
+      throw new Error("username or id is required params.");
+    }
 
-		if (username && id) {
-			throw new Error('please pass only username or only id as a param');
-		}
+    if (username && id) {
+      throw new Error("please pass only username or only id as a param");
+    }
 
-		const query = username ? { username: username } : { _id: id };
-		const user = await User.findOne(query)
-			.populate({
-				path: 'posts',
-				populate: [
-					{
-						path: 'author',
-						populate: [
-							{ path: 'followers' },
-							{ path: 'following' },
-							{
-								path: 'notifications',
-								populate: [
-									{ path: 'author' },
-									{ path: 'follow' },
-									{ path: 'like' },
-									{ path: 'comment' },
-								],
-							},
-						],
-					},
-					{ path: 'comments', populate: { path: 'author' } },
-					{ path: 'likes' },
-				],
-				options: { sort: { createdAt: 'desc' } },
-			})
-			.populate('likes')
-			.populate('followers')
-			.populate('following')
-			.populate({
-				path: 'notifications',
-				populate: [
-					{ path: 'author' },
-					{ path: 'follow' },
-					{ path: 'like' },
-					{ path: 'comment' },
-				],
-			});
+    const query = username ? { username: username } : { _id: id };
+    const user = await User.findOne(query)
+      .populate({
+        path: "posts",
+        populate: [
+          {
+            path: "author",
+            populate: [
+              { path: "followers" },
+              { path: "following" },
+              {
+                path: "notifications",
+                populate: [
+                  { path: "author" },
+                  { path: "follow" },
+                  { path: "like" },
+                  { path: "comment" }
+                ]
+              }
+            ]
+          },
+          { path: "comments", populate: { path: "author" } },
+          { path: "likes" }
+        ],
+        options: { sort: { createdAt: "desc" } }
+      })
+      .populate("likes")
+      .populate("followers")
+      .populate("following")
+      .populate({
+        path: "notifications",
+        populate: [
+          { path: "author" },
+          { path: "follow" },
+          { path: "like" },
+          { path: "comment" }
+        ]
+      });
 
-		if (!user) {
-			throw new Error("User with given params doesn't exists.");
-		}
+    if (!user) {
+      throw new Error("User with given params doesn't exists.");
+    }
 
-		return user;
-	},
-	/**
-	 * Gets user posts by username
-	 *
-	 * @param {string} username
-	 * @param {int} skip how many posts to skip
-	 * @param {int} limit how many posts to limit
-	 */
-	getUserPosts: async (root, { username, skip, limit }, { User, Post }) => {
-		const user = await User.findOne({ username }).select('_id');
+    return user;
+  },
+  /**
+   * Gets user posts by username
+   *
+   * @param {string} username
+   * @param {int} skip how many posts to skip
+   * @param {int} limit how many posts to limit
+   */
+  getUserPosts: async (root, { username, skip, limit }, { User, Post }) => {
+    const user = await User.findOne({ username }).select("_id");
 
-		const query = { author: user._id };
-		const count = await Post.find(query).countDocuments();
-		const posts = await Post.find(query)
-			.populate({
-				path: 'author',
-				populate: [
-					{ path: 'following' },
-					{ path: 'followers' },
-					{
-						path: 'notifications',
-						populate: [
-							{ path: 'author' },
-							{ path: 'follow' },
-							{ path: 'like' },
-							{ path: 'comment' },
-						],
-					},
-				],
-			})
-			.populate('likes')
-			.populate({
-				path: 'comments',
-				options: { sort: { createdAt: 'desc' } },
-				populate: { path: 'author' },
-			})
-			.skip(skip)
-			.limit(limit)
-			.sort({ createdAt: 'desc' });
+    const query = { author: user._id };
+    const count = await Post.find(query).countDocuments();
+    const posts = await Post.find(query)
+      .populate({
+        path: "author",
+        populate: [
+          { path: "following" },
+          { path: "followers" },
+          {
+            path: "notifications",
+            populate: [
+              { path: "author" },
+              { path: "follow" },
+              { path: "like" },
+              { path: "comment" }
+            ]
+          }
+        ]
+      })
+      .populate("likes")
+      .populate({
+        path: "comments",
+        options: { sort: { createdAt: "desc" } },
+        populate: { path: "author" }
+      })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: "desc" });
 
-		return { posts, count };
-	},
-	/**
-	 * Gets all users
-	 *
-	 * @param {string} userId
-	 * @param {int} skip how many users to skip
-	 * @param {int} limit how many users to limit
-	 */
-	getUsers: async (root, { userId, skip, limit }, { User, Follow }) => {
-		// Find user ids, that current user follows
-		const userFollowing = [];
-		const follow = await Follow.find({ follower: userId }, { _id: 0 }).select(
-			'user'
-		);
-		follow.map(f => userFollowing.push(f.user));
+    return { posts, count };
+  },
 
-		// Find users that user is not following
-		const query = {
-			$and: [{ _id: { $ne: userId } }, { _id: { $nin: userFollowing } }],
-		};
-		const count = await User.where(query).countDocuments();
-		const users = await User.find(query)
-			.populate('followers')
-			.populate('following')
-			.populate({
-				path: 'notifications',
-				populate: [
-					{ path: 'author' },
-					{ path: 'follow' },
-					{ path: 'like' },
-					{ path: 'comment' },
-				],
-			})
-			.skip(skip)
-			.limit(limit)
-			.sort({ createdAt: 'desc' });
+  /**
+   * Gets user posts by username
+   *
+   * @param {string} username
+   * @param {int} skip how many posts to skip
+   * @param {int} limit how many posts to limit
+   */
+  getUserComments: async (root, { username, skip, limit }, { User, Comment }) => {
+    const user = await User.findOne({ username }).select("_id");
 
-		return { users, count };
-	},
-	/**
-	 * Searches users by username or name
-	 *
-	 * @param {string} searchQuery
-	 */
-	searchUsers: async (root, { searchQuery }, { User, authUser }) => {
-		// Return an empty array if searchQuery isn't presented
-		if (!searchQuery) {
-			return [];
-		}
+    const query = { author: user._id };
+    const count = await Comment.find(query).countDocuments();
+    const comments = await Comment.find(query)
+      .populate({
+        path: "author",
+        populate: [
+          { path: "following" },
+          { path: "followers" },
+          {
+            path: "notifications",
+            populate: [
+              { path: "author" },
+              { path: "follow" },
+              { path: "like" },
+              { path: "comment" }
+            ]
+          }
+        ]
+      })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: "desc" });
 
-		const users = User.find({
-			$or: [
-				{ username: new RegExp(searchQuery, 'i') },
-				{ firstName: new RegExp(searchQuery, 'i') },
-				{ lastName: new RegExp(searchQuery, 'i') },
-			],
-			_id: {
-				$ne: authUser.id,
-			},
-		}).limit(50);
+    return { comments, count };
+  },
+  /**
+   * Gets all users
+   *
+   * @param {string} userId
+   * @param {int} skip how many users to skip
+   * @param {int} limit how many users to limit
+   */
+  getUsers: async (root, { userId, skip, limit }, { User, Follow }) => {
+    // Find user ids, that current user follows
+    const userFollowing = [];
+    const follow = await Follow.find({ follower: userId }, { _id: 0 }).select(
+      "user"
+    );
+    follow.map(f => userFollowing.push(f.user));
 
-		return users;
-	},
-	/**
-	 * Gets Suggested people for user
-	 *
-	 * @param {string} userId
-	 */
-	suggestPeople: async (root, { userId }, { User, Follow }) => {
-		const LIMIT = 6;
+    // Find users that user is not following
+    const query = {
+      $and: [{ _id: { $ne: userId } }, { _id: { $nin: userFollowing } }]
+    };
+    const count = await User.where(query).countDocuments();
+    const users = await User.find(query)
+      .populate("followers")
+      .populate("following")
+      .populate({
+        path: "notifications",
+        populate: [
+          { path: "author" },
+          { path: "follow" },
+          { path: "like" },
+          { path: "comment" }
+        ]
+      })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: "desc" });
 
-		// Find who user follows
-		const userFollowing = [];
-		const following = await Follow.find(
-			{ follower: userId },
-			{ _id: 0 }
-		).select('user');
-		following.map(f => userFollowing.push(f.user));
-		userFollowing.push(userId);
+    return { users, count };
+  },
+  /**
+   * Searches users by username or name
+   *
+   * @param {string} searchQuery
+   */
+  searchUsers: async (root, { searchQuery }, { User, authUser }) => {
+    // Return an empty array if searchQuery isn't presented
+    if (!searchQuery) {
+      return [];
+    }
 
-		// Find random users
-		const query = { _id: { $nin: userFollowing } };
-		const usersCount = await User.where(query).countDocuments();
-		let random = Math.floor(Math.random() * usersCount);
+    const users = User.find({
+      $or: [
+        { username: new RegExp(searchQuery, "i") },
+        { firstName: new RegExp(searchQuery, "i") },
+        { lastName: new RegExp(searchQuery, "i") }
+      ],
+      _id: {
+        $ne: authUser.id
+      }
+    }).limit(50);
 
-		const usersLeft = usersCount - random;
-		if (usersLeft < LIMIT) {
-			random = random - (LIMIT - usersLeft);
-			if (random < 0) {
-				random = 0;
-			}
-		}
+    return users;
+  },
+  /**
+   * Gets Suggested people for user
+   *
+   * @param {string} userId
+   */
+  suggestPeople: async (root, { userId }, { User, Follow }) => {
+    const LIMIT = 6;
 
-		const randomUsers = await User.find(query)
-			.skip(random)
-			.limit(LIMIT);
+    // Find who user follows
+    const userFollowing = [];
+    const following = await Follow.find(
+      { follower: userId },
+      { _id: 0 }
+    ).select("user");
+    following.map(f => userFollowing.push(f.user));
+    userFollowing.push(userId);
 
-		return randomUsers;
-	},
-	/**
-	 * Verifies reset password token
-	 *
-	 * @param {string} email
-	 * @param {string} token
-	 */
-	verifyToken: async (root, { email, token }, { User }) => {
-		// Check if user exists and token is valid
-		const user = await User.findOne({
-			email,
-			emailToken: token,
-			emailTokenExpiry: {
-				$gte: Date.now() - EMAIL_TOKEN_EXPIRY,
-			},
-		});
-		if (!user) {
-			throw new Error('This token is either invalid or expired!');
-		}
+    // Find random users
+    const query = { _id: { $nin: userFollowing } };
+    const usersCount = await User.where(query).countDocuments();
+    let random = Math.floor(Math.random() * usersCount);
 
-		return { message: 'Success' };
-	},
+    const usersLeft = usersCount - random;
+    if (usersLeft < LIMIT) {
+      random = random - (LIMIT - usersLeft);
+      if (random < 0) {
+        random = 0;
+      }
+    }
+
+    const randomUsers = await User.find(query)
+      .skip(random)
+      .limit(LIMIT);
+
+    return randomUsers;
+  },
+  /**
+   * Verifies reset password token
+   *
+   * @param {string} email
+   * @param {string} token
+   */
+  verifyToken: async (root, { email, token }, { User }) => {
+    // Check if user exists and token is valid
+    const user = await User.findOne({
+      email,
+      emailToken: token,
+      emailTokenExpiry: {
+        $gte: Date.now() - EMAIL_TOKEN_EXPIRY
+      }
+    });
+    if (!user) {
+      throw new Error("This token is either invalid or expired!");
+    }
+
+    return { message: "Success" };
+  }
 };
 
 const Mutation = {

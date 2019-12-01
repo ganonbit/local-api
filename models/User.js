@@ -13,166 +13,166 @@ const Schema = mongoose.Schema;
  * User schema that has references to Post, Like, Comment, Follow and Notification schemas
  */
 const userSchema = new Schema(
-	{
-		firstName: {
-			type: String,
-			required: true,
-			fake: {
-				generator: 'name',
-				type: 'firstName',
-			},
-			algoliaIndex: true,
-		},
-		lastName: {
-			type: String,
-			required: true,
-			fake: {
-				generator: 'name',
-				type: 'lastName',
-			},
-			algoliaIndex: true,
-		},
-		email: {
-			type: String,
-			required: true,
-			lowercase: true,
-			trim: true,
-			unique: true,
-			fake: {
-				generator: 'internet',
-				type: 'email',
-			},
-			algoliaIndex: true,
-		},
-		username: {
-			type: String,
-			required: true,
-			lowercase: true,
-			trim: true,
-			unique: true,
-			fake: {
-				generator: 'internet',
-				type: 'userName',
-			},
-			algoliaIndex: true,
-		},
-		birthday: {
-			type: Date,
-			default: Date.now,
-			required: false,
-			fake: {
-				generator: 'date',
-				type: 'past',
-			},
-			algoliaIndex: true,
-		},
-		gender: {
-			type: String,
-			// required: true,
-			enum: genderTypes,
-			algoliaIndex: true,
-		},
-		bio: {
-			type: String,
-			trim: true,
-			fake: {
-				generator: 'lorem',
-				type: 'sentence',
-			},
-		},
-		location: {
-			type: String,
-			lowercase: true,
-			trim: true,
-		},
-		emailToken: String,
-		emailTokenExpiry: Date,
-		password: {
-			type: String,
-			required: true,
-			fake: {
-				generator: 'internet',
-				type: 'password',
-			},
-		},
-		image: String,
-		imagePublicId: String,
-		coverImage: String,
-		coverImagePublicId: String,
-		isOnline: { type: Boolean, default: false },
-		isVerified: { type: Boolean, default: false },
-		isBanned: { type: Boolean, default: false },
-		isGuru: { type: Boolean, default: false },
-		isPick: { type: Boolean, default: false },
-		role: {
-			type: String,
-			enum: roleTypes,
-			default: 'user',
-			algoliaIndex: true,
-		},
-		level: { type: Number, default: 1 },
-		accountPoints: { type: Number, default: 0 },
-		likePoints: { type: Number, default: 0 },
-		commentPoints: { type: Number, default: 0 },
-		sharePoints: { type: Number, default: 0 },
-		referralPoints: { type: Number, default: 0 },
-		gamePoints: { type: Number, default: 0 },
-		currentPoints: { type: Number, default: 0 },
-		usedPoints: { type: Number, default: 0 },
-		totalPoints: { type: Number, default: 0 },
-		pagesViewed: { type: Number, default: 0 },
-		posts: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Post',
-			},
-		],
-		likes: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Like',
-			},
-		],
-		comments: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Comment',
-			},
-		],
-		followers: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Follow',
-			},
-		],
-		following: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Follow',
-			},
-		],
-		notifications: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Notification',
-			},
-		],
-		messages: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'User',
-			},
-		],
-		badges: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Achievement',
-			},
-		],
-	},
-	{
-		timestamps: true,
-	}
+  {
+    firstName: {
+      type: String,
+      required: true,
+      fake: {
+        generator: "name",
+        type: "firstName"
+      },
+      algoliaIndex: true
+    },
+    lastName: {
+      type: String,
+      required: true,
+      fake: {
+        generator: "name",
+        type: "lastName"
+      },
+      algoliaIndex: true
+    },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      unique: true,
+      fake: {
+        generator: "internet",
+        type: "email"
+      },
+      algoliaIndex: true
+    },
+    username: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      unique: true,
+      fake: {
+        generator: "internet",
+        type: "userName"
+      },
+      algoliaIndex: true
+    },
+    birthday: {
+      type: Date,
+      default: Date.now,
+      required: false,
+      fake: {
+        generator: "date",
+        type: "past"
+      },
+      algoliaIndex: true
+    },
+    gender: {
+      type: String,
+      // required: true,
+      enum: genderTypes,
+      algoliaIndex: true
+    },
+    bio: {
+      type: String,
+      trim: true,
+      fake: {
+        generator: "lorem",
+        type: "sentence"
+      }
+    },
+    location: {
+      type: String,
+      lowercase: true,
+      trim: true
+    },
+    emailToken: String,
+    emailTokenExpiry: Date,
+    password: {
+      type: String,
+      required: true,
+      fake: {
+        generator: "internet",
+        type: "password"
+      }
+    },
+    image: String,
+    imagePublicId: String,
+    coverImage: String,
+    coverImagePublicId: String,
+    isOnline: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false, algoliaIndex: true },
+    isBanned: { type: Boolean, default: false, algoliaIndex: true },
+    isGuru: { type: Boolean, default: false, algoliaIndex: true },
+    isPick: { type: Boolean, default: false, algoliaIndex: true },
+    role: {
+      type: String,
+      enum: roleTypes,
+      default: "user",
+      algoliaIndex: true
+    },
+    level: { type: Number, default: 1 },
+    accountPoints: { type: Number, default: 0 },
+    likePoints: { type: Number, default: 0 },
+    commentPoints: { type: Number, default: 0 },
+    sharePoints: { type: Number, default: 0 },
+    referralPoints: { type: Number, default: 0 },
+    gamePoints: { type: Number, default: 0 },
+    currentPoints: { type: Number, default: 0 },
+    usedPoints: { type: Number, default: 0 },
+    totalPoints: { type: Number, default: 0 },
+    pagesViewed: { type: Number, default: 0 },
+    posts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Post"
+      }
+    ],
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Like"
+      }
+    ],
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comment"
+      }
+    ],
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Follow"
+      }
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Follow"
+      }
+    ],
+    notifications: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Notification"
+      }
+    ],
+    messages: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+    badges: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Achievement"
+      }
+    ]
+  },
+  {
+    timestamps: true
+  }
 );
 
 /**
