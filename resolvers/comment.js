@@ -56,6 +56,53 @@ const Mutation = {
 
 		return newComment;
 	},
+
+	editComment: async (
+		root,
+		{ input: { image, id, author, postId } },
+		{ Comment, Post, User }
+	) => {
+		let imageUrl, imagePublicId;
+		if (image) {
+			const { createReadStream } = await image;
+			const stream = createReadStream();
+			const uploadImage = await uploadToCloudinary(stream, 'post');
+
+			if (!uploadImage.secure_url) {
+				throw new Error(
+					'Something went wrong while uploading image to Cloudinary'
+				);
+			}
+
+			imageUrl = uploadImage.secure_url;
+			imagePublicId = uploadImage.public_id;
+		}
+
+		const updatedComment = await Comment.findOneAndUpdate(
+			{ _id: id },
+			{ $push:
+				{
+					image: imageUrl,
+					imagePublicId,
+					comment,
+				}
+			});
+
+		// Push comment to post collection
+		await Post.findOneAndUpdate(
+			{ _id: postId },
+			{ $push: { comments: updatedComment.id } }
+		);
+		// Push comment to user collection
+		await User.findOneAndUpdate(
+			{ _id: author },
+			{
+				$push: { comments: updatedComment.id }
+			}
+		);
+
+		return editComment;
+	},
 	/**
 	 * Deletes a post comment
 	 *
