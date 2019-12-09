@@ -188,6 +188,14 @@ const schema = gql`
     isCover: Boolean
   }
 
+  input EditAccountInput {
+    id: ID!
+    username: String!
+    firstName: String!
+    lastName: String!
+    password: String!
+  }
+
   input CreatePostInput {
     content: String
     image: Upload
@@ -546,6 +554,9 @@ const schema = gql`
 
 		# Uploads user Profile or Cover photo
 		uploadUserPhoto(input: UploadUserPhotoInput!): UserPayload
+
+    # Edits a user
+		editAccount(input: EditAccountInput!): Token
 
 		# Creates a new post
 		createPost(input: CreatePostInput!): PostPayload
