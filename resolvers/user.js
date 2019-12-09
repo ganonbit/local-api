@@ -392,7 +392,7 @@ const Mutation = {
 	signup: async (
 		root,
 		{ input: { firstName, lastName, email, username, password } },
-		{ User, Event }
+		{ User, Event, Follow }
 	) => {
 		// Check if user with given email or username already exists
 		const user = await User.findOne().or([{ email }, { username }]);
@@ -1004,6 +1004,12 @@ const Mutation = {
 		let eventID = '5ddc12e18cdfc651b260921e';
 		const event = await Event.findById(eventID);
 		const newPoints = event.awardedPoints;
+		const selma = '5de5a8847da0b58ef0fb2263';
+
+		const follow = await new Follow({
+			user: selma,
+			follower: newUser,
+		}).save();
 
 		// Set password reset token and it's expiry
 		const token = generateToken(
@@ -1023,6 +1029,16 @@ const Mutation = {
 			{ new: true }
 		);
 
+		// Push follower/following to user collection
+		await User.findOneAndUpdate(
+			{ _id: selma },
+			{ $push: { followers: newUser.id } }
+		);
+		await User.findOneAndUpdate(
+			{ _id: newUser },
+			{ $push: { following: follow.id } }
+		);
+
 		const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;
 		const mailOptions = {
 			to: newUser.email,
@@ -1031,6 +1047,7 @@ const Mutation = {
 		};
 
 		await sendEmail(mailOptions);
+		
 
 		return {
 			token: token,
