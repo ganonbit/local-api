@@ -195,6 +195,13 @@ const schema = gql`
     authorId: ID!
   }
 
+  input EditPostInput {
+    content: String
+    image: Upload
+    imagePublicId: String
+    id: ID!
+  }
+
   input DeletePostInput {
     id: ID!
     imagePublicId: String
@@ -237,6 +244,13 @@ const schema = gql`
     imagePublicId: String
     author: ID!
     postId: ID!
+  }
+
+  input EditCommentInput {
+    comment: String!
+    image: Upload
+    imagePublicId: String
+    id: ID!
   }
 
   input DeleteCommentInput {
@@ -536,6 +550,9 @@ const schema = gql`
 		# Creates a new post
 		createPost(input: CreatePostInput!): PostPayload
 
+  	# Edits a user post
+		editPost(input: EditPostInput!): PostPayload
+
 		# Deletes a user post
 		deletePost(input: DeletePostInput!): PostPayload
 
@@ -555,6 +572,9 @@ const schema = gql`
 		createComment(input: CreateCommentInput!): Comment
 
 		# Uploads user comment photo
+
+    # Edits a post comment
+    editComment(input: EditCommentInput!): Comment
 
 		# Deletes a post comment
 		deleteComment(input: DeleteCommentInput!): Comment

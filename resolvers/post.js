@@ -1,4 +1,5 @@
 import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary';
+import comment from './comment';
 
 const Query = {
 	/**
@@ -172,6 +173,49 @@ const Mutation = {
 		await User.findOneAndUpdate(
 			{ _id: authorId },
 			{ $push: { posts: newPost.id }, $set: { accountPoints: newPoints } }
+		);
+
+		return newPost;
+	},
+
+	editPost: async (
+		root,
+		{ input: { content, image, id, authorId } },
+		{ Post, User }
+	) => {
+		if (!content && !image) {
+			throw new Error('Post content or image is required.');
+		}
+
+		let imageUrl, imagePublicId;
+		if (image) {
+			const { createReadStream } = await image;
+			const stream = createReadStream();
+			const uploadImage = await uploadToCloudinary(stream, 'post');
+
+			if (!uploadImage.secure_url) {
+				throw new Error(
+					'Something went wrong while uploading image to Cloudinary'
+				);
+			}
+
+			imageUrl = uploadImage.secure_url;
+			imagePublicId = uploadImage.public_id;
+		}
+
+		const editedPost = await Post.findOneAndUpdate(
+			{ _id: id },
+			{ $push: {
+				content,
+				image: imageUrl,
+				imagePublicId,
+				}
+			}
+		);
+
+		await User.findOneAndUpdate(
+			{ _id: authorId },
+			{ $push: { posts: editedPost.id } }
 		);
 
 		return newPost;
