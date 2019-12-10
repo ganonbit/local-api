@@ -1200,8 +1200,8 @@ const Mutation = {
 			'Something went wrong while uploading image to Cloudinary.'
 		);
 	},
-	editAccount: async (root, { input: { email, id , firstName, lastName, username, password  } }, { User }) => {
-		const user = await User.findById({ id });
+	editAccount: async (root, { input: { email, id, firstName, lastName, username, password  } }, { User }) => {
+		const user = await User.findById(id);
 
 		if (user) {
 			const field = user.email === email ? 'email' : 'username';
