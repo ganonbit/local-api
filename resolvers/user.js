@@ -1783,7 +1783,7 @@ const Mutation = {
 			throw new Error('Password min 6 characters.');
 		}
 
-		if (input.gender !== genders) {
+		if (input.gender && input.gender !== genders) {
 			throw new Error('Invalid gender selection');
 		}
 
