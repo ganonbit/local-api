@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "nodemon index.js",
-		"deploy": "git push heroku master",
+		"deploy": "git push origin head && git push heroku master",
 		"seedUsers": "node scripts/seedUsers.js",
 		"seedPosts": "node scripts/seedPosts.js",
 		"syncAlgoliaUsers": "node scripts/syncAllAlgoliaUsers.js",
