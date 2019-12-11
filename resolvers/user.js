@@ -1203,6 +1203,7 @@ const Mutation = {
 	editAccount: async (root, { id, input }, { User }) => {
 		const user = await User.findById(id);
 		let genderTypes = ['male', 'female', 'custom'];
+		let roleTypes = ['selma', 'expert', 'user'];
 		// name validation
 		if (input.firstName && input.firstName.length > 20 && input.firstName.length < 2) {
 			throw new Error('First name should be between 2-20 characters.');
@@ -1785,6 +1786,10 @@ const Mutation = {
 
 		if (input.gender && genderTypes.includes(input.gender) === false) {
 			throw new Error('Invalid gender selection');
+		}
+
+		if (input.role && roleTypes.includes(input.role) === false) {
+			throw new Error('Invalid role selection');
 		}
 
 		const birthdayRegex = /^[0-9]{2}[-|\/]{1}[0-9]{2}[-|\/]{1}[0-9]{4}/;
