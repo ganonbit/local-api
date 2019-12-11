@@ -1200,38 +1200,27 @@ const Mutation = {
 			'Something went wrong while uploading image to Cloudinary.'
 		);
 	},
-	editAccount: async (root, { input: { email, id, firstName, lastName, username, password  } }, { User }) => {
+	editAccount: async (root, { id, input }, { User }) => {
 		const user = await User.findById(id);
-
-		if (user) {
-			const field = user.email === email ? 'email' : 'username';
-			throw new Error(`User with given ${field} already exists.`);
-		}
-
-		// Empty field validation
-		if (!firstName || !lastName || !username || !password) {
-			throw new Error('All fields are required.');
-		}
-
 		// name validation
-		if (firstName.length > 20 && firstName.length < 2) {
+		if (input.firstName && input.firstName.length > 20 && input.firstName.length < 2) {
 			throw new Error('First name should be between 2-20 characters.');
 		}
-		if (lastName.length > 20 && lastName.length < 2) {
+		if (input.lastName && input.lastName.length > 20 && input.lastName.length < 2) {
 			throw new Error('Last name should be between 2-20 characters.');
 		}
 
 		// Username validation
 		const usernameRegex = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
-		if (!usernameRegex.test(username)) {
+		if (input.username && !usernameRegex.test(input.username)) {
 			throw new Error(
 				'Usernames can only use letters, numbers, underscores and periods.'
 			);
 		}
-		if (username.length > 20) {
+		if (input.username && input.username.length > 20) {
 			throw new Error('Username no more than 50 characters.');
 		}
-		if (username.length < 3) {
+		if (input.username && input.username.length < 3) {
 			throw new Error('Username min 3 characters.');
 		}
 		const usernameBlacklist = [
@@ -1784,24 +1773,19 @@ const Mutation = {
 			'yourusername',
 			'zlib',
 		];
-		if (usernameBlacklist.includes(username)) {
+		if (input.username && usernameBlacklist.includes(input.username)) {
 			throw new Error("This username isn't available. Please try another.");
 		}
 
 		// Password validation
-		if (password.length < 6) {
+		if (input.password && input.password.length < 6) {
 			throw new Error('Password min 6 characters.');
 		}
 
 		await User.findOneAndUpdate(
-			{ _id: id },
-			{ $push: {
-				firstName,
-				lastName,
-				username,
-				password
-				},
-			}
+			{_id: id}, 
+			input,
+			{new: true}
 		);
 
 		// Return success message

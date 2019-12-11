@@ -164,6 +164,8 @@ const schema = gql`
     firstName: String!
     lastName: String!
     password: String!
+    gender: String
+    birthday: String
   }
 
   input RequestPasswordResetInput {
@@ -189,11 +191,34 @@ const schema = gql`
   }
 
   input EditAccountInput {
-    id: ID!
-    username: String!
-    firstName: String!
-    lastName: String!
-    password: String!
+    firstName: String
+    lastName: String
+    email: String
+    username: String
+    birthday: String
+    gender: String
+    bio: String
+    location: String
+    password: String
+    image: String
+    imagePublicId: String
+    coverImage: String
+    coverImagePublicId: String
+    isOnline: Boolean
+    isVerified: Boolean
+    isBanned: Boolean
+    isGuru: Boolean
+    isPick: Boolean
+    role: String
+    level: Int
+    accountPoints: Int
+    likePoints: Int
+    commentPoints: Int
+    sharePoints: Int
+    referralPoints: Int
+    gamePoints: Int
+    totalPoints: Int
+    pagesViewed: Int
   }
 
   input CreatePostInput {
@@ -556,7 +581,7 @@ const schema = gql`
 		uploadUserPhoto(input: UploadUserPhotoInput!): UserPayload
 
     # Edits a user
-		editAccount(input: EditAccountInput!): Token
+		editAccount(id: ID!, input: EditAccountInput!): UserPayload
 
 		# Creates a new post
 		createPost(input: CreatePostInput!): PostPayload
