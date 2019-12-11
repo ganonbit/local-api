@@ -1202,6 +1202,7 @@ const Mutation = {
 	},
 	editAccount: async (root, { id, input }, { User }) => {
 		const user = await User.findById(id);
+		const genders = ["Male", "Female", "Custom"];
 		// name validation
 		if (input.firstName && input.firstName.length > 20 && input.firstName.length < 2) {
 			throw new Error('First name should be between 2-20 characters.');
@@ -1781,6 +1782,18 @@ const Mutation = {
 		if (input.password && input.password.length < 6) {
 			throw new Error('Password min 6 characters.');
 		}
+
+		if (input.gender !== genders) {
+			throw new Error('Invalid gender selection');
+		}
+
+		const birthdayRegex = /^[0-9]{2}[-|\/]{1}[0-9]{2}[-|\/]{1}[0-9]{4}/;
+		if (input.birthday && !birthdayRegex.test(input.birthday)) {
+			throw new Error(
+				'Birthday must be in dd/mm/yyyy format.'
+			);
+		}
+		
 
 		await User.findOneAndUpdate(
 			{_id: id}, 
