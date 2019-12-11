@@ -1202,7 +1202,7 @@ const Mutation = {
 	},
 	editAccount: async (root, { id, input }, { User }) => {
 		const user = await User.findById(id);
-		const genders = ["Male", "Female", "Custom"];
+		let genderTypes = ['male', 'female', 'custom'];
 		// name validation
 		if (input.firstName && input.firstName.length > 20 && input.firstName.length < 2) {
 			throw new Error('First name should be between 2-20 characters.');
@@ -1783,7 +1783,7 @@ const Mutation = {
 			throw new Error('Password min 6 characters.');
 		}
 
-		if (input.gender && input.gender !== genders) {
+		if (input.gender && genderTypes.includes(input.gender) === false) {
 			throw new Error('Invalid gender selection');
 		}
 
