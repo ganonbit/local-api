@@ -232,7 +232,8 @@ const schema = gql`
     content: String
     image: Upload
     imagePublicId: String
-    id: ID!
+    id: ID
+    authorId: ID
   }
 
   input DeletePostInput {
@@ -587,7 +588,7 @@ const schema = gql`
 		createPost(input: CreatePostInput!): PostPayload
 
   	# Edits a user post
-		editPost(input: EditPostInput!): PostPayload
+		editPost(id: ID!, input: EditPostInput!): PostPayload
 
 		# Deletes a user post
 		deletePost(input: DeletePostInput!): PostPayload

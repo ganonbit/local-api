@@ -180,9 +180,11 @@ const Mutation = {
 
 	editPost: async (
 		root,
-		{ input: { content, image, id, authorId } },
+		{ id, input: { content, image, authorId } },
 		{ Post, User }
 	) => {
+
+		const post = await Post.findById(id);
 		if (!content && !image) {
 			throw new Error('Post content or image is required.');
 		}
@@ -203,22 +205,23 @@ const Mutation = {
 			imagePublicId = uploadImage.public_id;
 		}
 
-		const editedPost = await Post.findOneAndUpdate(
-			{ _id: id },
-			{ $push: {
+		let editedPost = await Post.findOneAndUpdate(
+			{_id: id}, 
+			{
 				content,
 				image: imageUrl,
 				imagePublicId,
-				}
-			}
+				author: authorId,
+			},
+			{new: true}
 		);
-
+		
 		await User.findOneAndUpdate(
 			{ _id: authorId },
-			{ $push: { posts: editedPost.id } }
+			{ $push: { posts: id } }
 		);
 
-		return newPost;
+		return editedPost;
 	},
 	/**
 	 * Deletes a user post
