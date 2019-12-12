@@ -1811,6 +1811,33 @@ const Mutation = {
 			token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
 		};
 	},
+	deleteAccount: async (
+		root,
+		{ id, imagePublicId, image },
+		{ User, Post, Like, Comment }
+	) => {
+		// Check if user with given email or username already exists
+		const user = await User.findByIdAndRemove(id);
+
+		// Remove post image from cloudinary, if imagePublicId is present
+		if (imagePublicId) {
+			const deleteImage = await deleteFromCloudinary(imagePublicId);
+
+			if (deleteImage.result !== 'ok') {
+				throw new Error(
+					'Something went wrong while deleting image from Cloudinary'
+				);
+			}
+		}
+
+		await User.find({ followers: user.id }).deleteMany();
+		await Like.find({ user: user.id }).deleteMany();                                             
+		await Comment.find({ author: user.id }).deleteMany();
+		await Post.find({ author: user.id }).deleteMany();
+		await Notification.find({ author: user.id }).deleteMany();
+
+		return user;
+	},
 };
 
 const Subscription = {

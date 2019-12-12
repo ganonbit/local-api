@@ -221,6 +221,7 @@ const schema = gql`
     pagesViewed: Int
   }
 
+
   input CreatePostInput {
     content: String
     image: Upload
@@ -583,6 +584,9 @@ const schema = gql`
 
     # Edits a user
 		editAccount(id: ID!, input: EditAccountInput!): UserPayload
+
+    # Deletes a user
+		deleteAccount(id: ID!): UserPayload
 
 		# Creates a new post
 		createPost(input: CreatePostInput!): PostPayload
