@@ -168,7 +168,8 @@ const Mutation = {
 		let eventID = '5ddc0cf9dce3c14fcbc210bc';
 		const event = await Event.findById(eventID);
 		const user = await User.findById(newPost.author);
-		const newPoints = user.accountPoints + event.awardedPoints;
+		const newPoints = await user.accountPoints + event.awardedPoints;
+		console.log(newPoints)
 
 		await User.findOneAndUpdate(
 			{ _id: authorId },
