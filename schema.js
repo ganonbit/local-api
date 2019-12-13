@@ -59,7 +59,7 @@ const schema = gql`
     content: String
     image: File
     imagePublicId: String
-    author: User!
+    author: User
     likes: [Like]
     comments: [Comment]
     createdAt: String
@@ -404,7 +404,7 @@ const schema = gql`
     content: String
     image: String
     imagePublicId: String
-    author: UserPayload
+    author: UserPayload!
     likes: [Like]
     comments: [CommentPayload]
     createdAt: String

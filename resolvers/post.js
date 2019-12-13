@@ -169,8 +169,7 @@ const Mutation = {
 		const event = await Event.findById(eventID);
 		const user = await User.findById(newPost.author);
 		const newPoints = await user.accountPoints + event.awardedPoints;
-		console.log(newPoints)
-
+		
 		await User.findOneAndUpdate(
 			{ _id: authorId },
 			{ $push: { posts: newPost.id }, $set: { accountPoints: newPoints } }

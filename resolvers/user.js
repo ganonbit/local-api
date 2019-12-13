@@ -175,7 +175,7 @@ const Query = {
     const count = await Post.find(query).countDocuments();
     const posts = await Post.find(query)
       .populate({
-        // path: "author",
+        path: "author",
         populate: [
           { path: "following" },
           { path: "followers" },
