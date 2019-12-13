@@ -1833,8 +1833,9 @@ const Mutation = {
 		await User.find({ followers: user.id }).deleteMany();
 		await Like.find({ user: user.id }).deleteMany();                                             
 		await Comment.find({ author: user.id }).deleteMany();
-		await Post.find({ author: user.id }).deleteMany();
-		await Notification.find({ author: user.id }).deleteMany();
+    await Post.find({ author: user.id }).deleteMany();
+    // await Notification.find({ author: user.id }).deleteMany();
+    await user.deleteObjectFromAlgolia();
 
 		return user;
 	},

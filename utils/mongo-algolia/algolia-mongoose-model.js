@@ -112,7 +112,7 @@ export default function createAlgoliaMongooseModel({
 
     // * delete object from algolia index
     async deleteObjectFromAlgolia() {
-      await index.deleteObject(this._algoliaObjectID);
+      await index.deleteObject(this._id.toString());
     }
 
     // * schema.post('save')
