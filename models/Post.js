@@ -1,4 +1,6 @@
+import {} from 'dotenv/config';
 import mongoose from 'mongoose';
+import mongoAlgolia from '../utils/mongo-algolia';
 mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
 const Schema = mongoose.Schema;
@@ -13,7 +15,8 @@ const postSchema = Schema(
 			fake: {
 				generator: 'lorem',
 				type: 'paragraph',
-			},
+      },
+      algoliaIndex: true
 		},
 		image: {
 			type: String,
@@ -27,7 +30,8 @@ const postSchema = Schema(
 		isPublic: { type: Boolean, default: false },
 		author: {
 			type: Schema.Types.ObjectId,
-			ref: 'User',
+      ref: 'User',
+      algoliaIndex: true
 		},
 		likes: [
 			{
@@ -46,5 +50,11 @@ const postSchema = Schema(
 		timestamps: true,
 	}
 );
+
+postSchema.plugin(mongoAlgolia, {
+	appId: process.env.ALGOLIA_APP_ID,
+	apiKey: process.env.ALGOLIA_API_KEY,
+	indexName: process.env.ALGOLIA_POSTS_INDEX,
+});
 
 export default mongoose.model('Post', postSchema);
