@@ -167,8 +167,9 @@ const Query = {
    * @param {int} skip how many posts to skip
    * @param {int} limit how many posts to limit
    */
-  getUserPosts: async (root, { username, skip, limit }, { User, Post }) => {
-    const user = await User.findOne({ username }).select("_id");
+  getUserPosts: async (root, { id, username, skip, limit }, { User, Post }) => {
+    const findUser = username ? { username: username } : { _id: id };
+    const user = await User.findOne(findUser)
 
     const query = { author: user._id };
     const count = await Post.find(query).countDocuments();
@@ -1006,10 +1007,16 @@ const Mutation = {
 		const newPoints = event.awardedPoints;
 		const selma = '5df3b831c9c511416bb9ff18';
 
-		const follow = await new Follow({
+		const following = await new Follow({
 			user: selma,
 			follower: newUser,
 		}).save();
+
+		const follower = await new Follow({
+			user: newUser,
+			follower: selma,
+		}).save();
+
 
 		// Set password reset token and it's expiry
 		const token = generateToken(
@@ -1032,11 +1039,11 @@ const Mutation = {
 		// Push follower/following to user collection
 		await User.findOneAndUpdate(
 			{ _id: selma },
-			{ $push: { followers: newUser.id } }
+			{ $push: { following: follower.id, followers: following.id,  } }
 		);
 		await User.findOneAndUpdate(
 			{ _id: newUser },
-			{ $push: { following: follow.id } }
+			{ $push: { following: following.id, followers: follower.id } }
 		);
 
 		const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;

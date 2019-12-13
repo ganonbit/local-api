@@ -59,7 +59,7 @@ const schema = gql`
     content: String
     image: File
     imagePublicId: String
-    author: User!
+    author: User
     likes: [Like]
     comments: [Comment]
     createdAt: String
@@ -508,7 +508,7 @@ const schema = gql`
     getUser(username: String, id: ID): UserPayload
 
     # Gets user posts by username
-    getUserPosts(username: String!, skip: Int, limit: Int): UserPostsPayload
+    getUserPosts(id:ID, username: String, skip: Int, limit: Int): UserPostsPayload
 
     # Gets user comments by username
     getUserComments(username: String!, skip: Int, limit: Int): UserCommentsPayload
