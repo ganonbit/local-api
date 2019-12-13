@@ -189,28 +189,26 @@ const Mutation = {
 			throw new Error('Post content or image is required.');
 		}
 
-		let imageUrl, imagePublicId;
-		if (image) {
-			const { createReadStream } = await image;
-			const stream = createReadStream();
-			const uploadImage = await uploadToCloudinary(stream, 'post');
+		// let imageUrl, imagePublicId;
+		// if (image) {
+		// 	const { createReadStream } = await image;
+		// 	const stream = createReadStream();
+		// 	const uploadImage = await uploadToCloudinary(stream, 'post');
 
-			if (!uploadImage.secure_url) {
-				throw new Error(
-					'Something went wrong while uploading image to Cloudinary'
-				);
-			}
+		// 	if (!uploadImage.secure_url) {
+		// 		throw new Error(
+		// 			'Something went wrong while uploading image to Cloudinary'
+		// 		);
+		// 	}
 
-			imageUrl = uploadImage.secure_url;
-			imagePublicId = uploadImage.public_id;
-		}
+		// 	imageUrl = uploadImage.secure_url;
+		// 	imagePublicId = uploadImage.public_id;
+		// }
 
 		let editedPost = await Post.findOneAndUpdate(
 			{_id: id}, 
 			{
-				content,
-				image: imageUrl,
-				imagePublicId
+				content
 			},
 			{new: true}
 		);
