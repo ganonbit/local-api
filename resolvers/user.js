@@ -1004,7 +1004,7 @@ const Mutation = {
 		let eventID = '5ddc12e18cdfc651b260921e';
 		const event = await Event.findById(eventID);
 		const newPoints = event.awardedPoints;
-		const selma = '5de5a8847da0b58ef0fb2263';
+		const selma = '5df3b831c9c511416bb9ff18';
 
 		const follow = await new Follow({
 			user: selma,
