@@ -210,8 +210,7 @@ const Mutation = {
 			{
 				content,
 				image: imageUrl,
-				imagePublicId,
-				author: authorId,
+				imagePublicId
 			},
 			{new: true}
 		);
@@ -222,6 +221,21 @@ const Mutation = {
 		);
 
 		return editedPost;
+	},
+	deleteImage: async (
+		root,
+		{ input: { imagePublicId } }
+	) => {
+		// Remove image from cloudinary, if imagePublicId is present
+		if (imagePublicId) {
+			const deleteImage = await deleteFromCloudinary(imagePublicId);
+
+			if (deleteImage.result !== 'ok') {
+				throw new Error(
+					'Something went wrong while deleting image from Cloudinary'
+				);
+			}
+		}
 	},
 	/**
 	 * Deletes a user post

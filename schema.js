@@ -241,6 +241,10 @@ const schema = gql`
     id: ID!
     imagePublicId: String
   }
+  
+  input DeleteImageInput {
+    imagePublicId: String
+  }
 
   input CreateMessageInput {
     sender: ID!
@@ -596,6 +600,9 @@ const schema = gql`
 
 		# Deletes a user post
 		deletePost(input: DeletePostInput!): PostPayload
+
+    # Deletes a user post
+		deleteImage(input: DeleteImageInput!): PostPayload
 
 		# Creates a like for post
 		createLike(input: CreateLikeInput!): Like
