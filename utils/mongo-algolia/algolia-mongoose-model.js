@@ -1,5 +1,6 @@
 /* @flow */
 import { reduce, omit, find, map, pick } from 'lodash';
+import User from '../../models/User';
 
 export default function createAlgoliaMongooseModel({
 	index,
@@ -25,6 +26,10 @@ export default function createAlgoliaMongooseModel({
       await Promise.all(
         docs.map(async doc => {
           const object = pick(doc.toJSON(), attributesToIndex);
+          if (object.author) {
+            const user = await User.findById(object.author, 'firstName lastName username')
+            object.author = user
+          }
           object.objectID = doc._id
           const { objectID } = await index.addObject(object);
 
@@ -86,6 +91,10 @@ export default function createAlgoliaMongooseModel({
     // * update document with `_algoliaObjectID`
     async addObjectToAlgolia() {
       const object = pick(this.toJSON(), attributesToIndex);
+      if (object.author) {
+        const user = await User.findById(object.author, 'firstName lastName username')
+        object.author = user
+      }
       object.objectID = this._id
       const { objectID } = await index.addObject(object);
 
