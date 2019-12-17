@@ -436,6 +436,7 @@ const Mutation = {
 			throw new Error('Username min 3 characters.');
 		}
 		const usernameBlacklist = [
+			'selma',
 			'selmaa',
 			'selmaavocados',
 			'selma-avocados',
@@ -1005,17 +1006,33 @@ const Mutation = {
 		let eventID = '5ddc12e18cdfc651b260921e';
 		const event = await Event.findById(eventID);
 		const newPoints = event.awardedPoints;
-		const selma = '5df3b831c9c511416bb9ff18';
+
+		const selma = '5df7cd1ae8d6ec604b737ae5';
 
 		const following = await new Follow({
 			user: selma,
 			follower: newUser,
 		}).save();
 
+		console.log(following)
+
 		const follower = await new Follow({
 			user: newUser,
 			follower: selma,
 		}).save();
+
+		console.log(follower)
+
+			// Push follower/following to user collection
+		await User.findOneAndUpdate(
+			{ _id: selma },
+			{ $push: { following: follower.id, followers: follower.id,  } }
+		);
+		await User.findOneAndUpdate(
+			{ _id: newUser },
+			{ $push: { following: following.id, followers: following.id } },
+			{ new: true }
+		);
 
 
 		// Set password reset token and it's expiry
@@ -1036,15 +1053,6 @@ const Mutation = {
 			{ new: true }
 		);
 
-		// Push follower/following to user collection
-		await User.findOneAndUpdate(
-			{ _id: selma },
-			{ $push: { following: follower.id, followers: following.id,  } }
-		);
-		await User.findOneAndUpdate(
-			{ _id: newUser },
-			{ $push: { following: following.id, followers: follower.id } }
-		);
 
 		const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;
 		const mailOptions = {

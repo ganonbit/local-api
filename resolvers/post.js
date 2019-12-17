@@ -1,5 +1,4 @@
 import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary';
-import comment from './comment';
 
 const Query = {
 	/**
@@ -144,8 +143,11 @@ const Mutation = {
 
 		let imageUrl, imagePublicId;
 		if (image) {
+			console.log(image)
 			const { createReadStream } = await image;
+			console.log(createReadStream)
 			const stream = createReadStream();
+			console.log(stream)
 			const uploadImage = await uploadToCloudinary(stream, 'post');
 
 			if (!uploadImage.secure_url) {
@@ -180,35 +182,58 @@ const Mutation = {
 
 	editPost: async (
 		root,
-		{ id, input: { content, image, authorId } },
+		{ id, input: { content, image, authorId, imagePublicId } },
 		{ Post, User }
 	) => {
 
-		const post = await Post.findById(id);
+		let imageUrl;
+		const now = Date.now();
+		let currentImage = !imagePublicId ? null : (imagePublicId);
+		console.log(currentImage)
+
 		if (!content && !image) {
 			throw new Error('Post content or image is required.');
 		}
+		if (image) {
+			console.log("image & imagePublicId "+image + imagePublicId)
+			if (currentImage !== null) {
+				const deleteImage = await deleteFromCloudinary(imagePublicId);
+				console.log(deleteImage)
+	
+				if (deleteImage.result !== 'ok') {
+					throw new Error(
+						'Something went wrong while deleting image from Cloudinary'
+					);
+				}
+				let currentImage;
+				
+				console.log(currentImage)
+			}
+			console.log("image "+image)
+			const { createReadStream } = await image;
+			console.log("createReadStream "+createReadStream)
+			const stream = createReadStream();
+			console.log("stream "+stream)
+			const uploadImage = await uploadToCloudinary(stream, 'post');
+			console.log("uploadImage "+ uploadImage)
 
-		// let imageUrl, imagePublicId;
-		// if (image) {
-		// 	const { createReadStream } = await image;
-		// 	const stream = createReadStream();
-		// 	const uploadImage = await uploadToCloudinary(stream, 'post');
+			if (!uploadImage.secure_url) {
+				throw new Error(
+					'Something went wrong while uploading image to Cloudinary'
+				);
+			}
 
-		// 	if (!uploadImage.secure_url) {
-		// 		throw new Error(
-		// 			'Something went wrong while uploading image to Cloudinary'
-		// 		);
-		// 	}
-
-		// 	imageUrl = uploadImage.secure_url;
-		// 	imagePublicId = uploadImage.public_id;
-		// }
+			imageUrl = uploadImage.secure_url;
+			imagePublicId = uploadImage.public_id;
+		}
 
 		let editedPost = await Post.findOneAndUpdate(
 			{_id: id}, 
-			{
-				content
+			{	
+				content,
+				image: imageUrl,
+				imagePublicId: imagePublicId,
+				updatedAt: now
 			},
 			{new: true}
 		);

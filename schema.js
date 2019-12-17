@@ -243,7 +243,9 @@ const schema = gql`
   }
   
   input DeleteImageInput {
-    imagePublicId: String
+    id: ID
+    imagePublicId: String!
+    image: Upload
   }
 
   input CreateMessageInput {
@@ -404,7 +406,7 @@ const schema = gql`
     content: String
     image: String
     imagePublicId: String
-    author: UserPayload!
+    author: UserPayload
     likes: [Like]
     comments: [CommentPayload]
     createdAt: String
@@ -493,6 +495,13 @@ const schema = gql`
     createdAt: String
     updatedAt: String
   }
+
+  type ImagePayload {
+    image: String
+    imagePublicId: String
+  }
+
+  
 
   # ---------------------------------------------------------
   # Query Root
@@ -601,8 +610,8 @@ const schema = gql`
 		# Deletes a user post
 		deletePost(input: DeletePostInput!): PostPayload
 
-    # Deletes a user post
-		deleteImage(input: DeleteImageInput!): PostPayload
+    # Deletes a image
+		deleteImage(input: DeleteImageInput!): ImagePayload
 
 		# Creates a like for post
 		createLike(input: CreateLikeInput!): Like
