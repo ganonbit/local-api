@@ -81,13 +81,14 @@ const Mutation = {
 
 		const updatedComment = await Comment.findOneAndUpdate(
 			{ _id: id },
-			{ $push:
-				{
+			{
+				$push: {
 					image: imageUrl,
 					imagePublicId,
 					comment,
-				}
-			});
+				},
+			}
+		);
 
 		// Push comment to post collection
 		await Post.findOneAndUpdate(
@@ -98,7 +99,7 @@ const Mutation = {
 		await User.findOneAndUpdate(
 			{ _id: author },
 			{
-				$push: { comments: updatedComment.id }
+				$push: { comments: updatedComment.id },
 			}
 		);
 

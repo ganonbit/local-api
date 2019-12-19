@@ -143,11 +143,8 @@ const Mutation = {
 
 		let imageUrl, imagePublicId;
 		if (image) {
-			console.log(image)
 			const { createReadStream } = await image;
-			console.log(createReadStream)
 			const stream = createReadStream();
-			console.log(stream)
 			const uploadImage = await uploadToCloudinary(stream, 'post');
 
 			if (!uploadImage.secure_url) {
@@ -172,10 +169,13 @@ const Mutation = {
 		const user = await User.findById(newPost.author);
 		const newPoints = user.accountPoints + event.awardedPoints;
 		const totalPoints = user.totalPoints + event.awardedPoints;
-		
+
 		await User.findOneAndUpdate(
 			{ _id: authorId },
-			{ $push: { posts: newPost.id }, $set: { accountPoints: newPoints, totalPoints: totalPoints } }
+			{
+				$push: { posts: newPost.id },
+				$set: { accountPoints: newPoints, totalPoints: totalPoints },
+			}
 		);
 
 		return newPost;
@@ -186,37 +186,27 @@ const Mutation = {
 		{ id, input: { content, image, authorId, imagePublicId } },
 		{ Post, User }
 	) => {
-
 		let imageUrl;
 		const now = Date.now();
-		let currentImage = !imagePublicId ? null : (imagePublicId);
-		console.log(currentImage)
+		let currentImage = !imagePublicId ? null : imagePublicId;
 
 		if (!content && !image) {
 			throw new Error('Post content or image is required.');
 		}
 		if (image) {
-			console.log("image & imagePublicId "+image + imagePublicId)
 			if (currentImage !== null) {
 				const deleteImage = await deleteFromCloudinary(imagePublicId);
-				console.log(deleteImage)
-	
+
 				if (deleteImage.result !== 'ok') {
 					throw new Error(
 						'Something went wrong while deleting image from Cloudinary'
 					);
 				}
 				let currentImage;
-				
-				console.log(currentImage)
 			}
-			console.log("image "+image)
 			const { createReadStream } = await image;
-			console.log("createReadStream "+createReadStream)
 			const stream = createReadStream();
-			console.log("stream "+stream)
 			const uploadImage = await uploadToCloudinary(stream, 'post');
-			console.log("uploadImage "+ uploadImage)
 
 			if (!uploadImage.secure_url) {
 				throw new Error(
@@ -229,27 +219,21 @@ const Mutation = {
 		}
 
 		let editedPost = await Post.findOneAndUpdate(
-			{_id: id}, 
-			{	
+			{ _id: id },
+			{
 				content,
 				image: imageUrl,
 				imagePublicId: imagePublicId,
-				updatedAt: now
+				updatedAt: now,
 			},
-			{new: true}
+			{ new: true }
 		);
-		
-		await User.findOneAndUpdate(
-			{ _id: authorId },
-			{ $push: { posts: id } }
-		);
+
+		await User.findOneAndUpdate({ _id: authorId }, { $push: { posts: id } });
 
 		return editedPost;
 	},
-	deleteImage: async (
-		root,
-		{ input: { imagePublicId } }
-	) => {
+	deleteImage: async (root, { input: { imagePublicId } }) => {
 		// Remove image from cloudinary, if imagePublicId is present
 		if (imagePublicId) {
 			const deleteImage = await deleteFromCloudinary(imagePublicId);
@@ -289,12 +273,15 @@ const Mutation = {
 		const user = await User.findById(post.author);
 		let eventID = '5ddc0cf9dce3c14fcbc210bc';
 		const event = await Event.findById(eventID);
-		const newPoints =  user.accountPoints - event.awardedPoints;
+		const newPoints = user.accountPoints - event.awardedPoints;
 		const totalPoints = user.totalPoints - event.awardedPoints;
 
 		await User.findOneAndUpdate(
 			{ _id: post.author },
-			{ $pull: { posts: post.id }, $set: { accountPoints: newPoints, totalPoints: totalPoints } }
+			{
+				$pull: { posts: post.id },
+				$set: { accountPoints: newPoints, totalPoints: totalPoints },
+			}
 		);
 
 		// Delete post likes from likes collection

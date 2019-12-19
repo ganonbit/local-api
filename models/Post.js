@@ -15,8 +15,8 @@ const postSchema = Schema(
 			fake: {
 				generator: 'lorem',
 				type: 'paragraph',
-      },
-      algoliaIndex: true
+			},
+			algoliaIndex: true,
 		},
 		image: {
 			type: String,
@@ -30,8 +30,8 @@ const postSchema = Schema(
 		isPublic: { type: Boolean, default: false },
 		author: {
 			type: Schema.Types.ObjectId,
-      ref: 'User',
-      algoliaIndex: true
+			ref: 'User',
+			algoliaIndex: true,
 		},
 		likes: [
 			{

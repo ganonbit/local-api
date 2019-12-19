@@ -24,7 +24,10 @@ const Mutation = {
 		// Push like and add points to user collection
 		await User.findOneAndUpdate(
 			{ _id: userId },
-			{ $push: { likes: like.id }, $set: { likePoints: newPoints, totalPoints: totalPoints } }
+			{
+				$push: { likes: like.id },
+				$set: { likePoints: newPoints, totalPoints: totalPoints },
+			}
 		);
 
 		// await earnBadge();
@@ -51,7 +54,10 @@ const Mutation = {
 		// Delete like from users collection
 		await User.findOneAndUpdate(
 			{ _id: like.user },
-			{ $pull: { likes: like.id }, $set: { likePoints: newPoints, totalPoints: totalPoints } }
+			{
+				$pull: { likes: like.id },
+				$set: { likePoints: newPoints, totalPoints: totalPoints },
+			}
 		);
 		// Delete like from posts collection
 		await Post.findOneAndUpdate(

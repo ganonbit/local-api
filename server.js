@@ -1,9 +1,9 @@
-import {} from "dotenv/config";
-import express from "express";
+import {} from 'dotenv/config';
+import express from 'express';
 const bodyParser = require('body-parser');
-import { createServer } from "http";
-import mongoose from "mongoose";
-import cors from "cors";
+import { createServer } from 'http';
+import mongoose from 'mongoose';
+import cors from 'cors';
 import models from './models';
 import schema from './schema';
 import resolvers from './resolvers';
