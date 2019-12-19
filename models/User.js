@@ -18,19 +18,19 @@ const userSchema = new Schema(
       type: String,
       required: true,
       fake: {
-        generator: "name",
-        type: "firstName"
+        generator: 'name',
+        type: 'firstName',
       },
-      algoliaIndex: true
+      algoliaIndex: true,
     },
     lastName: {
       type: String,
       required: true,
       fake: {
-        generator: "name",
-        type: "lastName"
+        generator: 'name',
+        type: 'lastName',
       },
-      algoliaIndex: true
+      algoliaIndex: true,
     },
     email: {
       type: String,
@@ -39,10 +39,10 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
       fake: {
-        generator: "internet",
-        type: "email"
+        generator: 'internet',
+        type: 'email',
       },
-      algoliaIndex: true
+      algoliaIndex: true,
     },
     username: {
       type: String,
@@ -51,44 +51,44 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
       fake: {
-        generator: "internet",
-        type: "userName"
+        generator: 'internet',
+        type: 'userName',
       },
-      algoliaIndex: true
+      algoliaIndex: true,
     },
     birthday: {
       type: Date,
       default: Date.now,
       required: false,
       fake: {
-        generator: "date",
-        type: "past"
+        generator: 'date',
+        type: 'past',
       },
-      algoliaIndex: true
+      algoliaIndex: true,
     },
     gender: {
       type: String,
       // required: true,
       enum: genderTypes,
-      algoliaIndex: true
+      algoliaIndex: true,
     },
     bio: {
       type: String,
       trim: true,
       fake: {
-        generator: "lorem",
-        type: "sentence"
-      }
+        generator: 'lorem',
+        type: 'sentence',
+      },
     },
     location: {
       type: String,
       lowercase: true,
-      trim: true
+      trim: true,
     },
     phone: {
       type: String,
       lowercase: true,
-      trim: true
+      trim: true,
     },
     emailToken: String,
     emailTokenExpiry: Date,
@@ -96,9 +96,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
       fake: {
-        generator: "internet",
-        type: "password"
-      }
+        generator: 'internet',
+        type: 'password',
+      },
     },
     image: String,
     imagePublicId: String,
@@ -112,8 +112,8 @@ const userSchema = new Schema(
     role: {
       type: String,
       enum: roleTypes,
-      default: "user",
-      algoliaIndex: true
+      default: 'user',
+      algoliaIndex: true,
     },
     level: { type: Number, default: 1 },
     accountPoints: { type: Number, default: 0 },
@@ -128,59 +128,59 @@ const userSchema = new Schema(
     pagesViewed: { type: Number, default: 0 },
     socialHandles: {
       type: Map,
-      of: String
+      of: String,
     },
     posts: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Post"
-      }
+        ref: 'Post',
+      },
     ],
     likes: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Like"
-      }
+        ref: 'Like',
+      },
     ],
     comments: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Comment"
-      }
+        ref: 'Comment',
+      },
     ],
     followers: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Follow"
-      }
+        ref: 'Follow',
+      },
     ],
     following: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Follow"
-      }
+        ref: 'Follow',
+      },
     ],
     notifications: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Notification"
-      }
+        ref: 'Notification',
+      },
     ],
     messages: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User"
-      }
+        ref: 'User',
+      },
     ],
     badges: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Achievement"
-      }
-    ]
+        ref: 'Achievement',
+      },
+    ],
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
@@ -188,26 +188,26 @@ const userSchema = new Schema(
  * Hashes the users password when saving it to DB
  */
 userSchema.pre('save', function(next) {
-	if (!this.isModified('password')) {
-		return next();
-	}
+  if (!this.isModified('password')) {
+    return next();
+  }
 
-	bcrypt.genSalt(10, (err, salt) => {
-		if (err) return next(err);
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) return next(err);
 
-		bcrypt.hash(this.password, salt, (err, hash) => {
-			if (err) return next(err);
+    bcrypt.hash(this.password, salt, (err, hash) => {
+      if (err) return next(err);
 
-			this.password = hash;
-			next();
-		});
-	});
+      this.password = hash;
+      next();
+    });
+  });
 });
 
 userSchema.plugin(mongoAlgolia, {
-	appId: process.env.ALGOLIA_APP_ID,
-	apiKey: process.env.ALGOLIA_API_KEY,
-	indexName: process.env.ALGOLIA_USERS_INDEX,
+  appId: process.env.ALGOLIA_APP_ID,
+  apiKey: process.env.ALGOLIA_API_KEY,
+  indexName: process.env.ALGOLIA_USERS_INDEX,
 });
 
 export default mongoose.model('User', userSchema);

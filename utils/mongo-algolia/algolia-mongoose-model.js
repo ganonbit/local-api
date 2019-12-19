@@ -3,8 +3,8 @@ import { reduce, omit, find, map, pick } from 'lodash';
 import User from '../../models/User';
 
 export default function createAlgoliaMongooseModel({
-	index,
-	attributesToIndex,
+  index,
+  attributesToIndex,
 }) {
   class AlgoliaMongooseModel {
     // * clears algolia index
@@ -27,10 +27,13 @@ export default function createAlgoliaMongooseModel({
         docs.map(async doc => {
           const object = pick(doc.toJSON(), attributesToIndex);
           if (object.author) {
-            const user = await User.findById(object.author, 'firstName lastName username')
-            object.author = user
+            const user = await User.findById(
+              object.author,
+              'firstName lastName username'
+            );
+            object.author = user;
           }
-          object.objectID = doc._id
+          object.objectID = doc._id;
           const { objectID } = await index.addObject(object);
 
           await this.updateOne(
@@ -57,7 +60,7 @@ export default function createAlgoliaMongooseModel({
         // find objects into mongodb matching `objectID` from Algolia search
         const hitsFromMongoose = await this.find(
           {
-            _algoliaObjectID: { $in: map(data.hits, "objectID") }
+            _algoliaObjectID: { $in: map(data.hits, 'objectID') },
           },
           reduce(
             this.schema.obj,
@@ -69,15 +72,15 @@ export default function createAlgoliaMongooseModel({
         // add additional data from mongodb into Algolia hits
         const populatedHits = data.hits.map(hit => {
           const ogHit = find(hitsFromMongoose, {
-            _algoliaObjectID: hit.objectID
+            _algoliaObjectID: hit.objectID,
           });
 
           return omit(
             {
               ...(ogHit ? ogHit.toJSON() : {}),
-              ...hit
+              ...hit,
             },
-            ["_algoliaObjectID"]
+            ['_algoliaObjectID']
           );
         });
 
@@ -92,10 +95,13 @@ export default function createAlgoliaMongooseModel({
     async addObjectToAlgolia() {
       const object = pick(this.toJSON(), attributesToIndex);
       if (object.author) {
-        const user = await User.findById(object.author, 'firstName lastName username')
-        object.author = user
+        const user = await User.findById(
+          object.author,
+          'firstName lastName username'
+        );
+        object.author = user;
       }
-      object.objectID = this._id
+      object.objectID = this._id;
       const { objectID } = await index.addObject(object);
 
       this.collection.updateOne(

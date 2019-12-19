@@ -223,7 +223,6 @@ const schema = gql`
     pagesViewed: Int
   }
 
-
   input CreatePostInput {
     content: String
     image: Upload
@@ -243,7 +242,7 @@ const schema = gql`
     id: ID!
     imagePublicId: String
   }
-  
+
   input DeleteImageInput {
     id: ID
     imagePublicId: String!
@@ -504,8 +503,6 @@ const schema = gql`
     imagePublicId: String
   }
 
-  
-
   # ---------------------------------------------------------
   # Query Root
   # ---------------------------------------------------------
@@ -520,10 +517,19 @@ const schema = gql`
     getUser(username: String, id: ID): UserPayload
 
     # Gets user posts by username
-    getUserPosts(id:ID, username: String, skip: Int, limit: Int): UserPostsPayload
+    getUserPosts(
+      id: ID
+      username: String
+      skip: Int
+      limit: Int
+    ): UserPostsPayload
 
     # Gets user comments by username
-    getUserComments(username: String!, skip: Int, limit: Int): UserCommentsPayload
+    getUserComments(
+      username: String!
+      skip: Int
+      limit: Int
+    ): UserCommentsPayload
 
     # Gets all users
     getUsers(userId: String!, skip: Int, limit: Int): UsersPayload
@@ -562,128 +568,128 @@ const schema = gql`
     # Gets events by name
     getEvent(id: ID!): EventPayload
 
-		# Gets achievements
-		getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]
+    # Gets achievements
+    getAchievements(name: String, skip: Int, limit: Int): [AchievementPayload]
 
-		# Gets user's achievements
-		getUserAchievements(
-			username: String
-			userId: ID
-			skip: Int
-			limit: Int
-		): [AchievementPayload]
+    # Gets user's achievements
+    getUserAchievements(
+      username: String
+      userId: ID
+      skip: Int
+      limit: Int
+    ): [AchievementPayload]
 
-		# Searches events by name or action
-		searchEvents(searchQuery: String!): [EventPayload]
+    # Searches events by name or action
+    searchEvents(searchQuery: String!): [EventPayload]
 
-		# Searches achievements by user or name
-		searchAchievements(searchQuery: String!): [AchievementPayload]
-	}
-	# ---------------------------------------------------------
-	# Mutation Root
-	# ---------------------------------------------------------
-	type Mutation {
-		# Signs in user
-		signin(input: SignInInput!): Token
+    # Searches achievements by user or name
+    searchAchievements(searchQuery: String!): [AchievementPayload]
+  }
+  # ---------------------------------------------------------
+  # Mutation Root
+  # ---------------------------------------------------------
+  type Mutation {
+    # Signs in user
+    signin(input: SignInInput!): Token
 
-		# Signs up user
-		signup(input: SignUpInput!): Token
+    # Signs up user
+    signup(input: SignUpInput!): Token
 
-		# Requests reset password
-		requestPasswordReset(input: RequestPasswordResetInput!): SuccessMessage
+    # Requests reset password
+    requestPasswordReset(input: RequestPasswordResetInput!): SuccessMessage
 
-		# Resets user password
-		resetPassword(input: ResetPasswordInput!): Token
+    # Resets user password
+    resetPassword(input: ResetPasswordInput!): Token
 
-		# Verifies user
-		verifyAccount(input: VerifyAccountInput!): Token
+    # Verifies user
+    verifyAccount(input: VerifyAccountInput!): Token
 
-		# Uploads user Profile or Cover photo
-		uploadUserPhoto(input: UploadUserPhotoInput!): UserPayload
+    # Uploads user Profile or Cover photo
+    uploadUserPhoto(input: UploadUserPhotoInput!): UserPayload
 
     # Edits a user
-		editAccount(id: ID!, input: EditAccountInput!): UserPayload
+    editAccount(id: ID!, input: EditAccountInput!): UserPayload
 
     # Deletes a user
-		deleteAccount(id: ID!): UserPayload
+    deleteAccount(id: ID!): UserPayload
 
-		# Creates a new post
-		createPost(input: CreatePostInput!): PostPayload
+    # Creates a new post
+    createPost(input: CreatePostInput!): PostPayload
 
-  	# Edits a user post
-		editPost(id: ID!, input: EditPostInput!): PostPayload
+    # Edits a user post
+    editPost(id: ID!, input: EditPostInput!): PostPayload
 
-		# Deletes a user post
-		deletePost(input: DeletePostInput!): PostPayload
+    # Deletes a user post
+    deletePost(input: DeletePostInput!): PostPayload
 
     # Deletes a image
-		deleteImage(input: DeleteImageInput!): ImagePayload
+    deleteImage(input: DeleteImageInput!): ImagePayload
 
-		# Creates a like for post
-		createLike(input: CreateLikeInput!): Like
+    # Creates a like for post
+    createLike(input: CreateLikeInput!): Like
 
-		# Deletes a post like
-		deleteLike(input: DeleteLikeInput!): Like
+    # Deletes a post like
+    deleteLike(input: DeleteLikeInput!): Like
 
-		# Creates a following/follower relationship between users
-		createFollow(input: CreateFollowInput!): Follow
+    # Creates a following/follower relationship between users
+    createFollow(input: CreateFollowInput!): Follow
 
-		# Deletes a following/follower relationship between users
-		deleteFollow(input: DeleteFollowInput!): Follow
+    # Deletes a following/follower relationship between users
+    deleteFollow(input: DeleteFollowInput!): Follow
 
-		# Creates a post comment
-		createComment(input: CreateCommentInput!): Comment
+    # Creates a post comment
+    createComment(input: CreateCommentInput!): Comment
 
-		# Uploads user comment photo
+    # Uploads user comment photo
 
     # Edits a post comment
     editComment(input: EditCommentInput!): Comment
 
-		# Deletes a post comment
-		deleteComment(input: DeleteCommentInput!): Comment
+    # Deletes a post comment
+    deleteComment(input: DeleteCommentInput!): Comment
 
-		# Creates a new notification for user
-		createNotification(input: CreateNotificationInput!): Notification
+    # Creates a new notification for user
+    createNotification(input: CreateNotificationInput!): Notification
 
-		# Deletes a notification
-		deleteNotification(input: DeleteNotificationInput!): Notification
+    # Deletes a notification
+    deleteNotification(input: DeleteNotificationInput!): Notification
 
-		# Updates notification seen values for user
-		updateNotificationSeen(input: UpdateNotificationSeenInput!): Boolean
+    # Updates notification seen values for user
+    updateNotificationSeen(input: UpdateNotificationSeenInput!): Boolean
 
-		# Creates a message
-		createMessage(input: CreateMessageInput!): MessagePayload
+    # Creates a message
+    createMessage(input: CreateMessageInput!): MessagePayload
 
-		# Deletes a message
-		deleteMessage(input: DeleteMessageInput!): MessagePayload
+    # Deletes a message
+    deleteMessage(input: DeleteMessageInput!): MessagePayload
 
-		# Updates message seen values for user
-		updateMessageSeen(input: UpdateMessageSeenInput!): Boolean
+    # Updates message seen values for user
+    updateMessageSeen(input: UpdateMessageSeenInput!): Boolean
 
-		# Creates a event
-		createEvent(input: CreateEventInput!): EventPayload
+    # Creates a event
+    createEvent(input: CreateEventInput!): EventPayload
 
-		# Deletes a event
-		deleteEvent(input: DeleteEventInput!): EventPayload
+    # Deletes a event
+    deleteEvent(input: DeleteEventInput!): EventPayload
 
-		# Creates a achievement
-		createAchievement(input: CreateAchievementInput!): AchievementPayload
+    # Creates a achievement
+    createAchievement(input: CreateAchievementInput!): AchievementPayload
 
-		# Deletes a achievement
-		deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
+    # Deletes a achievement
+    deleteAchievement(input: DeleteAchievementInput!): AchievementPayload
 
-		# Deletes a achievement
-		deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
-	}
+    # Deletes a achievement
+    deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
+  }
 
-	# ---------------------------------------------------------
-	# Mutation Root
-	# ---------------------------------------------------------
-	type Subscription {
-		messageCreated(authUserId: ID!, userId: ID!): MessagePayload
-		isUserOnline(authUserId: ID!, userId: ID!): IsUserOnlinePayload
-		newConversation: ConversationsPayload
-	}
+  # ---------------------------------------------------------
+  # Mutation Root
+  # ---------------------------------------------------------
+  type Subscription {
+    messageCreated(authUserId: ID!, userId: ID!): MessagePayload
+    isUserOnline(authUserId: ID!, userId: ID!): IsUserOnlinePayload
+    newConversation: ConversationsPayload
+  }
 `;
 
 export default schema;
