@@ -9,13 +9,13 @@ import eventResolver from './event';
 import achievementResolver from './achievement';
 
 export default [
-	userResolver,
-	postResolver,
-	likeResolver,
-	followResolver,
-	commentResolver,
-	notificationResolver,
-	message,
-	eventResolver,
-	achievementResolver,
+  userResolver,
+  postResolver,
+  likeResolver,
+  followResolver,
+  commentResolver,
+  notificationResolver,
+  message,
+  eventResolver,
+  achievementResolver,
 ];

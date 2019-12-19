@@ -9,13 +9,13 @@ import Event from './Event';
 import Achievement from './Achievement';
 
 export default {
-	User,
-	Message,
-	Post,
-	Like,
-	Follow,
-	Comment,
-	Notification,
-	Event,
-	Achievement,
+  User,
+  Message,
+  Post,
+  Like,
+  Follow,
+  Comment,
+  Notification,
+  Event,
+  Achievement,
 };
