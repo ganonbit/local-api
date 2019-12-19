@@ -170,11 +170,12 @@ const Mutation = {
 		let eventID = '5ddc0cf9dce3c14fcbc210bc';
 		const event = await Event.findById(eventID);
 		const user = await User.findById(newPost.author);
-		const newPoints = await user.accountPoints + event.awardedPoints;
+		const newPoints = user.accountPoints + event.awardedPoints;
+		const totalPoints = user.totalPoints + event.awardedPoints;
 		
 		await User.findOneAndUpdate(
 			{ _id: authorId },
-			{ $push: { posts: newPost.id }, $set: { accountPoints: newPoints } }
+			{ $push: { posts: newPost.id }, $set: { accountPoints: newPoints, totalPoints: totalPoints } }
 		);
 
 		return newPost;
@@ -288,11 +289,12 @@ const Mutation = {
 		const user = await User.findById(post.author);
 		let eventID = '5ddc0cf9dce3c14fcbc210bc';
 		const event = await Event.findById(eventID);
-		const newPoints = user.accountPoints - event.awardedPoints;
+		const newPoints =  user.accountPoints - event.awardedPoints;
+		const totalPoints = user.totalPoints - event.awardedPoints;
 
 		await User.findOneAndUpdate(
 			{ _id: post.author },
-			{ $pull: { posts: post.id }, $set: { accountPoints: newPoints } }
+			{ $pull: { posts: post.id }, $set: { accountPoints: newPoints, totalPoints: totalPoints } }
 		);
 
 		// Delete post likes from likes collection

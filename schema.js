@@ -21,6 +21,7 @@ const schema = gql`
     gender: String
     bio: String
     location: String
+    phone: String
     password: String!
     emailToken: String
     emailTokenExpiry: String
@@ -199,6 +200,7 @@ const schema = gql`
     gender: String
     bio: String
     location: String
+    phone: String
     password: String
     image: String
     imagePublicId: String
@@ -352,6 +354,7 @@ const schema = gql`
     gender: String
     bio: String
     location: String
+    phone: String
     password: String
     image: String
     imagePublicId: String
@@ -530,6 +533,9 @@ const schema = gql`
 
     # Gets Suggested people for user
     suggestPeople(userId: String!): [UserPayload]
+
+    # gets top users
+    getTopUsers(userId: String!, skip: Int, limit: Int): [UserPayload]
 
     # Gets posts from followed users
     getFollowedPosts(userId: String!, skip: Int, limit: Int): PostsPayload

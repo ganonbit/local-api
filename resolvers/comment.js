@@ -39,6 +39,7 @@ const Mutation = {
 		const event = await Event.findById(eventID);
 		const user = await User.findById(newComment.author);
 		const newPoints = user.commentPoints + event.awardedPoints;
+		const totalPoints = user.totalPoints + event.awardedPoints;
 
 		// Push comment to post collection
 		await Post.findOneAndUpdate(
@@ -50,7 +51,7 @@ const Mutation = {
 			{ _id: author },
 			{
 				$push: { comments: newComment.id },
-				$set: { commentPoints: newPoints },
+				$set: { commentPoints: newPoints, totalPoints: totalPoints },
 			}
 		);
 
@@ -129,13 +130,14 @@ const Mutation = {
 		let eventID = '5ddc0cdfdce3c14fcbc210bb';
 		const event = await Event.findById(eventID);
 		const newPoints = user.commentPoints - event.awardedPoints;
+		const totalPoints = user.totalPoints - event.awardedPoints;
 
 		// Delete comment from users collection
 		await User.findOneAndUpdate(
 			{ _id: comment.author },
 			{
 				$pull: { comments: comment.id },
-				$set: { commentPoints: newPoints },
+				$set: { commentPoints: newPoints, totalPoints: totalPoints },
 			}
 		);
 		// Delete comment from posts collection

@@ -17,13 +17,14 @@ const Mutation = {
 		let eventID = '5dda290bcd879c3e998e2a48';
 		const event = await Event.findById(eventID);
 		const newPoints = user.likePoints + event.awardedPoints;
+		const totalPoints = user.totalPoints + event.awardedPoints;
 
 		// Push like to post collection
 		await Post.findOneAndUpdate({ _id: postId }, { $push: { likes: like.id } });
 		// Push like and add points to user collection
 		await User.findOneAndUpdate(
 			{ _id: userId },
-			{ $push: { likes: like.id }, $set: { likePoints: newPoints } }
+			{ $push: { likes: like.id }, $set: { likePoints: newPoints, totalPoints: totalPoints } }
 		);
 
 		// await earnBadge();
@@ -45,11 +46,12 @@ const Mutation = {
 		let eventID = '5dda290bcd879c3e998e2a48';
 		const event = await Event.findById(eventID);
 		const newPoints = user.likePoints - event.awardedPoints;
+		const totalPoints = user.totalPoints - event.awardedPoints;
 
 		// Delete like from users collection
 		await User.findOneAndUpdate(
 			{ _id: like.user },
-			{ $pull: { likes: like.id }, $set: { likePoints: newPoints } }
+			{ $pull: { likes: like.id }, $set: { likePoints: newPoints, totalPoints: totalPoints } }
 		);
 		// Delete like from posts collection
 		await Post.findOneAndUpdate(

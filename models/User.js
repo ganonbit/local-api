@@ -85,6 +85,11 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true
     },
+    phone: {
+      type: String,
+      lowercase: true,
+      trim: true
+    },
     emailToken: String,
     emailTokenExpiry: Date,
     password: {
@@ -121,6 +126,10 @@ const userSchema = new Schema(
     usedPoints: { type: Number, default: 0 },
     totalPoints: { type: Number, default: 0 },
     pagesViewed: { type: Number, default: 0 },
+    socialHandles: {
+      type: Map,
+      of: String
+    },
     posts: [
       {
         type: Schema.Types.ObjectId,

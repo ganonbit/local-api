@@ -336,6 +336,33 @@ const Query = {
 
     return randomUsers;
   },
+
+  getTopUsers: async (root, { userId }, { User, Follow }) => {
+
+    // Find who user follows
+    const userFollowing = [];
+    const following = await Follow.find(
+      { follower: userId },
+      { _id: 0 }
+    ).select("user");
+    following.map(f => userFollowing.push(f.user));
+    userFollowing.push(userId);
+	
+    // Find top users
+    const query = { _id: { $nin: userFollowing } };
+
+    const topUsers = await User.find(query)
+	  .limit(20)
+	  .sort({totalPoints: -1});
+	  
+	  console.log(topUsers)
+
+    return topUsers;
+
+
+	
+
+  },
   /**
    * Verifies reset password token
    *
