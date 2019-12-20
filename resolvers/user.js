@@ -1271,7 +1271,7 @@ const Mutation = {
                                                       <td align="right" style="border-collapse: collapse;mso-line-height-rule: exactly;">
                                                           <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                               <tr>
-                                                                  <td style="font-size: 16px;color: #ffffff;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding-right: 10px;border-collapse: collapse;mso-line-height-rule: exactly;">${newUser.firstName} ${newUser.lastName}</td>
+                                                                  <td style="font-size: 16px;color: #ffffff;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding-right: 10px;border-collapse: collapse;mso-line-height-rule: exactly;">${user.firstName} ${user.lastName}</td>
                                                                   <td style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="40" src="https://res.cloudinary.com/weare270b/image/upload/v1576220262/static/Image_from_iOS_1_bnaxnc.jpg" alt="" style="border: 0 !important;outline: none !important;"></td>
                                                               </tr>
                                                           </table>
@@ -1287,7 +1287,7 @@ const Mutation = {
                                           <td valign="top" style="padding-top: 25px;border: 1px solid #dee4e4;border-collapse: collapse;mso-line-height-rule: exactly;">
                                               <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                   <tr>
-                                                      <td style="font-size: 18px;color: #4b4d4c;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding: 0 25px 20px;border-collapse: collapse;mso-line-height-rule: exactly;">Hola, ${newUser.firstName}!</td>
+                                                      <td style="font-size: 18px;color: #4b4d4c;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding: 0 25px 20px;border-collapse: collapse;mso-line-height-rule: exactly;">Hola, ${user.firstName}!</td>
                                                   </tr>
                                                    <tr>
                                                       <td style="font-size: 18px;color: #4b4d4c;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;padding: 0 25px 20px;border-collapse: collapse;mso-line-height-rule: exactly;">
@@ -1362,7 +1362,7 @@ const Mutation = {
                                                  </tr>
                                                  <tr>
                                                    <td align="center" style="font-size: 16px;text-align: center;padding-bottom: 25px;font-family: 'Roboto Condensed', Arial, sans-serif;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                     This email was intended for ${newUser.firstName} ${newUser.lastName}.
+                                                     This email was intended for ${user.firstName} ${user.lastName}.
                                                    </td>
                                                  </tr>
                                                  <tr>
