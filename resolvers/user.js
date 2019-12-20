@@ -1068,6 +1068,7 @@ const Mutation = {
         emailToken: token,
         emailTokenExpiry: tokenExpiry,
         accountPoints: newPoints,
+        totalPoints: newPoints
       },
       { new: true }
     );
