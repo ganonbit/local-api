@@ -32,6 +32,10 @@ export default function createAlgoliaMongooseModel({
               'firstName lastName username'
             );
             object.author = user;
+            object.engagementScore = doc.comments.length + doc.likes.length;
+            object.numOfLikes = doc.likes.length
+            object.numOfComments = doc.comments.length
+            object.image = doc.image;
           }
           object.objectID = doc._id;
           const { objectID } = await index.addObject(object);
@@ -100,6 +104,10 @@ export default function createAlgoliaMongooseModel({
           'firstName lastName username'
         );
         object.author = user;
+        object.engagementScore = doc.comments.length + doc.likes.length;
+        object.numOfLikes = doc.likes.length
+        object.numOfComments = doc.comments.length
+        object.image = doc.image;
       }
       object.objectID = this._id;
       const { objectID } = await index.addObject(object);
