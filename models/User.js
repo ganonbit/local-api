@@ -82,12 +82,10 @@ const userSchema = new Schema(
     },
     location: {
       type: String,
-      lowercase: true,
       trim: true,
     },
     phone: {
       type: String,
-      lowercase: true,
       trim: true,
     },
     emailToken: String,
