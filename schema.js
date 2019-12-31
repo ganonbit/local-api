@@ -165,6 +165,7 @@ const schema = gql`
     firstName: String!
     lastName: String!
     password: String!
+    invitedById: String
     gender: String
     birthday: String
   }
