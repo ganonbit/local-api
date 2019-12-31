@@ -1,15 +1,16 @@
 import nodemailer from 'nodemailer';
 
-const { MAIL_SERVICE, MAIL_USER, MAIL_PASS } = process.env;
+const { SENDGRID_USER, MAIL_USER, SENDGRID_PASS } = process.env;
 
 /**
  * Creates transporter object that will help us to send emails
  */
-const transporter = nodemailer.createTransport({
-  service: MAIL_SERVICE,
+
+let transporter = nodemailer.createTransport({
+  service: 'SendGrid',
   auth: {
-    user: MAIL_USER,
-    pass: MAIL_PASS,
+    user: SENDGRID_USER,
+    pass: SENDGRID_PASS,
   },
 });
 
@@ -20,17 +21,12 @@ const transporter = nodemailer.createTransport({
  * @param {string} subject of the email
  * @param {string} html content of the email
  */
-export const sendEmail = ({ to, subject, html }) => {
-  return new Promise((resolve, reject) => {
-    const options = { from: MAIL_USER, to, subject, html };
-
-    return transporter
-      .sendMail(options)
-      .then(response => {
-        resolve(response.data);
-      })
-      .catch(error => {
-        reject(error);
-      });
+export const sendEmail = async ({ to, subject, html }) => {
+  let info = await transporter.sendMail({
+    from: `"Avocado Nation 🥑" <${MAIL_USER}>`, // sender address
+    to: to, // list of receivers
+    subject: subject, // Subject line
+    html: html // html body
   });
+  console.log("Verification Email sent: %s", info.messageId);
 };

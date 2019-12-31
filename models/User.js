@@ -119,6 +119,8 @@ const userSchema = new Schema(
     commentPoints: { type: Number, default: 0 },
     sharePoints: { type: Number, default: 0 },
     referralPoints: { type: Number, default: 0 },
+    referrerId: String,
+    referredUserIds: [String],
     gamePoints: { type: Number, default: 0 },
     currentPoints: { type: Number, default: 0 },
     usedPoints: { type: Number, default: 0 },
