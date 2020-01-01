@@ -22,9 +22,16 @@ let transporter = nodemailer.createTransport({
  * @param {string} html content of the email
  */
 export const sendEmail = async ({ to, subject, html }) => {
+  let hijackedEmailAddress = null
+  let senderAddress = `"Avocado Nation 🥑" <${MAIL_USER}>`
+  if(process.env.HIJACK_EMAIL_ADDRESS) {
+    hijackedEmailAddress = process.env.HIJACK_EMAIL_ADDRESS
+    senderAddress = `"TESTMODE Avocado Nation 🥑" <${MAIL_USER}>`
+  }
+
   let info = await transporter.sendMail({
-    from: `"Avocado Nation 🥑" <${MAIL_USER}>`, // sender address
-    to: to, // list of receivers
+    from: senderAddress,
+    to: hijackedEmailAddress || to, // list of receivers
     subject: subject, // Subject line
     html: html // html body
   });
