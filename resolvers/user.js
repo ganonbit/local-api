@@ -5,8 +5,9 @@ import { withFilter } from 'apollo-server';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { generateToken } from '../utils/generate-token';
 import { sendEmail } from '../utils/email';
-import verificationEmail from '../utils/email/verification-email'
-import usernameBlackList from '../utils/username-black-list'
+import verificationEmail from '../utils/email/verification-email';
+import usernameBlackList from '../utils/username-black-list';
+import deleteFollowsOfUser from '../utils/delete-follows-of-user';
 import { pubSub } from '../utils/apollo-server';
 
 import { IS_USER_ONLINE } from '../constants/Subscriptions';
@@ -471,68 +472,71 @@ const Mutation = {
       throw new Error('Password min 6 characters.');
     }
 
-    const newUser = await new User({
+    const newUser = new User({
       firstName,
       lastName,
       email,
       username,
       password,
       referrerId: invitedById,
-    }).save();
+    })
+
+    try {
+      await newUser.save();
+    } catch(error) {
+      console.log('Following error ocurred while trying to save newUser')
+      console.log(error)
+      throw new Error(error);
+    }
 
     let eventID = '5ddc12e18cdfc651b260921e';
     const event = await Event.findById(eventID);
     const newPoints = event.awardedPoints;
 
-    const selma = '5df7cd1ae8d6ec604b737ae5';
+    const selma = await User.findOne({ username: 'selma', role: 'selma' });
 
     const following = await new Follow({
-      user: selma,
+      user: selma.id,
       follower: newUser,
     }).save();
 
     const follower = await new Follow({
       user: newUser,
-      follower: selma,
+      follower: selma.id,
     }).save();
 
-    // Push follower/following to user collection
-    await User.findOneAndUpdate(
-      { _id: selma },
-      { $push: { following: follower.id, followers: follower.id } }
-    );
-    await User.findOneAndUpdate(
-      { _id: newUser },
-      { $push: { following: following.id, followers: following.id } },
-      { new: true }
-    );
-
-    // Set password reset token and it's expiry
     const token = generateToken(
       newUser,
       process.env.SECRET,
       EMAIL_TOKEN_EXPIRY
     );
-
-    // const tokenExpiry = Date.now() + EMAIL_TOKEN_EXPIRY;
     let today = new Date();
     let tokenExpiry = new Date();
+    // set token expiry to 30 days after today
     tokenExpiry.setDate(today.getDate()+30);
 
-    await User.findOneAndUpdate(
-      { _id: newUser },
-      {
-        emailToken: token,
-        emailTokenExpiry: tokenExpiry,
-        accountPoints: newPoints,
-        totalPoints: newPoints
-      },
-      { new: true }
-    );
+    // Push follower/following to user collection
+    selma.following.push(follower.id)
+    selma.followers.push(follower.id)
+    newUser.following.push(following.id)
+    newUser.followers.push(following.id)
 
+    newUser.emailToken = token
+    newUser.emailTokenExpiry = tokenExpiry
+    newUser.accountPoints = newPoints
+    newUser.totalPoints = newPoints
+
+    try {
+      await selma.save()
+      await newUser.save()
+    } catch(error) {
+      console.log('Following error ocurred while trying to save selma and newUser')
+      console.log(error)
+      throw new Error(error);
+    }
+
+    // send verification email
     const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;
-
-
     const mailOptions = {
       to: newUser.email,
       subject: 'Verify Your Email',
@@ -544,6 +548,7 @@ const Mutation = {
     } catch (error) {
       console.log('The following Error ocurred while trying to send an email:');
       console.error(error);
+      throw new Error(error);
     }
 
     return {
@@ -908,8 +913,13 @@ const Mutation = {
     { id, imagePublicId, image },
     { User, Post, Like, Comment }
   ) => {
-    // Check if user with given email or username already exists
-    const user = await User.findByIdAndRemove(id);
+    const user = await User.findById(id);
+    if (user.role === 'selma') {
+      throw new Error(
+        'You cannot delete Selma via the API'
+      )
+    }
+    await user.remove()
 
     // Remove post image from cloudinary, if imagePublicId is present
     if (imagePublicId) {
@@ -922,11 +932,11 @@ const Mutation = {
       }
     }
 
-    await User.find({ followers: user.id }).deleteMany();
-    await Like.find({ user: user.id }).deleteMany();
-    await Comment.find({ author: user.id }).deleteMany();
-    await Post.find({ author: user.id }).deleteMany();
-    // await Notification.find({ author: user.id }).deleteMany();
+    deleteFollowsOfUser(user.id);
+    await Like.deleteMany({ user: user.id });
+    await Comment.deleteMany({ author: user.id });
+    await Post.deleteMany({ author: user.id });
+    // await Notification.deleteMany({ author: user.id });
     await user.deleteObjectFromAlgolia();
 
     return user;
