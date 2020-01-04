@@ -8,14 +8,16 @@ const deleteFollowsOfUser = async (userId) => {
       {follower: userId}
     ]});
 
-    follows.forEach(async follow => {
-      let ownerOfFollow = await User.findOne({ following: follow.id });
-      if (ownerOfFollow) {
-        ownerOfFollow.following.pull(follow.id)
-        ownerOfFollow.followers.pull(follow.id)
-        ownerOfFollow.save()
-      }
-    })
+    if (follows && follows.length > 0) {
+      follows.forEach(async follow => {
+        let ownerOfFollow = await User.findOne({ following: follow.id });
+        if (ownerOfFollow) {
+          ownerOfFollow.following.pull(follow.id)
+          ownerOfFollow.followers.pull(follow.id)
+          await ownerOfFollow.save()
+        }
+      })
+    }
 
     await Follow.deleteMany({ follower: userId });
     await Follow.deleteMany({ user: userId});

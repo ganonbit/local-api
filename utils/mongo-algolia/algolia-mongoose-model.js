@@ -31,11 +31,13 @@ export default function createAlgoliaMongooseModel({
               object.author,
               'firstName lastName username'
             );
-            object.author = user;
-            object.engagementScore = doc.comments.length + doc.likes.length;
-            object.numOfLikes = doc.likes.length
-            object.numOfComments = doc.comments.length
-            object.image = doc.image;
+            if (user) {
+              object.author = user;
+              object.numOfLikes = doc.likes ? doc.likes.length : 0
+              object.numOfComments = doc.comments ? doc.comments.length : 0
+              object.engagementScore = object.numOfLikes + object.numOfComments;
+              object.image = doc.image;
+            }
           }
           object.objectID = doc._id;
           const { objectID } = await index.addObject(object);
@@ -103,11 +105,13 @@ export default function createAlgoliaMongooseModel({
           object.author,
           'firstName lastName username'
         );
-        object.author = user;
-        object.engagementScore = doc.comments.length + doc.likes.length;
-        object.numOfLikes = doc.likes.length
-        object.numOfComments = doc.comments.length
-        object.image = doc.image;
+        if (user) {
+          object.author = user;
+          object.numOfLikes = user.likes ? user.likes.length : 0
+          object.numOfComments = user.comments ? user.comments.length : 0
+          object.engagementScore = object.numOfLikes + object.numOfComments;
+          object.image = user.image;
+        }
       }
       object.objectID = this._id;
       const { objectID } = await index.addObject(object);

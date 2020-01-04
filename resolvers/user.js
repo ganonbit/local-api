@@ -8,6 +8,10 @@ import { sendEmail } from '../utils/email';
 import verificationEmail from '../utils/email/verification-email';
 import usernameBlackList from '../utils/username-black-list';
 import deleteFollowsOfUser from '../utils/delete-follows-of-user';
+import deleteUserComments from '../utils/delete-user-comments';
+import deleteCommentsFromPostsOfUser from '../utils/delete-comments-from-posts-of-user';
+import deleteUserLikes from '../utils/delete-user-likes';
+import deleteLikesFromPostsOfUser from '../utils/delete-likes-from-posts-of-user';
 import { pubSub } from '../utils/apollo-server';
 
 import { IS_USER_ONLINE } from '../constants/Subscriptions';
@@ -933,8 +937,10 @@ const Mutation = {
     }
 
     deleteFollowsOfUser(user.id);
-    await Like.deleteMany({ user: user.id });
-    await Comment.deleteMany({ author: user.id });
+    deleteLikesFromPostsOfUser(user);
+    deleteUserLikes(user);
+    deleteCommentsFromPostsOfUser(user);
+    deleteUserComments(user);
     await Post.deleteMany({ author: user.id });
     // await Notification.deleteMany({ author: user.id });
     await user.deleteObjectFromAlgolia();
