@@ -341,6 +341,14 @@ const schema = gql`
     id: ID!
   }
 
+  input FeedbackFormInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    feedback: String!
+    feedbackReason: String!
+  }
+
   # ---------------------------------------------------------
   # Return Payloads
   # ---------------------------------------------------------
@@ -681,6 +689,9 @@ const schema = gql`
 
     # Deletes a achievement
     deleteUserAchievement(input: DeleteAchievementInput!): AchievementPayload
+
+    # Sends a feedback form submission email
+    submitFeedbackForm(input: FeedbackFormInput!): SuccessMessage
   }
 
   # ---------------------------------------------------------
