@@ -37,3 +37,20 @@ export const sendEmail = async ({ to, subject, html }) => {
   });
   console.log("Verification Email sent: %s", info.messageId);
 };
+
+export const sendFeedbackFormEmail = async ({ firstName, lastName, email, feedbackReason, feedback }) => {
+  let hijackedEmailAddress = null
+  let subjectLine = `Feedback Submission: ${feedbackReason} from ${firstName} ${lastName}`
+  if(process.env.HIJACK_EMAIL_ADDRESS) {
+    hijackedEmailAddress = process.env.HIJACK_EMAIL_ADDRESS
+    subjectLine = `TESTMODE Feedback Submission: ${feedbackReason} from ${firstName} ${lastName}`
+  }
+
+  let info = await transporter.sendMail({
+    from: email,
+    to: hijackedEmailAddress || 'hello@theavocadonation.com',
+    subject: subjectLine,
+    text: feedback // text body
+  });
+  console.log("Verification Email sent: %s", info.messageId);
+};
