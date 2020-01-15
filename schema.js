@@ -315,6 +315,7 @@ const schema = gql`
 
   input UpdateNotificationSeenInput {
     userId: ID!
+    notificationId: ID!
   }
 
   input UpdateMessageSeenInput {
@@ -458,12 +459,6 @@ const schema = gql`
     lastMessageCreatedAt: String
   }
 
-  type LikePayload {
-    id: ID!
-    post: PostPayload
-    user: UserPayload
-  }
-
   type NotificationPayload {
     id: ID
     user: UserPayload
@@ -477,6 +472,22 @@ const schema = gql`
   type NotificationsPayload {
     count: String!
     notifications: [NotificationPayload]!
+  }
+
+  enum NotificationOperationType {
+    CREATE
+    DELETE
+  }
+
+  type NotificationCreatedOrDeletedPayload {
+    operation: NotificationOperationType!
+    notification: NotificationPayload
+  }
+
+  type LikePayload {
+    id: ID!
+    post: PostPayload
+    user: UserPayload
   }
 
   type CommentPayload {
@@ -701,7 +712,9 @@ const schema = gql`
     messageCreated(authUserId: ID!, userId: ID!): MessagePayload
     isUserOnline(authUserId: ID!, userId: ID!): IsUserOnlinePayload
     newConversation: ConversationsPayload
+    notificationCreatedOrDeleted: NotificationCreatedOrDeletedPayload
   }
+  
 `;
 
 export default schema;
