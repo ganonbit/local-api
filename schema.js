@@ -523,7 +523,7 @@ const schema = gql`
     verifyToken(email: String, token: String!): SuccessMessage
 
     # Gets the currently logged in user
-    getAuthUser(username: String, id: ID): UserPayload
+    getAuthUser: UserPayload
 
     # Gets user by username or by id
     getUser(username: String, id: ID): UserPayload
