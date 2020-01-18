@@ -155,7 +155,7 @@ const schema = gql`
   # Input Objects
   # ---------------------------------------------------------
   input SignInInput {
-    emailOrUsername: String!
+    email: String!
     password: String
   }
 
@@ -534,7 +534,7 @@ const schema = gql`
     getAuthUser: UserPayload
 
     # Gets user by username or by id
-    getUser(username: String, id: ID): UserPayload
+    getUser(email: String, id: ID): UserPayload
 
     # Gets user posts by username
     getUserPosts(

@@ -109,21 +109,23 @@ const Query = {
     return user;
   },
   /**
-   * Gets user by username
+   * Gets user by email
    *
-   * @param {string} username
+   * @param {string} email
    */
-  getUser: async (root, { username, id }, { User }) => {
-    if (!username && !id) {
-      throw new Error('username or id is required params.');
+  getUser: async (root, { email, id }, { User }) => {
+    if (!email && !id) {
+      throw new Error('email or id is required params.');
     }
 
-    if (username && id) {
-      throw new Error('please pass only username or only id as a param');
+    if (email && id) {
+      throw new Error('please pass only email or only id as a param');
     }
-
-    const query = username ? { username: username } : { _id: id };
-    const user = await User.findOne(query)
+  
+    const user = await User.findOne().or([
+      { email },
+      { _id: id}
+    ])
       .populate({
         path: 'posts',
         populate: [
@@ -161,7 +163,7 @@ const Query = {
         ],
       });
 
-    if (!user) {
+    if (await !user) {
       throw new Error("User with given params doesn't exists.");
     }
 
@@ -394,14 +396,10 @@ const Mutation = {
   /**
    * Signs in user
    *
-   * @param {string} emailOrUsername
    * @param {string} password
    */
-  signin: async (root, { input: { emailOrUsername, password } }, { User }) => {
-    const user = await User.findOne().or([
-      { email: emailOrUsername },
-      { username: emailOrUsername },
-    ]);
+  signin: async (root, { input: { email, password } }, { User }) => {
+    const user = await User.findOne({ email });
 
     if (!user) {
       throw new Error('User not found.');
