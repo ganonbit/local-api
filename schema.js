@@ -534,7 +534,7 @@ const schema = gql`
     getAuthUser: UserPayload
 
     # Gets user by username or by id
-    getUser(email: String, id: ID): UserPayload
+    getUser(username: String, id: ID): UserPayload
 
     # Gets user posts by username
     getUserPosts(

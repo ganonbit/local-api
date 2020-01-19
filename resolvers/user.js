@@ -113,19 +113,17 @@ const Query = {
    *
    * @param {string} email
    */
-  getUser: async (root, { email, id }, { User }) => {
-    if (!email && !id) {
-      throw new Error('email or id is required params.');
+  getUser: async (root, { username, id }, { User }) => {
+    if (!username && !id) {
+      throw new Error('username or id is required params.');
     }
 
-    if (email && id) {
-      throw new Error('please pass only email or only id as a param');
+    if (username && id) {
+      throw new Error('please pass only username or only id as a param');
     }
-  
-    const user = await User.findOne().or([
-      { email },
-      { _id: id}
-    ])
+
+    const query = username ? { username: username } : { _id: id };
+    const user = await User.findOne(query)
       .populate({
         path: 'posts',
         populate: [
