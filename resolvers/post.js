@@ -118,12 +118,6 @@ const Query = {
       .limit(limit)
       .sort({ createdAt: 'desc' });
 
-    // const combinedPosts = await Promise.all([
-    //   User.find(),
-    //   Category.find(),
-    //   Content.find()
-    // ])
-
     const combinedPosts = followedPosts.concat(followedSharedPosts);
 
     return { posts: combinedPosts, count: combinedPosts.length };
