@@ -120,7 +120,7 @@ const verificationEmail = (verifyLink, newUser) => {
                               <tr>
                                 <td
                                   style="font-size: 16px;color: #8fbf2f;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;font-style: italic;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                  The self-Professed Avo Geek</td>
+                                  The Self-Professed Avo Geek</td>
                               </tr>
                             </table>
                           </td>

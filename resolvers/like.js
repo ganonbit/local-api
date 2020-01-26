@@ -41,7 +41,7 @@ const Mutation = {
    */
   deleteLike: async (
     root,
-    { input: { userId, id } },
+    { input: { id } },
     { Like, User, Post, Event }
   ) => {
     const like = await Like.findByIdAndRemove(id);
