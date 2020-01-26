@@ -175,37 +175,56 @@ const Query = {
    * @param {int} limit how many posts to limit
    */
   getUserPosts: async (root, { id, username, skip, limit }, { User, Post }) => {
-    const findUser = username ? { username: username } : { _id: id };
-    const user = await User.findOne(findUser);
-
-    const query = { author: user._id };
-    const count = await Post.find(query).countDocuments();
-    const posts = await Post.find(query)
-      .populate({
-        path: 'author',
+    const user = await User.findOne({ username: username})
+      .populate([{
+        path: 'posts',
         populate: [
-          { path: 'following' },
-          { path: 'followers' },
-          {
-            path: 'notifications',
+          { path: 'author',
             populate: [
-              { path: 'author' },
-              { path: 'follow' },
-              { path: 'like' },
-              { path: 'comment' },
+              { path: 'following' },
+              { path: 'followers' },
+              {
+                path: 'notifications',
+                populate: [
+                  { path: 'author' },
+                  { path: 'follow' },
+                  { path: 'like' },
+                  { path: 'comment' },
+                ],
+              },
+            ],
+          },
+          { path: 'likes' },
+          {
+            path: 'comments',
+            options: { sort: { createdAt: 'desc' } },
+            populate: { path: 'author' },
+          },
+        ],
+        options: { limit: limit, skip: skip }
+      },
+      {
+        path: 'sharedPosts',
+        populate: [
+          { path: 'user', select: 'id firstName lastName username' },
+          { path: 'post',
+            populate: [
+              { path: 'author', select: 'id firstName lastName username' },
+              { path: 'likes' },
+              {
+                path: 'comments',
+                options: { sort: { createdAt: 'desc' } },
+                populate: { path: 'author' },
+              },
             ],
           },
         ],
-      })
-      .populate('likes')
-      .populate({
-        path: 'comments',
-        options: { sort: { createdAt: 'desc' } },
-        populate: { path: 'author' },
-      })
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: 'desc' });
+        options: { limit: limit, skip: skip }
+      }])
+
+    let combinedPosts = user.posts.concat(user.sharedPosts)
+    const count = combinedPosts.length;
+    const posts = combinedPosts.reverse();
 
     return { posts, count };
   },
@@ -913,7 +932,7 @@ const Mutation = {
     { id, imagePublicId, image },
     { User, Post, Like, Comment }
   ) => {
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate('posts');
     if (user.role === 'selma') {
       throw new Error(
         'You cannot delete Selma via the API'
