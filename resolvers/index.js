@@ -8,6 +8,7 @@ import notificationResolver from './notification';
 import message from './message';
 import eventResolver from './event';
 import achievementResolver from './achievement';
+import sharedPostResolver from './shared-post';
 
 export default [
   userResolver,
@@ -20,4 +21,5 @@ export default [
   message,
   eventResolver,
   achievementResolver,
+  sharedPostResolver,
 ];
