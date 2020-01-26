@@ -45,6 +45,12 @@ const postSchema = Schema(
         ref: 'Comment',
       },
     ],
+    shares: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'SharedPost',
+      },
+    ],
   },
   {
     timestamps: true,
