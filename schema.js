@@ -47,6 +47,7 @@ const schema = gql`
     posts: [PostPayload]
     likes: [Like]
     comments: [Comment]
+    sharedPosts: [SharedPost]
     followers: [Follow]
     following: [Follow]
     notifications: [NotificationPayload]
@@ -62,6 +63,7 @@ const schema = gql`
     imagePublicId: String
     author: User
     likes: [Like]
+    shares: [SharedPost]
     comments: [Comment]
     createdAt: String
     updatedAt: String
@@ -86,6 +88,12 @@ const schema = gql`
   }
 
   type Like {
+    id: ID!
+    post: ID
+    user: ID
+  }
+
+  type SharedPost {
     id: ID!
     post: ID
     user: ID
@@ -272,6 +280,15 @@ const schema = gql`
     id: ID!
   }
 
+  input CreateSharedPostInput {
+    userId: ID!
+    postId: ID!
+  }
+
+  input DeleteSharedPostInput {
+    id: ID!
+  }
+
   input CreateFollowInput {
     userId: ID!
     followerId: ID!
@@ -387,6 +404,7 @@ const schema = gql`
     posts: [PostPayload]
     comments: [CommentPayload]
     likes: [Like]
+    sharedPosts: [SharedPost]
     followers: [Follow]
     following: [Follow]
     badges: [Achievement]
@@ -419,6 +437,8 @@ const schema = gql`
     image: String
     imagePublicId: String
     author: UserPayload
+    post: PostPayload
+    user: UserPayload
     likes: [Like]
     comments: [CommentPayload]
     createdAt: String
@@ -650,6 +670,12 @@ const schema = gql`
 
     # Deletes a post like
     deleteLike(input: DeleteLikeInput!): Like
+
+    # Creates a shared post
+    createSharedPost(input: CreateSharedPostInput!): SharedPost
+
+    # Deletes a shared post
+    deleteSharedPost(input: DeleteSharedPostInput!): SharedPost
 
     # Creates a following/follower relationship between users
     createFollow(input: CreateFollowInput!): Follow
