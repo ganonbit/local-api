@@ -136,6 +136,12 @@ const userSchema = new Schema(
         ref: 'Post',
       },
     ],
+    sharedPosts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'SharedPost',
+      },
+    ],
     likes: [
       {
         type: Schema.Types.ObjectId,
