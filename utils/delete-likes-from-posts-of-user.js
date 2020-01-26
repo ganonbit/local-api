@@ -3,8 +3,11 @@ import Like from '../models/Like';
 
 const deleteLikesFromPostsOfUser = async (user) => {
   try {
-    user.posts.forEach(async postId => {
-      let likes = await Like.find({post: postId});
+    user.posts.forEach(async post => {
+      // don't remove likes from posts that don't belong to the user being deleted (shared posts)
+      if (user.id.toString() === post.author.toString()) { return; }
+
+      let likes = await Like.find({post: post.id});
       if (!likes || !likes.length > 0) { return; }
       let userArray = likes.map(function(like) { return like.user; });
       // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array

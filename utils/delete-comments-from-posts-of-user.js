@@ -3,8 +3,11 @@ import Comment from '../models/Comment';
 
 const deleteCommentsFromPostsOfUser = async (user) => {
   try {
-    user.posts.forEach(async postId => {
-      let comments = await Comment.find({post: postId});
+    user.posts.forEach(async post => {
+      // don't remove comments from posts that don't belong to the user being deleted (shared posts)
+      if (user.id.toString() === post.author.toString()) { return; }
+      
+      let comments = await Comment.find({post: post.id});
       if (!comments || !comments.length > 0) { return; }
       let authorArray = comments.map(function(comment) { return comment.author; });
       // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
