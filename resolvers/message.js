@@ -177,10 +177,9 @@ const Mutation = {
     { Message }
   ) => {
     try {
-      await Message.update(
+      await Message.updateMany(
         { receiver, sender, seen: false },
         { seen: true },
-        { multi: true }
       );
 
       return true;

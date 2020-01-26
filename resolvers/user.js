@@ -668,7 +668,7 @@ const Mutation = {
                                                                 <td style="font-size: 30px;color: #ffffff;font-weight: 700;font-family: 'Roboto Condensed', Arial, sans-serif;padding-bottom: 5px;border-collapse: collapse;mso-line-height-rule: exactly;">Selma Avocado</td>
                                                               </tr>
                                                               <tr>
-                                                                <td style="font-size: 16px;color: #8fbf2f;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;font-style: italic;border-collapse: collapse;mso-line-height-rule: exactly;">The self-Professed Avo Geek</td>
+                                                                <td style="font-size: 16px;color: #8fbf2f;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;font-style: italic;border-collapse: collapse;mso-line-height-rule: exactly;">The Self-Professed Avo Geek</td>
                                                               </tr>
                                                             </table>
                                                           </td>
