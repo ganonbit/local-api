@@ -49,7 +49,7 @@ const Query = {
    * @param {int} skip how many posts to skip
    * @param {int} limit how many posts to limit
    */
-  getFollowedPosts: async (root, { userId, skip, limit }, { Post, Follow }) => {
+  getFollowedPosts: async (root, { userId, skip, limit }, { Post, Follow, SharedPost }) => {
     // Find user ids, that current user follows
     const userFollowing = [];
     const follow = await Follow.find({ follower: userId }, { _id: 0 }).select(
@@ -61,7 +61,11 @@ const Query = {
     const query = {
       $or: [{ author: { $in: userFollowing } }, { author: userId }],
     };
-    const followedPostsCount = await Post.find(query).countDocuments();
+
+    const queryForShared = {
+      $or: [{ user: { $in: userFollowing } }, { user: userId }],
+    };
+
     const followedPosts = await Post.find(query)
       .populate({
         path: 'author',
@@ -89,7 +93,40 @@ const Query = {
       .limit(limit)
       .sort({ createdAt: 'desc' });
 
-    return { posts: followedPosts, count: followedPostsCount };
+    const followedSharedPosts = await SharedPost.find(queryForShared)
+      .populate(
+        [
+          {
+            path: 'user',
+            select: 'id firstName lastName username'
+          },
+          {
+            path: 'post',
+            populate: [
+              { path: 'author', select: 'id firstName lastName username' },
+              { path: 'likes' },
+              {
+                path: 'comments',
+                options: { sort: { createdAt: 'desc' } },
+                populate: { path: 'author' },
+              },
+            ],
+          }
+        ]
+      )
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: 'desc' });
+
+    // const combinedPosts = await Promise.all([
+    //   User.find(),
+    //   Category.find(),
+    //   Content.find()
+    // ])
+
+    const combinedPosts = followedPosts.concat(followedSharedPosts);
+
+    return { posts: combinedPosts, count: combinedPosts.length };
   },
   /**
    * Gets post by id
