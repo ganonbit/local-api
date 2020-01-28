@@ -60,10 +60,11 @@ const Mutation = {
 
   editComment: async (
     root,
-    { input: { image, id, author, postId } },
+    { id, input: { image, comment, author, postId } },
     { Comment, Post, User }
   ) => {
     let imageUrl, imagePublicId;
+    const now = Date.now();
     if (image) {
       const { createReadStream } = await image;
       const stream = createReadStream();
@@ -79,15 +80,15 @@ const Mutation = {
       imagePublicId = uploadImage.public_id;
     }
 
-    const updatedComment = await Comment.findOneAndUpdate(
+    let updatedComment = await Comment.findOneAndUpdate(
       { _id: id },
       {
-        $push: {
-          image: imageUrl,
-          imagePublicId,
-          comment,
-        },
-      }
+        comment,
+        image: imageUrl,
+        imagePublicId: imagePublicId,
+        updatedAt: now
+      },
+      { new: true }
     );
 
     // Push comment to post collection
@@ -103,7 +104,7 @@ const Mutation = {
       }
     );
 
-    return editComment;
+    return updatedComment;
   },
   /**
    * Deletes a post comment

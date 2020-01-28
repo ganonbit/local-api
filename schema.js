@@ -307,10 +307,11 @@ const schema = gql`
   }
 
   input EditCommentInput {
-    comment: String!
+    comment: String
     image: Upload
     imagePublicId: String
-    id: ID!
+    postId: ID
+    author: ID
   }
 
   input DeleteCommentInput {
@@ -689,7 +690,7 @@ const schema = gql`
     # Uploads user comment photo
 
     # Edits a post comment
-    editComment(input: EditCommentInput!): Comment
+    editComment(id: ID!, input: EditCommentInput!): Comment
 
     # Deletes a post comment
     deleteComment(input: DeleteCommentInput!): Comment
