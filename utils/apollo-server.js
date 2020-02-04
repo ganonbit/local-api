@@ -36,6 +36,9 @@ export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
     resolvers,
+    cors: {
+      origin: '*',
+      credentials: true},	
     context: async ({ req, connection }) => {
       if (connection) {
         return connection.context;
@@ -101,7 +104,7 @@ export const createApolloServer = (schema, resolvers, models) => {
     introspection: true,
     playground: true,
     tracing: true,
-    cacheControl: true,
+    cacheControl: { calculateHttpHeaders: true, },
     plugins: [responseCachePlugin({
       sessionId: (requestContext) => (requestContext.request.http.headers.get('sessionid') || null),
     })]
