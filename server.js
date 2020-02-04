@@ -1,5 +1,6 @@
 import {} from 'dotenv/config';
 import express from 'express';
+import compression from 'compression';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import models from './models';
@@ -20,6 +21,7 @@ mongoose
 
 // Initializes application
 const app = express();
+app.use(compression());
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
