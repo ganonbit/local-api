@@ -1,5 +1,6 @@
 import {} from 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import compression from 'compression';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
@@ -22,6 +23,12 @@ mongoose
 // Initializes application
 const app = express();
 app.use(compression());
+
+const corsOptions = {
+  origin: '*',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.get('*.js', function (req, res, next) {
   req.url = req.url + '.gz';

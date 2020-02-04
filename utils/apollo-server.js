@@ -36,9 +36,6 @@ export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
     resolvers,
-    cors: {
-      origin: '*',
-      credentials: true},	
     context: async ({ req, connection }) => {
       if (connection) {
         return connection.context;
