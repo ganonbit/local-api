@@ -177,16 +177,18 @@ const Mutation = {
       const { createReadStream } = await image;
       const stream = createReadStream();
       const uploadImage = await uploadToCloudinary(stream, 'post');
-
+      console.log(uploadImage)
       if (!uploadImage.secure_url) {
         throw new Error(
           'Something went wrong while uploading image to Cloudinary'
         );
       }
 
-      let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
-      
-      imageUrl = optimizedImage;
+      let optimizedImage;
+      optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+      console.log(optimizedImage)
+      imageUrl = await optimizedImage;
+      console.log(imageUrl)
       imagePublicId = uploadImage.public_id;
     }
 
