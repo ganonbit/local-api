@@ -23,7 +23,9 @@ const Mutation = {
         );
       }
 
-      imageUrl = uploadImage.secure_url;
+      let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+      
+      imageUrl = optimizedImage;
       imagePublicId = uploadImage.public_id;
     }
 
@@ -76,7 +78,9 @@ const Mutation = {
         );
       }
 
-      imageUrl = uploadImage.secure_url;
+      let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+      
+      imageUrl = optimizedImage;
       imagePublicId = uploadImage.public_id;
     }
 
