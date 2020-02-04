@@ -31,7 +31,7 @@ const verificationEmail = (verifyLink, newUser) => {
                             style="font-size: 16px;color: #ffffff;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding-right: 10px;border-collapse: collapse;mso-line-height-rule: exactly;">
                             ${newUser.firstName} ${newUser.lastName}</td>
                           <td style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="40"
-                              src="https://res.cloudinary.com/weare270b/image/upload/v1576220262/static/Image_from_iOS_1_bnaxnc.jpg"
+                              src="https://res.cloudinary.com/weare270b/image/upload/v1576220262/static/q_auto/Image_from_iOS_1_bnaxnc.jpg"
                               alt="" style="border: 0 !important;outline: none !important;"></td>
                         </tr>
                       </table>
