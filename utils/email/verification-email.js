@@ -20,7 +20,7 @@ const verificationEmail = (verifyLink, newUser) => {
                   <tr>
                     <td align="left" style="border-collapse: collapse;mso-line-height-rule: exactly;">
                       <a href="#" style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="53"
-                          src="https://res.cloudinary.com/weare270b/image/upload/v1576828740/email/avo-logo_csi56f.png"
+                          src="https://res.cloudinary.com/weare270b/image/upload/q_auto/v1576828740/email/avo-logo_csi56f.png"
                           alt="" style="border: 0 !important;outline: none !important;"></a>
                     </td>
                     <td align="right" style="border-collapse: collapse;mso-line-height-rule: exactly;">
@@ -31,7 +31,7 @@ const verificationEmail = (verifyLink, newUser) => {
                             style="font-size: 16px;color: #ffffff;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding-right: 10px;border-collapse: collapse;mso-line-height-rule: exactly;">
                             ${newUser.firstName} ${newUser.lastName}</td>
                           <td style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="40"
-                              src="https://res.cloudinary.com/weare270b/image/upload/v1576220262/static/q_auto/Image_from_iOS_1_bnaxnc.jpg"
+                              src="https://res.cloudinary.com/weare270b/image/upload/q_auto/v1576220262/static/Image_from_iOS_1_bnaxnc.jpg"
                               alt="" style="border: 0 !important;outline: none !important;"></td>
                         </tr>
                       </table>
@@ -105,7 +105,7 @@ const verificationEmail = (verifyLink, newUser) => {
                         <tr>
                           <td width="136" style="width: 136px;border-collapse: collapse;mso-line-height-rule: exactly;">
                             <img width="136" height="137"
-                              src="https://res.cloudinary.com/weare270b/image/upload/v1576828740/email/avatar-img2_jjodo2.png"
+                              src="https://res.cloudinary.com/weare270b/image/upload/q_auto/v1576828740/email/avatar-img2_jjodo2.png"
                               alt="" style="border: 0 !important;outline: none !important;">
                           </td>
                           <td width="351"
@@ -154,7 +154,7 @@ const verificationEmail = (verifyLink, newUser) => {
                     <td align="center"
                       style="padding-bottom: 5px;border-collapse: collapse;mso-line-height-rule: exactly;">
                       <img width="130"
-                        src="https://res.cloudinary.com/weare270b/image/upload/v1576828740/email/avonation-logo_g1oi9v.png"
+                        src="https://res.cloudinary.com/weare270b/image/upload/q_auto/v1576828740/email/avonation-logo_g1oi9v.png"
                         alt="" style="border: 0 !important;outline: none !important;">
                     </td>
                   </tr>
