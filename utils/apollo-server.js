@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { ApolloServer } from 'apollo-server-express';
 import { PubSub } from 'apollo-server';
+import responseCachePlugin from 'apollo-server-plugin-response-cache';
 
 import { IS_USER_ONLINE } from '../constants/Subscriptions';
 
@@ -37,15 +38,7 @@ export const createApolloServer = (schema, resolvers, models) => {
     resolvers,
     cors: {
       origin: '*',
-      credentials: true
-    },
-    introspection: true,
-    playground: true,
-    tracing: true,
-    cacheControl: { calculateHttpHeaders: true, },
-    plugins: [responseCachePlugin({
-      sessionId: (requestContext) => (requestContext.request.http.headers.get('sessionid') || null),
-    })],
+      credentials: true},	
     context: async ({ req, connection }) => {
       if (connection) {
         return connection.context;
@@ -62,7 +55,8 @@ export const createApolloServer = (schema, resolvers, models) => {
       return Object.assign({ authUser }, models);
     },
     subscriptions: {
-      onConnect: async (connectionParams) => {
+      keepAlive: 1000,
+      onConnect: async (connectionParams, websocket, context) => {
         console.log('*** User has connected to WebSocket server ***');
 
         // Check if user is authenticated
@@ -82,8 +76,9 @@ export const createApolloServer = (schema, resolvers, models) => {
           };
         }
       },
-      onDisconnect: async (context) => {
+      onDisconnect: async (websocket, context) => {
         console.log('*** User has been disconnected from WebSocket server ***');
+        JSON.stringify(context);
         // Get socket's context
         const c = await context.initPromise;
         if (c && c.authUser) {
@@ -104,6 +99,14 @@ export const createApolloServer = (schema, resolvers, models) => {
           );
         }
       },
+      path: '/graphql'
     },
+    introspection: true,
+    playground: true,
+    tracing: true,
+    cacheControl: { calculateHttpHeaders: true, },
+    plugins: [responseCachePlugin({
+      sessionId: (requestContext) => (requestContext.request.http.headers.get('sessionid') || null),
+    })]
   });
 };
