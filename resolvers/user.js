@@ -841,12 +841,13 @@ const Mutation = {
 
     if (uploadImage.secure_url) {
       const fieldsToUpdate = {};
+      let optimizedImage;
       if (isCover) {
-        let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+        optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
         fieldsToUpdate.coverImage = await optimizedImage;
         fieldsToUpdate.coverImagePublicId = optimizedImage.public_id;
       } else {
-        let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+        optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
         fieldsToUpdate.image = await optimizedImage;
         fieldsToUpdate.imagePublicId = optimizedImage.public_id;
       }
