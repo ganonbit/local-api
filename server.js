@@ -22,12 +22,19 @@ mongoose
 
 // Initializes application
 const app = express();
+app.use(compression());
 
 const corsOptions = {
   origin: '*',
   credentials: true,
 };
 app.use(cors(corsOptions));
+
+app.get('*.js', function (req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  next();
+});
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
