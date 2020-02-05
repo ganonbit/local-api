@@ -1,9 +1,10 @@
 import {} from 'dotenv/config';
 import express from 'express';
-const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import compression from 'compression';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
-import cors from 'cors';
 import models from './models';
 import schema from './schema';
 import resolvers from './resolvers';
@@ -23,8 +24,8 @@ mongoose
 // Initializes application
 const app = express();
 const path = '/graphql';
+app.use(compression());
 
-// Enable cors
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -33,20 +34,26 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
+app.get('/', function(res) {
   res.redirect('/graphql');
+});
+
+app.get('*.js', function (req, res, next) {
+  req.url = req.url + '.gz';
+  res.set('Content-Encoding', 'gzip');
+  next();
 });
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
-server.applyMiddleware({ app, path });
+server.applyMiddleware({ app, path, cors: false });
 
 // Create http server and add subscriptions to it
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 // Listen to HTTP and WebSocket server
-const PORT = process.env.PORT || process.env.API_PORT;
+const PORT = process.env.PORT || 4000;
 httpServer.listen({ port: PORT }, () => {
   console.log(`server ready at http://localhost:${PORT}${server.graphqlPath}`);
   console.log(
