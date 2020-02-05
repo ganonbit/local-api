@@ -101,7 +101,7 @@ export const createApolloServer = (schema, resolvers, models) => {
     introspection: true,
     playground: true,
     tracing: true,
-    cacheControl: { calculateHttpHeaders: true, },
+    cacheControl: true,
     plugins: [responseCachePlugin({
       sessionId: (requestContext) => (requestContext.request.http.headers.get('sessionid') || null),
     })]

@@ -1,10 +1,9 @@
 import {} from 'dotenv/config';
 import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import compression from 'compression';
+const bodyParser = require('body-parser');
 import { createServer } from 'http';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import models from './models';
 import schema from './schema';
 import resolvers from './resolvers';
@@ -24,8 +23,8 @@ mongoose
 // Initializes application
 const app = express();
 const path = '/graphql';
-app.use(compression());
 
+// Enable cors
 const corsOptions = {
   origin: '*',
   credentials: true,
@@ -33,12 +32,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-app.get('*.js', function (req, res, next) {
-  req.url = req.url + '.gz';
-  res.set('Content-Encoding', 'gzip');
-  next();
-});
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
