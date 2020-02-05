@@ -842,11 +842,13 @@ const Mutation = {
     if (uploadImage.secure_url) {
       const fieldsToUpdate = {};
       if (isCover) {
-        fieldsToUpdate.coverImage = uploadImage.secure_url;
-        fieldsToUpdate.coverImagePublicId = uploadImage.public_id;
+        let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+        fieldsToUpdate.coverImage = await optimizedImage;
+        fieldsToUpdate.coverImagePublicId = optimizedImage.public_id;
       } else {
-        fieldsToUpdate.image = uploadImage.secure_url;
-        fieldsToUpdate.imagePublicId = uploadImage.public_id;
+        let optimizedImage = uploadImage.secure_url.replace('/upload/', '/upload/f_auto,q_auto/'); 
+        fieldsToUpdate.image = await optimizedImage;
+        fieldsToUpdate.imagePublicId = optimizedImage.public_id;
       }
 
       const updatedUser = await User.findOneAndUpdate(
