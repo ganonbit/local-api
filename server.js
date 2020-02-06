@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import Honeybadger from 'honeybadger';
 import models from './models';
 import schema from './schema';
 import resolvers from './resolvers';
@@ -29,9 +30,13 @@ const corsOptions = {
   origin: '*',
   credentials: true,
 };
+app.use(Honeybadger.requestHandler);
+
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(Honeybadger.errorHandler); 
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
