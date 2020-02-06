@@ -21,10 +21,6 @@ mongoose
   .then(() => console.log('DB connected'))
   .catch(err => console.error('DB Connection error: ' + err));
 
-  Honeybadger.configure({
-    apiKey: '51c8590b'
-  });
-
 // Initializes application
 const app = express();
 const path = '/graphql';
