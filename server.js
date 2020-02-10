@@ -11,8 +11,6 @@ import schema from './schema';
 import resolvers from './resolvers';
 import { createApolloServer } from './utils/apollo-server';
 
-const bugsnag = require('@bugsnag/js');
-const bugsnagExpress = require('@bugsnag/plugin-express');
 const bugsnagClient = bugsnag('fdc898bef17ba822e019223b10abf4aa');
 bugsnagClient.use(bugsnagExpress);
 

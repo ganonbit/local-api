@@ -507,11 +507,7 @@ const Mutation = {
       console.log(error)
       throw new Error(error);
     }
-
-    let eventID = '5ddc12e18cdfc651b260921e';
-    const event = await Event.findById(eventID);
-    const newPoints = event.awardedPoints;
-
+    
     const selma = await User.findOne({ username: 'selma', role: 'selma' });
 
     const following = await new Follow({
