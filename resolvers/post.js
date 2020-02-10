@@ -196,8 +196,7 @@ const Mutation = {
       author: authorId,
     }).save();
 
-    let eventID = '5ddc0cf9dce3c14fcbc210bc';
-    const event = await Event.findById(eventID);
+    const event = await Event.findOne({ name: 'createdPost'});
     const user = await User.findById(newPost.author);
     const newPoints = user.accountPoints + event.awardedPoints;
     const totalPoints = user.totalPoints + event.awardedPoints;
@@ -304,8 +303,7 @@ const Mutation = {
     const post = await Post.findByIdAndRemove(id);
 
     const user = await User.findById(post.author);
-    let eventID = '5ddc0cf9dce3c14fcbc210bc';
-    const event = await Event.findById(eventID);
+    const event = await Event.findOne({ name: 'createdPost'});
     const newPoints = user.accountPoints - event.awardedPoints;
     const totalPoints = user.totalPoints - event.awardedPoints;
 

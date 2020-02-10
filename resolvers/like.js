@@ -10,14 +10,9 @@ const Mutation = {
   createLike: async (
     root,
     { input: { userId, postId } },
-    { Like, Post, User, Event }
+    { Like, Post, User }
   ) => {
     const like = await new Like({ user: userId, post: postId }).save();
-    const user = await User.findById(like.user);
-    let eventID = '5dda290bcd879c3e998e2a48';
-    const event = await Event.findById(eventID);
-    const newPoints = user.likePoints + event.awardedPoints;
-    const totalPoints = user.totalPoints + event.awardedPoints;
 
     // Push like to post collection
     await Post.findOneAndUpdate({ _id: postId }, { $push: { likes: like.id } });
@@ -26,7 +21,6 @@ const Mutation = {
       { _id: userId },
       {
         $push: { likes: like.id },
-        $set: { likePoints: newPoints, totalPoints: totalPoints },
       }
     );
 
@@ -42,21 +36,15 @@ const Mutation = {
   deleteLike: async (
     root,
     { input: { id } },
-    { Like, User, Post, Event }
+    { Like, User, Post }
   ) => {
     const like = await Like.findByIdAndRemove(id);
-    const user = await User.findById(like.user);
-    let eventID = '5dda290bcd879c3e998e2a48';
-    const event = await Event.findById(eventID);
-    const newPoints = user.likePoints - event.awardedPoints;
-    const totalPoints = user.totalPoints - event.awardedPoints;
 
     // Delete like from users collection
     await User.findOneAndUpdate(
       { _id: like.user },
       {
-        $pull: { likes: like.id },
-        $set: { likePoints: newPoints, totalPoints: totalPoints },
+        $pull: { likes: like.id }
       }
     );
     // Delete like from posts collection

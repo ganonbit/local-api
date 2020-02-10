@@ -4,10 +4,17 @@ import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import bugsnag from '@bugsnag/js'
+import bugsnagExpress from '@bugsnag/plugin-express'
 import models from './models';
 import schema from './schema';
 import resolvers from './resolvers';
 import { createApolloServer } from './utils/apollo-server';
+
+const bugsnag = require('@bugsnag/js');
+const bugsnagExpress = require('@bugsnag/plugin-express');
+const bugsnagClient = bugsnag('fdc898bef17ba822e019223b10abf4aa');
+bugsnagClient.use(bugsnagExpress);
 
 // Connect to database
 mongoose
@@ -29,10 +36,14 @@ const corsOptions = {
   origin: '*',
   credentials: true,
 };
-
+app.use(bugsnagClient.getPlugin('express').requestHandler)
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(function (req, res, next) {
+  throw new Error('Test error')
+})
+app.use(bugsnagClient.getPlugin('express').errorHandler)
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
