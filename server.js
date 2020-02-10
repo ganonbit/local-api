@@ -34,14 +34,11 @@ const corsOptions = {
   origin: '*',
   credentials: true,
 };
-app.use(bugsnagClient.getPlugin('express').requestHandler)
+app.use(bugsnagClient.getPlugin('express').requestHandler);
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(function (req, res, next) {
-  throw new Error('Test error')
-})
-app.use(bugsnagClient.getPlugin('express').errorHandler)
+app.use(bugsnagClient.getPlugin('express').errorHandler);
 
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
