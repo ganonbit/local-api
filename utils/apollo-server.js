@@ -15,16 +15,7 @@ export const pubSub = new PubSub();
  */
 const checkAuthorization = token => {
   return new Promise(async (resolve, reject) => {
-    const authUser = await jwt.verify(token, process.env.SECRET, (err, res) => {
-      if (err) {
-
-        err = {
-           name: err.name,
-           message: err.message
-        }
-        return next(err)
-     }
-    });
+    const authUser = await jwt.verify(token, process.env.SECRET);
 
     if (authUser) {
       resolve(authUser);
@@ -45,10 +36,6 @@ export const createApolloServer = (schema, resolvers, models) => {
   return new ApolloServer({
     typeDefs: schema,
     resolvers,
-    cors: {
-      origin: '*',
-      credentials: true
-    },
     introspection: true,
     playground: true,
     tracing: true,

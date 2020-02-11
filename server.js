@@ -35,7 +35,7 @@ const corsOptions = {
 };
 app.use(bugsnagClient.getPlugin('express').requestHandler);
 app.use(cors(corsOptions));
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 app.get('/', function(req, res) {
