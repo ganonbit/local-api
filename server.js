@@ -33,16 +33,17 @@ const corsOptions = {
   origin: '*',
   credentials: true,
 };
-// app.use(bugsnagClient.getPlugin('express').requestHandler);
+app.use(bugsnagClient.getPlugin('express').requestHandler);
 app.use(cors(corsOptions));
-app.use(express.json());
 app.use(express.urlencoded());
+app.use(express.json());
 
 app.get('/', function(req, res) {
 	res.redirect('/graphql');
 });
 
-// app.use(bugsnagClient.getPlugin('express').errorHandler);
+app.use(bugsnagClient.getPlugin('express').errorHandler);
+
 // Create a Apollo Server
 const server = createApolloServer(schema, resolvers, models);
 server.applyMiddleware({ app, path, cors: false });

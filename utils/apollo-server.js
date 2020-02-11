@@ -22,7 +22,7 @@ const checkAuthorization = token => {
            name: err.name,
            message: err.message
         }
-        return res.status(401).send(err)
+        return next(err)
      }
     });
 
