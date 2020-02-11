@@ -36,10 +36,13 @@ const corsOptions = {
 };
 app.use(bugsnagClient.getPlugin('express').requestHandler);
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(bugsnagClient.getPlugin('express').errorHandler);
 
+app.get('/', function(req, res) {
+	res.redirect('/graphql');
+});
 
 
 // Create a Apollo Server
