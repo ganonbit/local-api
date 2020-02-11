@@ -1,6 +1,5 @@
 import {} from 'dotenv/config';
 import express from 'express';
-import bodyParser from 'body-parser';
 import { createServer } from 'http';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -36,8 +35,8 @@ const corsOptions = {
 };
 app.use(bugsnagClient.getPlugin('express').requestHandler);
 app.use(cors(corsOptions));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded());
+app.use(express.json());
 
 app.get('/', function(req, res) {
 	res.redirect('/graphql');
