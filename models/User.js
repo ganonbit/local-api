@@ -98,8 +98,14 @@ const userSchema = new Schema(
         type: 'password',
       },
     },
-    image: String,
-    imagePublicId: String,
+    image: {
+      type: String,
+      algoliaIndex: true
+    },
+    imagePublicId: {
+      type: String,
+      algoliaIndex: true
+    },
     coverImage: String,
     coverImagePublicId: String,
     isOnline: { type: Boolean, default: false },
