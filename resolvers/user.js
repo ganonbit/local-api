@@ -538,8 +538,6 @@ const Mutation = {
 
     newUser.emailToken = token
     newUser.emailTokenExpiry = tokenExpiry
-    newUser.accountPoints = newPoints
-    newUser.totalPoints = newPoints
 
     try {
       await selma.save()

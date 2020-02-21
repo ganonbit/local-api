@@ -1,18 +1,17 @@
 import nodemailer from 'nodemailer';
+import nodemailerSendgrid from 'nodemailer-sendgrid';
 
-const { SENDGRID_USER, MAIL_USER, SENDGRID_PASS } = process.env;
+const { MAIL_USER, SENDGRID_API_KEY, HIJACK_EMAIL_ADDRESS } = process.env;
 
 /**
  * Creates transporter object that will help us to send emails
  */
 
-let transporter = nodemailer.createTransport({
-  service: 'SendGrid',
-  auth: {
-    user: SENDGRID_USER,
-    pass: SENDGRID_PASS,
-  },
-});
+const transporter = nodemailer.createTransport(
+  nodemailerSendgrid({
+      apiKey: SENDGRID_API_KEY
+  })
+);
 
 /**
  *  Sends an email to user
@@ -24,33 +23,57 @@ let transporter = nodemailer.createTransport({
 export const sendEmail = async ({ to, subject, html }) => {
   let hijackedEmailAddress = null
   let senderAddress = `"Avocado Nation 🥑" <${MAIL_USER}>`
-  if(process.env.HIJACK_EMAIL_ADDRESS) {
-    hijackedEmailAddress = process.env.HIJACK_EMAIL_ADDRESS
+  if(HIJACK_EMAIL_ADDRESS) {
+    hijackedEmailAddress = HIJACK_EMAIL_ADDRESS
     senderAddress = `"TESTMODE Avocado Nation 🥑" <${MAIL_USER}>`
   }
 
-  let info = await transporter.sendMail({
-    from: senderAddress,
-    to: hijackedEmailAddress || to, // list of receivers
-    subject: subject, // Subject line
-    html: html // html body
-  });
-  console.log("Verification Email sent: %s", info.messageId);
+  transporter
+    .sendMail({
+      from: senderAddress,
+      to: hijackedEmailAddress || to, // list of receivers
+      subject: subject, // Subject line
+      html: html // html body
+    })
+    .then(([res]) => {
+      console.log('Message delivered with code %s %s', res.statusCode, res.statusMessage);
+    })
+    .catch(err => {
+        console.log('Errors occurred, failed to deliver message');
+
+        if (err.response && err.response.body && err.response.body.errors) {
+            err.response.body.errors.forEach(error => console.log('%s: %s', error.field, error.message));
+        } else {
+            console.log(err);
+        }
+    });
 };
 
 export const sendFeedbackFormEmail = async ({ firstName, lastName, email, feedbackReason, feedback }) => {
   let hijackedEmailAddress = null
   let subjectLine = `Feedback Submission: ${feedbackReason} from ${firstName} ${lastName}`
-  if(process.env.HIJACK_EMAIL_ADDRESS) {
-    hijackedEmailAddress = process.env.HIJACK_EMAIL_ADDRESS
+  if(HIJACK_EMAIL_ADDRESS) {
+    hijackedEmailAddress = HIJACK_EMAIL_ADDRESS
     subjectLine = `TESTMODE Feedback Submission: ${feedbackReason} from ${firstName} ${lastName}`
   }
 
-  let info = await transporter.sendMail({
-    from: email,
-    to: hijackedEmailAddress || 'hello@theavocadonation.com',
-    subject: subjectLine,
-    text: feedback // text body
-  });
-  console.log("Verification Email sent: %s", info.messageId);
+  transporter
+    .sendMail({
+      from: email,
+      to: hijackedEmailAddress || 'hello@theavocadonation.com',
+      subject: subjectLine,
+      text: feedback // text body
+    })
+    .then(([res]) => {
+      console.log('Message delivered with code %s %s', res.statusCode, res.statusMessage);
+    })
+    .catch(err => {
+        console.log('Errors occurred, failed to deliver message');
+
+        if (err.response && err.response.body && err.response.body.errors) {
+            err.response.body.errors.forEach(error => console.log('%s: %s', error.field, error.message));
+        } else {
+            console.log(err);
+        }
+    });
 };
