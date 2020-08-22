@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 mongoose.plugin(require('@lykmapipo/mongoose-faker'));
 
 let genderTypes = ['male', 'female', 'custom'];
-let roleTypes = ['selma', 'expert', 'user'];
+let roleTypes = ['admin', 'expert', 'user'];
 
 const Schema = mongoose.Schema;
 

@@ -1,10 +1,10 @@
 const usernameBlackList = () => {
   return (
     [
-      'selmaa',
-      'selmaavocados',
-      'selma-avocados',
-      'sselma',
+      'admina',
+      'adminsocials',
+      'admin-socials',
+      'sadmin',
       'discover',
       'people',
       'inspiration',

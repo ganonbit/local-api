@@ -22,10 +22,10 @@ const transporter = nodemailer.createTransport(
  */
 export const sendEmail = async ({ to, subject, html }) => {
   let hijackedEmailAddress = null
-  let senderAddress = `"Avocado Nation 🥑" <${MAIL_USER}>`
+  let senderAddress = `"Social 🐧" <${MAIL_USER}>`
   if(HIJACK_EMAIL_ADDRESS) {
     hijackedEmailAddress = HIJACK_EMAIL_ADDRESS
-    senderAddress = `"TESTMODE Avocado Nation 🥑" <${MAIL_USER}>`
+    senderAddress = `"TESTMODE Social 🐧" <${MAIL_USER}>`
   }
 
   transporter
@@ -60,7 +60,7 @@ export const sendFeedbackFormEmail = async ({ firstName, lastName, email, feedba
   transporter
     .sendMail({
       from: email,
-      to: hijackedEmailAddress || 'hello@theavocadonation.com',
+      to: hijackedEmailAddress || 'https://vigorous-chandrasekhar-bbd3e9.netlify.app',
       subject: subjectLine,
       text: feedback // text body
     })

@@ -508,16 +508,16 @@ const Mutation = {
       throw new Error(error);
     }
     
-    const selma = await User.findOne({ username: 'selma', role: 'selma' });
+    const admin = await User.findOne({ username: 'admin', role: 'admin' });
 
     const following = await new Follow({
-      user: selma.id,
+      user: admin.id,
       follower: newUser,
     }).save();
 
     const follower = await new Follow({
       user: newUser,
-      follower: selma.id,
+      follower: admin.id,
     }).save();
 
     const token = generateToken(
@@ -531,8 +531,8 @@ const Mutation = {
     tokenExpiry.setDate(today.getDate()+30);
 
     // Push follower/following to user collection
-    selma.following.push(follower.id)
-    selma.followers.push(follower.id)
+    admin.following.push(follower.id)
+    admin.followers.push(follower.id)
     newUser.following.push(following.id)
     newUser.followers.push(following.id)
 
@@ -540,10 +540,10 @@ const Mutation = {
     newUser.emailTokenExpiry = tokenExpiry
 
     try {
-      await selma.save()
+      await admin.save()
       await newUser.save()
     } catch(error) {
-      console.log('Following error ocurred while trying to save selma and newUser')
+      console.log('Following error ocurred while trying to save admin and newUser')
       console.log(error)
       throw new Error(error);
     }
@@ -609,13 +609,13 @@ const Mutation = {
                                               <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                   <tr>
                                                       <td align="left" style="border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                          <a href="#" style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="53" src="https://res.cloudinary.com/weare270b/image/upload/f_auto,q_auto/v1576828740/email/avo-logo_csi56f.png" alt="" style="border: 0 !important;outline: none !important;"></a>
+                                                          <a href="#" style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="53" src="https://res.cloudinary.com/local/image/upload/f_auto,q_auto/v1576828740/email/social-logo_csi56f.png" alt="" style="border: 0 !important;outline: none !important;"></a>
                                                       </td>
                                                       <td align="right" style="border-collapse: collapse;mso-line-height-rule: exactly;">
                                                           <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                               <tr>
                                                                   <td style="font-size: 16px;color: #ffffff;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding-right: 10px;border-collapse: collapse;mso-line-height-rule: exactly;">${user.firstName} ${user.lastName}</td>
-                                                                  <td style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="40" src="https://res.cloudinary.com/weare270b/image/upload/f_auto,q_auto/v1576220262/static/Image_from_iOS_1_bnaxnc.jpg" alt="" style="border: 0 !important;outline: none !important;"></td>
+                                                                  <td style="border-collapse: collapse;mso-line-height-rule: exactly;"><img width="40" src="https://res.cloudinary.com/local/image/upload/f_auto,q_auto/v1576220262/static/Image_from_iOS_1_bnaxnc.jpg" alt="" style="border: 0 !important;outline: none !important;"></td>
                                                               </tr>
                                                           </table>
                                                       </td>
@@ -634,7 +634,7 @@ const Mutation = {
                                                   </tr>
                                                    <tr>
                                                       <td style="font-size: 18px;color: #4b4d4c;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;padding: 0 25px 20px;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                        Avocado Nation - the first ever online community for avocado lovers!
+                                                        Social - the first ever online community for social lovers!
                                                       </td>
                                                   </tr>
                                                   <tr>
@@ -655,7 +655,7 @@ const Mutation = {
                                                   </tr>
                                                   <tr>
                                                       <td style="font-size: 18px;color: #4b4d4c;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;padding: 0 25px 20px;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                        Now what are you waiting for?! Share your avocado love!
+                                                        Now what are you waiting for?! Share your social love!
                                                       </td>
                                                   </tr>
                                                   <tr>
@@ -665,7 +665,7 @@ const Mutation = {
                                                   </tr>
                                                   <tr>
                                                       <td style="font-size: 18px;color: #4b4d4c;font-weight: bold;font-family: 'Roboto Condensed', Arial, sans-serif;padding: 0 25px 30px;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                        Selma!
+                                                        Admin!
                                                       </td>
                                                   </tr>
                                                   <tr>
@@ -673,15 +673,15 @@ const Mutation = {
                                                       <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                         <tr>
                                                           <td width="136" style="width: 136px;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                            <img width="136" height="137" src="https://res.cloudinary.com/weare270b/image/upload/f_auto,q_auto/v1576828740/email/avatar-img2_jjodo2.png" alt="" style="border: 0 !important;outline: none !important;">
+                                                            <img width="136" height="137" src="https://res.cloudinary.com/local/image/upload/f_auto,q_auto/v1576828740/email/avatar-img2_jjodo2.png" alt="" style="border: 0 !important;outline: none !important;">
                                                           </td>
                                                           <td width="351" style="width: 351px;height: 117px;padding: 10px 60px;background: #40904b;border-collapse: collapse;mso-line-height-rule: exactly;">
                                                             <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                               <tr>
-                                                                <td style="font-size: 30px;color: #ffffff;font-weight: 700;font-family: 'Roboto Condensed', Arial, sans-serif;padding-bottom: 5px;border-collapse: collapse;mso-line-height-rule: exactly;">Selma Avocado</td>
+                                                                <td style="font-size: 30px;color: #ffffff;font-weight: 700;font-family: 'Roboto Condensed', Arial, sans-serif;padding-bottom: 5px;border-collapse: collapse;mso-line-height-rule: exactly;">Admin Social</td>
                                                               </tr>
                                                               <tr>
-                                                                <td style="font-size: 16px;color: #8fbf2f;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;font-style: italic;border-collapse: collapse;mso-line-height-rule: exactly;">The Self-Professed Avo Geek</td>
+                                                                <td style="font-size: 16px;color: #8fbf2f;font-weight: normal;font-family: 'Roboto Condensed', Arial, sans-serif;font-style: italic;border-collapse: collapse;mso-line-height-rule: exactly;">The Self-Professed Social Geek</td>
                                                               </tr>
                                                             </table>
                                                           </td>
@@ -700,7 +700,7 @@ const Mutation = {
                                             <table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;mso-table-lspace: 0px;mso-table-rspace: 0px;">
                                                  <tr>
                                                    <td align="center" style="font-size: 16px;text-align: center;padding-bottom: 25px;font-family: 'Roboto Condensed', Arial, sans-serif;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                     You are receiving Avocado Nation notification emails.
+                                                     You are receiving Social notification emails.
                                                    </td>
                                                  </tr>
                                                  <tr>
@@ -710,12 +710,12 @@ const Mutation = {
                                                  </tr>
                                                  <tr>
                                                    <td align="center" style="padding-bottom: 5px;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                     <img width="130" src="https://res.cloudinary.com/weare270b/image/upload/f_auto,q_auto/v1576828740/email/avonation-logo_g1oi9v.png" alt="" style="border: 0 !important;outline: none !important;">
+                                                     <img width="130" src="https://res.cloudinary.com/local/image/upload/f_auto,q_auto/v1576828740/email/socialnation-logo_g1oi9v.png" alt="" style="border: 0 !important;outline: none !important;">
                                                    </td>
                                                  </tr>
                                                  <tr>
                                                    <td align="center" style="font-size: 16px;text-align: center;font-family: 'Roboto Condensed', Arial, sans-serif;padding-bottom: 5px;border-collapse: collapse;mso-line-height-rule: exactly;">
-                                                     © 2019 Avocado Nation
+                                                     © 2019 Social
                                                    </td>
                                                  </tr>
                                                  <tr>
@@ -864,7 +864,7 @@ const Mutation = {
   editAccount: async (root, { id, input }, { User }) => {
     const user = await User.findById(id);
     let genderTypes = ['male', 'female', 'custom'];
-    let roleTypes = ['selma', 'expert', 'user'];
+    let roleTypes = ['admin', 'expert', 'user'];
     // name validation
     if (
       input.firstName &&
@@ -930,9 +930,9 @@ const Mutation = {
     { User, Post, Like, Comment }
   ) => {
     const user = await User.findById(id).populate('posts');
-    if (user.role === 'selma') {
+    if (user.role === 'admin') {
       throw new Error(
-        'You cannot delete Selma via the API'
+        'You cannot delete Admin via the API'
       )
     }
     await user.remove()
