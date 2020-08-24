@@ -13,7 +13,7 @@
     "format": "prettier --write \"./**/*.{js,json,md,}\""
   },
   "dependencies": {
-    "@bugsnag/js": "^6.5.2",
+    "@bugsnag/js": "^7.3.0",
     "@bugsnag/plugin-express": "^7.3.0",
     "@lykmapipo/mongoose-faker": "^0.10.3",
     "algoliasearch": "^3.35.1",
