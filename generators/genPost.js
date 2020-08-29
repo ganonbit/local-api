@@ -33,8 +33,9 @@ User.find(async function(err, users) {
     mongoose.connection.close();
     return;
   }
-
   const mapUsers = users.map(user => user._id._id);
   await saveFakePosts(mapUsers);
-  mongoose.connection.close();
+
+  // TODO: get this to only disconnect after ALL posts created
+  // mongoose.connection.close();
 });
