@@ -11,7 +11,7 @@ import schema from './schema';
 import resolvers from './resolvers';
 import { createApolloServer } from './utils/apollo-server';
 
-const { BUGSNAG_API_KEY } = process.env;
+const { BUGSNAG_API_KEY, MONGO_URL, PORT } = process.env;
 
 
 bugsnag.start({
@@ -23,7 +23,7 @@ const bugsnagClient = bugsnag.getPlugin('express');
 
 // Connect to database
 mongoose
-  .connect(process.env.MONGO_URL, {
+  .connect(MONGO_URL, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useFindAndModify: false,
@@ -62,10 +62,10 @@ const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
 // Listen to HTTP and WebSocket server
-const PORT = process.env.PORT || 4000;
-httpServer.listen({ port: PORT }, () => {
-  console.log(`server ready at http://localhost:${PORT}${server.graphqlPath}`);
+const apiPort = PORT || 4000;
+httpServer.listen({ port: apiPort }, () => {
+  console.log(`server ready at http://localhost:${apiPort}${server.graphqlPath}`);
   console.log(
-    `Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
+    `Subscriptions ready at ws://localhost:${apiPort}${server.subscriptionsPath}`
   );
 });

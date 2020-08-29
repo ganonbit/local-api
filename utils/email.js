@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import nodemailerSendgrid from 'nodemailer-sendgrid';
 
-const { MAIL_USER, SENDGRID_API_KEY, HIJACK_EMAIL_ADDRESS } = process.env;
+const { MAIL_USER, SENDGRID_API_KEY, HIJACK_EMAIL_ADDRESS, FRONTEND_URL } = process.env;
 
 /**
  * Creates transporter object that will help us to send emails
@@ -60,7 +60,7 @@ export const sendFeedbackFormEmail = async ({ firstName, lastName, email, feedba
   transporter
     .sendMail({
       from: email,
-      to: hijackedEmailAddress || 'https://vigorous-chandrasekhar-bbd3e9.netlify.app',
+      to: hijackedEmailAddress || FRONTEND_URL,
       subject: subjectLine,
       text: feedback // text body
     })

@@ -16,6 +16,8 @@ import { pubSub } from '../utils/apollo-server';
 
 import { IS_USER_ONLINE } from '../constants/Subscriptions';
 
+const {SECRET, FRONTEND_URL} = process.env;
+
 const AUTH_TOKEN_EXPIRY = '1y';
 const EMAIL_TOKEN_EXPIRY = 43200;
 
@@ -432,7 +434,7 @@ const Mutation = {
     }
 
     return {
-      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
 
@@ -522,7 +524,7 @@ const Mutation = {
 
     const token = generateToken(
       newUser,
-      process.env.SECRET,
+      SECRET,
       EMAIL_TOKEN_EXPIRY
     );
     let today = new Date();
@@ -549,7 +551,7 @@ const Mutation = {
     }
 
     // send verification email
-    const verifyLink = `${process.env.FRONTEND_URL}/verify?email=${email}&token=${token}`;
+    const verifyLink = `${FRONTEND_URL}/verify?email=${email}&token=${token}`;
     const mailOptions = {
       to: newUser.email,
       subject: 'Verify Your Email',
@@ -582,7 +584,7 @@ const Mutation = {
     }
 
     // Set password reset token and it's expiry
-    const token = generateToken(user, process.env.SECRET, EMAIL_TOKEN_EXPIRY);
+    const token = generateToken(user, SECRET, EMAIL_TOKEN_EXPIRY);
     const tokenExpiry = Date.now() + EMAIL_TOKEN_EXPIRY;
     await User.findOneAndUpdate(
       { _id: user.id },
@@ -591,7 +593,7 @@ const Mutation = {
     );
 
     // Email user reset link
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?email=${email}&token=${token}`;
+    const resetLink = `${FRONTEND_URL}/reset-password?email=${email}&token=${token}`;
     const mailOptions = {
       to: email,
       subject: 'Password Reset',
@@ -783,7 +785,7 @@ const Mutation = {
 
     // Return success message
     return {
-      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
 
@@ -813,7 +815,7 @@ const Mutation = {
 
     // Return success message
     return {
-      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
   /**
@@ -921,7 +923,7 @@ const Mutation = {
 
     // Return success message
     return {
-      token: generateToken(user, process.env.SECRET, AUTH_TOKEN_EXPIRY),
+      token: generateToken(user, SECRET, AUTH_TOKEN_EXPIRY),
     };
   },
   deleteAccount: async (

@@ -216,10 +216,12 @@ userSchema.pre('save', function(next) {
   });
 });
 
+const {ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_POSTS_INDEX } = process.env;
+
 userSchema.plugin(mongoAlgolia, {
-  appId: process.env.ALGOLIA_APP_ID,
-  apiKey: process.env.ALGOLIA_API_KEY,
-  indexName: process.env.ALGOLIA_USERS_INDEX,
+  appId: ALGOLIA_APP_ID,
+  apiKey: ALGOLIA_API_KEY,
+  indexName: ALGOLIA_POSTS_INDEX,
 });
 
 export default mongoose.model('User', userSchema);
