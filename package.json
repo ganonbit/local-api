@@ -15,7 +15,7 @@
   "dependencies": {
     "@bugsnag/js": "^7.3.0",
     "@bugsnag/plugin-express": "^7.3.0",
-    "@lykmapipo/mongoose-faker": "^0.10.3",
+    "@lykmapipo/mongoose-faker": "^0.11.0",
     "algoliasearch": "^4.8.2",
     "apollo-server": "^2.9.16",
     "apollo-server-express": "^2.9.16",
@@ -37,7 +37,7 @@
     "nodemailer": "^6.2.1",
     "nodemailer-sendgrid": "^1.0.3",
     "subscriptions-transport-ws": "^0.9.16",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
