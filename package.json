@@ -37,7 +37,7 @@
     "nodemailer": "^6.2.1",
     "nodemailer-sendgrid": "^1.0.3",
     "subscriptions-transport-ws": "^0.9.16",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
